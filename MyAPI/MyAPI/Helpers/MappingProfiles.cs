@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Core.Entities;
+using MyAPI.Dtos;
 
 namespace MyAPI.Helpers
 {
@@ -6,7 +8,8 @@ namespace MyAPI.Helpers
     {
         public MappingProfiles()
         {
-
+            CreateMap<AgriType, AgriTypeDto>()
+                .ForMember(x => x.AgriTypeId, y => y.MapFrom(z => z.Id)).ReverseMap();
         }
     }
 }

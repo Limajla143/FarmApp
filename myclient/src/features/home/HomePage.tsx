@@ -39,7 +39,7 @@ export default function HomePage() {
    return (
       <>
       <main>
-           <MainFeaturedPost post={mainFeaturedPost} />
+           {/* <MainFeaturedPost post={mainFeaturedPost} /> */}
            {/* <Grid container spacing={4}>
              {featuredPosts.map((post) => (
                <FeaturedPost key={post.title} post={post} />

@@ -60,5 +60,10 @@ namespace Infrastructure.Data
             _dbContext.Set<T>().Attach(entity);
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
+
+        public async Task<int> SaveAsync()
+        {
+            return await _dbContext.SaveChangesAsync();
+        }
     }
 }

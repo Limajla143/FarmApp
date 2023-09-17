@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace Infrastructure.Data
     public class EntityDbContext : DbContext
     {
         public EntityDbContext(DbContextOptions<EntityDbContext> options) : base(options) {}
+
+        public DbSet<AgriType> AgriTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

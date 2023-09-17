@@ -12,7 +12,7 @@ namespace MyAPI.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
 
-            services.AddDbContext<EntityDbContext>(x => x.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<EntityDbContext>(x => x.UseSqlServer(config.GetConnectionString("FarmStoreConnection")));
 
             //services.AddSingleton<IConnectionMultiplexer>(c =>
             //{

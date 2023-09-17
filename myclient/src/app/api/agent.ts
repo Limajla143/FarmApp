@@ -49,12 +49,26 @@ axios.interceptors.response.use(async response => {
     return Promise.reject(error.response);
 })
 
-
 const requests = {
     get: (url: string) => axios.get(url).then(responseBody),
     post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
     put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
-    delete: (url: string) => axios.delete(url).then(responseBody) 
+    delete: (url: string) => axios.delete(url).then(responseBody),
+    postForm: (url: string, data: FormData) => axios.post(url, data, {
+        headers: {'Content-type': 'multipart/form-data'}
+    }).then(responseBody),
+    putForm: (url: string, data: FormData) => axios.put(url, data, {
+        headers: {'Content-type': 'multipart/form-data'}
+    }).then(responseBody)
+}
+
+function createFormData(item: any) {
+    let formData = new FormData();
+    for (const key in item) {
+        formData.append(key, item[key])
+    }
+    console.log(formData);
+    return formData;
 }
 
 const Account = {
@@ -63,8 +77,16 @@ const Account = {
     currentUser: () => requests.get('account/currentUser')
 }
 
+const AgriTypes = {
+    agriTypes: () => requests.get('agriTypes'),
+    agriType: (id: number) => requests.get(`agriTypes/${id}`),
+    removeAgriType: (id: number) => requests.delete(`agriTypes/${id}`),
+    addUpdateAgriType: (agriType: any) => requests.postForm('agriTypes', createFormData(agriType))
+}
+
 const agent = {
-  Account
+  Account,
+  AgriTypes
 }
 
 export default agent;
