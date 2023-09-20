@@ -19,7 +19,7 @@ export const getAgriTypes = createAsyncThunk<AgriType[], void, {state: RootState
     async(_, thunkAPI) => {
         try {
             const response = await agent.AgriTypes.agriTypes();
-            return response;
+            return response.items;
         }catch(error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
         }

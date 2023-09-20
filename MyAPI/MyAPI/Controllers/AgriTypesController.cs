@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Specifiactions;
+using Core.Specifications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyAPI.Dtos;
+using MyAPI.Helpers;
 using MyAPI.Middleware.Errors;
 
 namespace MyAPI.Controllers
@@ -20,11 +23,15 @@ namespace MyAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AgriTypeDto>>> GetAgriTypes()
+        public async Task<ActionResult<PagedList<AgriTypeDto>>> GetAgriTypes([FromQuery]AgriTypeParam agrParam)
         {
-            var agrTypes = await _agriTypes.ListAllAsync();
+            var spec = new AgriTypeSpecs(agrParam);
+            var totalItems = await _agriTypes.CountAsync(spec);
+            var agrTypes = await _agriTypes.ListSpecAsync(spec);
 
-            return _mapper.Map<List<AgriTypeDto>>(agrTypes);
+            var data = _mapper.Map<IReadOnlyList<AgriType>, IReadOnlyList<AgriTypeDto>>(agrTypes);
+
+            return Ok(new PagedList<AgriTypeDto>(data, totalItems, agrParam.PageNumber, agrParam.PageSize));
         }
 
         [HttpGet("{id}", Name = "GetAgriType")]
