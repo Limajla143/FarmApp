@@ -10,7 +10,7 @@ namespace Core.Specifications
 {
     public class AgriTypeSpecs : BaseSpecification<AgriType>
     {
-        public AgriTypeSpecs(AgriTypeParam agrParams)
+        public AgriTypeSpecs(AgriTypeParam agrParams) : base(x => string.IsNullOrEmpty(agrParams.Search) || x.Name.ToLower().Contains(agrParams.Search.ToLower()))
         {
             AddOrderBy(x => x.Name);
 

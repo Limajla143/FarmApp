@@ -23,7 +23,7 @@ namespace Core.Specifications
 
         public Expression<Func<T, object>> OrderByDescending { get; private set; }
 
-        public List<Expression<Func<T, object>>> Contains { get; } = new List<Expression<Func<T, object>>>();
+        public Expression<Func<T, object, string>> Contains { get; private set;  } 
 
         public int Take { get; private set; }
         public int Skip { get; private set; }
