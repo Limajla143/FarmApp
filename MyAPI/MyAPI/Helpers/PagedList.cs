@@ -1,18 +1,28 @@
-﻿namespace MyAPI.Helpers
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace MyAPI.Helpers
 {
-    public class PagedList<T> where T : class
+    public class PagedList<T> : List<T>
     {
-        public PagedList(IReadOnlyList<T> items, int count, int pageNumber, int pageSize)
+        public PagedList(List<T> items, int count, int pageNumber, int pageSize)
         {
-            PageNumber = pageNumber;
-            PageSize = pageSize;
-            Count = count;
-            Items = items;
+            MetaData = new Metadata
+            {
+                Count = count,
+                PageSize = pageSize,
+                PageNumber = pageNumber,
+                TotalPages = (int)Math.Ceiling(count / (double)pageSize)
+            };
+            AddRange(items);
         }
 
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
-        public int Count { get; set; }
-        public IReadOnlyList<T> Items{ get; set; }
+        public Metadata MetaData { get; set; }
+
+        public static PagedList<T> ToPagedList(IReadOnlyList<T> query, int pageNumber, int pageSize, int totalCount)
+        {
+            var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).AsQueryable();
+
+            return new PagedList<T>(items.ToList(), totalCount, pageNumber, pageSize);
+        }
     }
 }

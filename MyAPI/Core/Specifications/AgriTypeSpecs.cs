@@ -14,8 +14,6 @@ namespace Core.Specifications
         {
             AddOrderBy(x => x.Name);
 
-            ApplyPaging(agrParams.PageSize * (agrParams.PageNumber - 1), agrParams.PageSize);
-
             if(!string.IsNullOrEmpty(agrParams.OrderBy))
             {
                 switch(agrParams.OrderBy)
