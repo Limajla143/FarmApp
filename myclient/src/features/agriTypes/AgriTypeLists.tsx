@@ -2,15 +2,17 @@ import {  useState } from "react";
 import { useAppDispatch } from "../../app/store/configStore";
 import { AgriType } from "../../app/models/agriType";
 import agent from "../../app/api/agent";
-import { removeAgriType } from "./agriTypeSlice";
+import { removeAgriType, setPageNumber } from "./agriTypeSlice";
 import AgriTypeForm from "./AgriForm";
 import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import useAgriTypes from "../../app/hooks/useAgriTypes";
 import { Delete, Edit } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
+import AppPagination from "../../app/components/AppPagination";
+import AgriTypeSearchInput from "./AgriTypeSearchInput";
 
 export default function AgriTypeLists() {
-    const { agriTypelists } = useAgriTypes();
+    const { agriTypelists, metaData } = useAgriTypes();
     const dispatch = useAppDispatch();
 
     const [editMode, setEditMode] = useState(false);
@@ -47,6 +49,9 @@ export default function AgriTypeLists() {
                 <Typography sx={{ p: 2 }} variant='h4'>Agri Types</Typography>
                 <Button onClick={() => setEditMode(true)} sx={{ m: 2 }} size='large' variant='contained'>Create</Button>
             </Box>
+            <Box  sx={{margin: 1}}>
+                <AgriTypeSearchInput />
+            </Box>
             <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="a dense table">
                     <TableHead>
@@ -76,6 +81,13 @@ export default function AgriTypeLists() {
                     </TableBody>
                 </Table>
             </TableContainer>
+            {metaData && 
+                <Box sx={{pt: 2}}>
+                    <AppPagination 
+                        metaData={metaData} 
+                        onPageChange={(page: number) => dispatch(setPageNumber({pageNumber: page}))} />
+                </Box>
+            }        
         </>
     )
 }
