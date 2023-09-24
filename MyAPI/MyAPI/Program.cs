@@ -36,6 +36,7 @@ var services = scope.ServiceProvider;
 
 var identityContext = services.GetRequiredService<AppIdentityDbContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
+var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
 var logger = services.GetRequiredService<ILogger<Program>>();
 
 var entityContext = services.GetRequiredService<EntityDbContext>();
@@ -43,7 +44,7 @@ var entityContext = services.GetRequiredService<EntityDbContext>();
 try
 {
     await identityContext.Database.MigrateAsync();
-    await SeedUser.SeedUsersAsync(userManager);
+    await SeedUser.SeedUsersAsync(userManager, roleManager);
 
     await entityContext.Database.MigrateAsync();
 }

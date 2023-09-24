@@ -10,17 +10,64 @@ namespace Infrastructure.Identity
 {
     public class SeedUser
     {
-        public static async Task SeedUsersAsync(UserManager<AppUser> userManager)
+        public static async Task SeedUsersAsync(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
         {
+            var roles = new List<AppRole>
+            {
+                new AppRole{Name = "Member"},
+                new AppRole{Name = "Admin"},
+                new AppRole{Name = "Moderator"},
+            };
+
+            if(!roleManager.Roles.Any())
+            {
+                foreach (var role in roles)
+                {
+                    await roleManager.CreateAsync(role);
+                }
+            }          
+
             if (!userManager.Users.Any())
             {
                 var user = new AppUser
                 {
                     Email = "sample@test.com",
-                    UserName = "sample@test.com",
+                    UserName = "sample",
+                    Gender = "Lgbtq",
+                    DateOfBirth = new DateTime(1990, 01, 01),
+                    Address = new Address
+                    {
+                        FirstName = "Sample",
+                        LastName = "SuperSample",
+                        Street = "10 The street",
+                        City = "New York",
+                        State = "NY",
+                        ZipCode = "90210"
+                    }
                 };
 
                 await userManager.CreateAsync(user, "P@ssw0rd");
+                await userManager.AddToRoleAsync(user, "Member");
+
+                var admin = new AppUser
+                {
+                    UserName = "admin",
+                    Email = "admin@test.com",
+                    Gender = "System",
+                    DateOfBirth = DateTime.Now,
+                    Address = new Address
+                    {
+                        FirstName = "Admin",
+                        LastName = "Admin",
+                        Street = "Top",
+                        City = "The World",
+                        State = "ARCTIC",
+                        ZipCode = "00001"
+                    }
+                };
+
+                await userManager.CreateAsync(admin, "P@ssw0rd");
+                await userManager.AddToRolesAsync(admin, new[] { "Member", "Admin" });
             }
         }
     }
