@@ -1,5 +1,7 @@
 ﻿using Core;
+using Core.Interfaces;
 using Infrastructure;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,8 @@ namespace MyAPI.Extensions
         public static IServiceCollection AddIdentityServices(this IServiceCollection services,
            IConfiguration config)
         {
+            services.AddScoped<IUserRepository, UserRepository>();
+
             services.AddDbContext<AppIdentityDbContext>(opt =>
             {
                 opt.UseSqlServer(config.GetConnectionString("IdentityConnection"));

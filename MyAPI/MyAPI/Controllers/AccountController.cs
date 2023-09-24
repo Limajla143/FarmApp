@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Core;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyAPI.Dtos;
 using MyAPI.Extensions;
+using MyAPI.Helpers;
 using MyAPI.Middleware.Errors;
 
 namespace MyAPI.Controllers
@@ -17,10 +19,13 @@ namespace MyAPI.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
+
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenService tokenService, IMapper mapper)
+            ITokenService tokenService, IMapper mapper, IUserRepository userRepository)
         {
             _mapper = mapper;
+            _userRepository = userRepository;
             _tokenService = tokenService;
             _signInManager = signInManager;
             _userManager = userManager;
@@ -80,7 +85,45 @@ namespace MyAPI.Controllers
             };
         }
 
+        //ADMIN SIDE
 
+        [HttpGet("GetUsersByAdmin")]
+        public async Task<ActionResult<PagedList<UserProfileDto>>> GetUsersByAdmin([FromQuery] UsersParam usersParams)
+        {
+            var users = await _userRepository.GetUsersAsync(usersParams);
+
+            var pagedUsers = PagedList<UserProfileDto>.ToPagedList(_mapper.Map<IReadOnlyList<AppUser>, IReadOnlyList<UserProfileDto>>(users),
+                usersParams.PageNumber, usersParams.PageSize, users.Count());
+
+            Response.AddPaginationHeader(pagedUsers.MetaData);
+
+            return Ok(pagedUsers);
+        }
+
+
+        [HttpGet("GetUserByAdmin/{id}")]
+        public async Task<ActionResult<UserProfileDto>> GetUserByAdmin(int id)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+
+            if (user == null) return NotFound(new ApiResponse(404));
+
+            return _mapper.Map<AppUser, UserProfileDto>(user);
+        }
+
+        [HttpPut("UpdateUser")]
+        public async Task<ActionResult> UpdateUser(UserProfileDto userProfileDto)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userProfileDto.Id);
+
+            _mapper.Map(userProfileDto, user);
+
+            _userRepository.Update(user);
+
+            if (await _userRepository.Complete()) return NoContent();
+
+            return BadRequest("Failed to update user");
+        }
 
     }
 }
