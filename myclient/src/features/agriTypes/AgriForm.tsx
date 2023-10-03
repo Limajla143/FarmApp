@@ -8,8 +8,8 @@ import {  FieldValues, useForm } from "react-hook-form";
 import { AgriType } from "../../app/models/agriType";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { agriTypeSchema } from "./agriTypeValidation";
-import AgriTextInput from "../../app/components/AgriTextInput";
 import agent from "../../app/api/agent";
+import AppTextInput from "../../app/components/AppTextInput";
 
 interface Props {
     agriType?: AgriType;
@@ -49,7 +49,7 @@ export default function AgriTypeForm({agriType, cancelEdit} : Props) {
         <form onSubmit={handleSubmit(submitAgriType)}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-                 <AgriTextInput control={control} name="name" label="Agritype Name" />
+                 <AppTextInput control={control} name="name" label="Agritype Name" />
                </Grid>  
             </Grid>
             

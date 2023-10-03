@@ -20,9 +20,6 @@ namespace MyAPI.Helpers
                  .ForPath(x => x.AddressDto.State, opt => opt.MapFrom(y => y.Address.State))
                  .ForPath(x => x.AddressDto.Zipcode, opt => opt.MapFrom(y => y.Address.ZipCode)).ReverseMap();
 
-            //CreateMap<UserProfileDto, AppUser>()
-            //    .ForPath(x );
-
             CreateMap<Address, AddressDto>().ReverseMap();
         }
     }

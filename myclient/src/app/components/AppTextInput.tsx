@@ -8,7 +8,7 @@ interface Props extends UseControllerProps {
     type?: string;
 }
 
-export default function AgriTextInput(props: Props) {
+export default function AppTextInput(props: Props) {
     const {fieldState, field} = useController({...props, defaultValue: ''})
     return (
         <TextField 

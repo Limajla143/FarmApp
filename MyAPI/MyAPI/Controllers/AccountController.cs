@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyAPI.Dtos;
 using MyAPI.Extensions;
 using MyAPI.Helpers;
@@ -97,7 +98,7 @@ namespace MyAPI.Controllers
 
             Response.AddPaginationHeader(pagedUsers.MetaData);
 
-            return Ok(pagedUsers);
+            return Ok(pagedUsers.OrderBy(x => x.UserName));
         }
 
 
@@ -112,17 +113,23 @@ namespace MyAPI.Controllers
         }
 
         [HttpPut("UpdateUser")]
-        public async Task<ActionResult> UpdateUser(UserProfileDto userProfileDto)
+        public async Task<ActionResult> UpdateUser([FromForm] UserProfileDto userProfileDto)
         {
-            var user = await _userRepository.GetUserByIdAsync(userProfileDto.Id);
+            var userToUpdate = await _userManager.FindUserByClaimsPrincipleWithAddress(userProfileDto.Id);
 
-            _mapper.Map(userProfileDto, user);
+            userToUpdate.UserName = userProfileDto.UserName;
+            userToUpdate.Email = userProfileDto.Email;
+            userToUpdate.DateOfBirth = userProfileDto.DateOfBirth;
+            userToUpdate.Gender = userProfileDto.Gender;
 
-            _userRepository.Update(user);
+            userToUpdate.Address = _mapper.Map<AddressDto, Address>(userProfileDto.AddressDto);
 
-            if (await _userRepository.Complete()) return NoContent();
+            var result = await _userManager.UpdateAsync(userToUpdate);
 
-            return BadRequest("Failed to update user");
+            if (result.Succeeded) return NoContent();
+
+            return BadRequest("Problem updating the user");
+
         }
 
     }

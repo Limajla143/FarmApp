@@ -30,15 +30,5 @@ namespace Infrastructure.Identity
         {
             return await _context.Users.Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
         }
-
-        public void Update(AppUser user)
-        {
-            _context.Entry(user).State = EntityState.Modified;
-        }
-
-        public async Task<bool> Complete()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
     }
 }

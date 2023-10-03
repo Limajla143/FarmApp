@@ -36,9 +36,9 @@ axios.interceptors.response.use(async response => {
                         modelStateErrors.push(data.errors[key])
                     }
                 }
+                toast.error(data.errors);
                 throw modelStateErrors.flat();
             }
-            toast.error(data.message);
             break;
         case 401:
             toast.error(data.message);
@@ -73,7 +73,33 @@ function createFormData(item: any) {
     for (const key in item) {
         formData.append(key, item[key])
     }
-    console.log(formData);
+    return formData;
+}
+
+function createFormDataNested(item: any) {
+    const formData = new FormData();
+
+    const flattenObject = ((obj : any, parentKey = '') => {
+
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const nestedKey = parentKey ? `${parentKey}.${key}` : key;
+                const value = obj[key];
+
+                if (typeof value === 'object' && value !== null) {
+                    // Recursively flatten nested objects
+                    flattenObject(value, nestedKey);
+                } else {
+                    // Append the value as a flat field
+                    formData.append(nestedKey, value);
+                }
+            }
+        }
+
+    })
+
+    flattenObject(item);
+
     return formData;
 }
 
@@ -81,6 +107,12 @@ const Account = {
     login: (values: any) => requests.post('account/login', values),
     register: (values: any) => requests.post('account/register', values),
     currentUser: () => requests.get('account/currentUser')
+}
+
+const Admin = {
+    getUsersForAdmin: (params: URLSearchParams) => requests.get('account/getUsersByAdmin', params),
+    getUserForAdmin: (id: number) => requests.get(`account/getUserByAdmin/${id}`),
+    updateUserForAdmin: (userProfileDto: any) => requests.putForm('account/updateUser', createFormDataNested(userProfileDto))
 }
 
 const AgriTypes = {
@@ -92,7 +124,8 @@ const AgriTypes = {
 
 const agent = {
   Account,
-  AgriTypes
+  AgriTypes,
+  Admin
 }
 
 export default agent;
