@@ -3,6 +3,7 @@ using Infrastructure.Data;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyAPI.Helpers;
 using MyAPI.Middleware.Errors;
 
 namespace MyAPI.Extensions
@@ -22,6 +23,7 @@ namespace MyAPI.Extensions
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<ITokenService, TokenService>();
+            services.AddSingleton<IFileStorageService, FileStorageService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
@@ -45,6 +47,8 @@ namespace MyAPI.Extensions
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
+
+            services.AddHttpContextAccessor();
 
             services.AddCors(opt =>
             {

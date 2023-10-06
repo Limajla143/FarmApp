@@ -91,7 +91,9 @@ function createFormDataNested(item: any) {
                     flattenObject(value, nestedKey);
                 } else {
                     // Append the value as a flat field
-                    formData.append(nestedKey, value);
+                    if(key != 'file') {
+                        formData.append(nestedKey, value);
+                    }
                 }
             }
         }
@@ -99,6 +101,12 @@ function createFormDataNested(item: any) {
     })
 
     flattenObject(item);
+
+    console.log('This is item,', item);
+
+    if (item.file) {
+        formData.append('file', item.file);
+    }
 
     return formData;
 }

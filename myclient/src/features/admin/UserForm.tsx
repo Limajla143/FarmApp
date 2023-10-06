@@ -3,7 +3,7 @@ import { UserProfile } from "../../app/models/UserProfile"
 import { useAppDispatch } from "../../app/store/configStore";
 import { useEffect } from "react";
 import agent from "../../app/api/agent";
-import { getUserAdmin, setUserProfile } from "./adminSlice";
+import { getUserAdmin } from "./adminSlice";
 import { toast } from "react-toastify";
 import { Box, Paper, Typography, Grid, Button, TextField } from "@mui/material";
 import AppTextInput from "../../app/components/AppTextInput";
@@ -11,8 +11,7 @@ import AppSelectList from "../../app/components/AppSelectList";
 import { userValidation } from "./userValidation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {  LoadingButton } from "@mui/lab";
-import { DatePicker, LocalizationProvider  } from "@mui/x-date-pickers";
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import AppDropzone from "../../app/components/AppDropzone";
 
 interface Props {
     user?: UserProfile;
@@ -22,16 +21,21 @@ interface Props {
 const genderOptions = ['Male', 'Female'];
 
 export default function UseForm({user, cancelEdit}: Props) {
-    const { control, reset, handleSubmit, formState: { isDirty, isSubmitting } } = useForm({
+    const { control, reset, handleSubmit, watch, formState: { isDirty, isSubmitting } } = useForm({
         resolver: yupResolver<any>(userValidation)
     });
     
+    const watchFile = watch('file', null);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (user && !isDirty) reset(user);
-        
-    }, [user, reset, isDirty])
+        if (user && !watchFile && !isDirty) {
+            reset(user);
+        } 
+        return () => {
+            if (watchFile) URL.revokeObjectURL(watchFile.preview);
+        }
+    }, [user, reset, isDirty, watchFile])
 
     async function handleSubmitData(data: FieldValues) {
         await agent.Admin.updateUserForAdmin(data).then(() => {
@@ -66,7 +70,14 @@ export default function UseForm({user, cancelEdit}: Props) {
                         <AppSelectList control={control} items={genderOptions} name='gender' label='Gender' />
                     </Grid>
                     <Grid item xs={12}>
-
+                        <Box display='flex' justifyContent='space-between' alignItems='center'>
+                            <AppDropzone control={control} name='file' />
+                                {watchFile ? (
+                                <img src={watchFile.preview} alt="preview" style={{ maxHeight: 200 }} />
+                                ) : (
+                                <img src={user?.photo} alt={user?.userName} style={{ maxHeight: 200 }} />
+                                )}
+                        </Box>
                     </Grid>
                     <Grid item xs={6}>
                         <AppTextInput control={control} name='addressDto.firstName' label='First Name' />

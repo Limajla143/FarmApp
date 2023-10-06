@@ -5,6 +5,10 @@ export const userValidation = yup.object({
     userName: yup.string().required(),
     dateOfBirth: yup.string().required(),
     gender: yup.string().required(),
+    photo: yup.mixed().when('file', {
+        is: (value: string) => !value,
+        then: yup.mixed().required('Please provide an image')
+    }),
     addressDto: yup.object({
         firstName: yup.string().required(),
         lastName: yup.string().required(),

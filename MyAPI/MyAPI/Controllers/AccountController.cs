@@ -21,15 +21,18 @@ namespace MyAPI.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
+        private readonly IFileStorageService _fileStorageService;
+        private string container = "usersImg";
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenService tokenService, IMapper mapper, IUserRepository userRepository)
+            ITokenService tokenService, IMapper mapper, IUserRepository userRepository, IFileStorageService fileStorageService)
         {
             _mapper = mapper;
             _userRepository = userRepository;
             _tokenService = tokenService;
             _signInManager = signInManager;
             _userManager = userManager;
+            _fileStorageService = fileStorageService;
         }
 
         [HttpPost("login")]
@@ -113,7 +116,7 @@ namespace MyAPI.Controllers
         }
 
         [HttpPut("UpdateUser")]
-        public async Task<ActionResult> UpdateUser([FromForm] UserProfileDto userProfileDto)
+        public async Task<ActionResult> UpdateUser([FromForm] UserCreateDto userProfileDto)
         {
             var userToUpdate = await _userManager.FindUserByClaimsPrincipleWithAddress(userProfileDto.Id);
 
@@ -122,7 +125,15 @@ namespace MyAPI.Controllers
             userToUpdate.DateOfBirth = userProfileDto.DateOfBirth;
             userToUpdate.Gender = userProfileDto.Gender;
 
-            userToUpdate.Address = _mapper.Map<AddressDto, Address>(userProfileDto.AddressDto);
+            if(userProfileDto.File != null)
+            {
+                userToUpdate.Photo = await _fileStorageService.EditFile(container, userProfileDto.File, userToUpdate.Photo);
+            }
+
+            if(userProfileDto.AddressDto != null)
+            {
+                userToUpdate.Address = _mapper.Map<AddressDto, Address>(userProfileDto.AddressDto);
+            }
 
             var result = await _userManager.UpdateAsync(userToUpdate);
 
