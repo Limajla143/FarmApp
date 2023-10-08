@@ -13,7 +13,8 @@ namespace MyAPI.Helpers
                 .ForMember(x => x.AgriTypeId, y => y.MapFrom(z => z.Id)).ReverseMap();
 
             CreateMap<AppUser, UserProfileDto>()
-                .ForPath(x => x.AddressDto.FirstName, opt => opt.MapFrom(y => y.Address.FirstName))
+                 .ForMember(x => x.DateOfBirth, y => { y.MapFrom(z => z.DateOfBirth.ToString("yyyy-MM-dd")); } )
+                 .ForPath(x => x.AddressDto.FirstName, opt => opt.MapFrom(y => y.Address.FirstName))
                  .ForPath(x => x.AddressDto.LastName, opt => opt.MapFrom(y => y.Address.LastName))
                  .ForPath(x => x.AddressDto.Street, opt => opt.MapFrom(y => y.Address.Street))
                  .ForPath(x => x.AddressDto.City, opt => opt.MapFrom(y => y.Address.City))

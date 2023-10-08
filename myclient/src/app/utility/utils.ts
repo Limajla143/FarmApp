@@ -1,5 +1,5 @@
 
-export const yyyymmdd = ((inputDate: any) =>  {
+export const yyyymmdd = ((inputDate: Date) =>  {
     const dateObj = new Date(inputDate);
     console.log(dateObj);
     const year = dateObj.getFullYear();
@@ -7,3 +7,12 @@ export const yyyymmdd = ((inputDate: any) =>  {
     const day = String(dateObj.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 });
+
+export function mMMMddyyyy(inputDate: Date) : string  {
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      };
+      return inputDate.toLocaleDateString('en-US', options);
+};

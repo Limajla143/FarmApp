@@ -8,7 +8,7 @@ import AppPagination from "../../app/components/AppPagination";
 import { setUsersPageNumber } from "./adminSlice";
 import UserSearchInput from "./UserSearchInput";
 import UserForm from "./UserForm";
-import { yyyymmdd } from "../../app/utility/utils";
+import { mMMMddyyyy } from "../../app/utility/utils";
 
 export default function UserProfileLists() {
     const {userProfileLists, metaData} = useUserProfiles();
@@ -67,7 +67,7 @@ export default function UserProfileLists() {
                                
                                 <TableCell align="center">{user.addressDto?.lastName}</TableCell>
                                 <TableCell align="center">{user.gender}</TableCell>
-                                <TableCell align="center">{yyyymmdd(user.dateOfBirth)}</TableCell>
+                                <TableCell align="center">{user.dateOfBirth.toString()}</TableCell>
                                 <TableCell align="right">
                                     <Button onClick={() => handleSelectUserProfile(user)} startIcon={<Edit />} />                                    
                                 </TableCell>

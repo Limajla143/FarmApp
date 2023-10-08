@@ -1,4 +1,4 @@
-import { Controller, FieldValues, useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { UserProfile } from "../../app/models/UserProfile"
 import { useAppDispatch } from "../../app/store/configStore";
 import { useEffect } from "react";
@@ -62,9 +62,10 @@ export default function UseForm({user, cancelEdit}: Props) {
                         <AppTextInput control={control} name='userName' label='Username' />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <Controller name='dateOfBirth' control={control} rules={{ required: true }}
+                        {/* <Controller name='dateOfBirth' control={control} rules={{ required: true }}
                         render={({ field }) =>
-                            <TextField type="date" {...field}  /> } />                   
+                            <TextField type="date" {...field}  /> } />                    */}
+                        <AppTextInput control={control} type="date" name="dateOfBirth" label="Date of Birth" />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <AppSelectList control={control} items={genderOptions} name='gender' label='Gender' />
