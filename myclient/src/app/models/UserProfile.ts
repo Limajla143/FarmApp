@@ -8,6 +8,8 @@ export interface UserProfile {
   gender: string;
   photo: string;
   addressDto?: Address; 
+  mobileNumber: number;
+  isActive: boolean;
 }
 
 export interface UserProfileParams {

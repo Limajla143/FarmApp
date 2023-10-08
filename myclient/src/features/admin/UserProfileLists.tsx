@@ -8,7 +8,6 @@ import AppPagination from "../../app/components/AppPagination";
 import { setUsersPageNumber } from "./adminSlice";
 import UserSearchInput from "./UserSearchInput";
 import UserForm from "./UserForm";
-import { mMMMddyyyy } from "../../app/utility/utils";
 
 export default function UserProfileLists() {
     const {userProfileLists, metaData} = useUserProfiles();

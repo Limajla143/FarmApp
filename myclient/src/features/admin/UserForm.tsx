@@ -12,6 +12,7 @@ import { userValidation } from "./userValidation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {  LoadingButton } from "@mui/lab";
 import AppDropzone from "../../app/components/AppDropzone";
+import AppCheckbox from "../../app/components/AppCheckbox";
 
 interface Props {
     user?: UserProfile;
@@ -62,9 +63,6 @@ export default function UseForm({user, cancelEdit}: Props) {
                         <AppTextInput control={control} name='userName' label='Username' />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        {/* <Controller name='dateOfBirth' control={control} rules={{ required: true }}
-                        render={({ field }) =>
-                            <TextField type="date" {...field}  /> } />                    */}
                         <AppTextInput control={control} type="date" name="dateOfBirth" label="Date of Birth" />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -79,6 +77,12 @@ export default function UseForm({user, cancelEdit}: Props) {
                                 <img src={user?.photo} alt={user?.userName} style={{ maxHeight: 200 }} />
                                 )}
                         </Box>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <AppTextInput control={control} name='mobileNumber' label='Contact #' />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <AppCheckbox control={control} name='isActive' label='Is Active' />
                     </Grid>
                     <Grid item xs={6}>
                         <AppTextInput control={control} name='addressDto.firstName' label='First Name' />

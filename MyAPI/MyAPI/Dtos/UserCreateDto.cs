@@ -9,5 +9,7 @@
         public string Gender { get; set; }
         public IFormFile File { get; set; }
         public AddressDto AddressDto { get; set; }
+        public bool IsActive { get; set; }
+        public string MobileNumber { get; set; }
     }
 }

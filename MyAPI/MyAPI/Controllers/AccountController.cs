@@ -42,6 +42,11 @@ namespace MyAPI.Controllers
 
             if (user == null) return Unauthorized(new ApiResponse(401));
 
+            if(!user.IsActive)
+            {
+                return Unauthorized(new ApiResponse(401, "Your account is inactive, inquire the sysdamin."));
+            }
+
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
@@ -124,6 +129,8 @@ namespace MyAPI.Controllers
             userToUpdate.Email = userProfileDto.Email;
             userToUpdate.DateOfBirth = userProfileDto.DateOfBirth;
             userToUpdate.Gender = userProfileDto.Gender;
+            userToUpdate.MobileNumber = userProfileDto.MobileNumber;
+            userToUpdate.IsActive = userProfileDto.IsActive;
 
             if(userProfileDto.File != null)
             {

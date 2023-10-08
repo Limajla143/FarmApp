@@ -9,6 +9,7 @@ export const userValidation = yup.object({
         is: (value: string) => !value,
         then: yup.mixed().required('Please provide an image')
     }),
+    mobileNumber: yup.string().required(),
     addressDto: yup.object({
         firstName: yup.string().required(),
         lastName: yup.string().required(),
