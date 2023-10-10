@@ -22,10 +22,12 @@ namespace MyAPI.Controllers
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IFileStorageService _fileStorageService;
+        private readonly RoleManager<AppRole> _roleManager;
         private string container = "usersImg";
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenService tokenService, IMapper mapper, IUserRepository userRepository, IFileStorageService fileStorageService)
+            ITokenService tokenService, IMapper mapper, IUserRepository userRepository, IFileStorageService fileStorageService,
+            RoleManager<AppRole> roleManager)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -33,6 +35,7 @@ namespace MyAPI.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
             _fileStorageService = fileStorageService;
+            _roleManager = roleManager;
         }
 
         [HttpPost("login")]
@@ -70,7 +73,9 @@ namespace MyAPI.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if (!result.Succeeded) return BadRequest(new ApiResponse(400));
+            var role = await _userManager.AddToRoleAsync(user, "Member");
+
+            if (!result.Succeeded || !role.Succeeded) return BadRequest(new ApiResponse(400));
 
             return new UserDto
             {
@@ -142,12 +147,37 @@ namespace MyAPI.Controllers
                 userToUpdate.Address = _mapper.Map<AddressDto, Address>(userProfileDto.AddressDto);
             }
 
+            if(userProfileDto.Roles.Count > 0)
+            {
+                var userRoles = await _userManager.GetRolesAsync(userToUpdate);
+                var rolesIncludes = userProfileDto.Roles.Except(userRoles);
+                var rolesExcludes = userRoles.Except(userProfileDto.Roles);
+
+                foreach (var role in rolesIncludes)
+                {
+                    if (!await _roleManager.RoleExistsAsync(role))
+                    {
+                        return BadRequest($"Role '{role}' does not exist.");
+                    }
+                }
+
+                await _userManager.AddToRolesAsync(userToUpdate, rolesIncludes);
+                await _userManager.RemoveFromRolesAsync(userToUpdate, rolesExcludes);
+            }
+
             var result = await _userManager.UpdateAsync(userToUpdate);
 
             if (result.Succeeded) return NoContent();
 
             return BadRequest("Problem updating the user");
+        }
 
+        [HttpGet("GetRoles")]
+        public async Task<ActionResult<List<string>>> GetAllRoles()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            return Ok(roles.Select(x => x.Name).ToList());
         }
 
     }

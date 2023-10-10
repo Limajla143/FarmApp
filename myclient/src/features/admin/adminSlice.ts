@@ -10,6 +10,8 @@ interface UserProfileState {
     userstatus: string;
     userProfileParams: UserProfileParams;
     metaData: MetaData | null;
+    roles : string[];
+    rolesloaded: boolean;
 }
 
 const userProfileTypeAdapter = createEntityAdapter<UserProfile>();
@@ -51,6 +53,19 @@ export const getUserAdmin = createAsyncThunk<UserProfile, number>(
     }
 )
 
+export const fetchRoles = createAsyncThunk(
+    'admin/fetchRoles',
+    async(_, thunkAPI) => {
+        try {
+            const response =  agent.Admin.getRoles();
+            console.log(response);
+            return response;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({error: error.data});
+        }
+    }
+)
+
 function initParams() {
     return {
         pageNumber: 1,
@@ -65,7 +80,9 @@ export const adminSlice = createSlice({
         userloaded: false,
         userstatus: 'idle',
         userProfileParams: initParams(),
-        metaData: null
+        metaData: null,
+        roles: [],
+        rolesloaded: false
     }),
     reducers: {
         setUserProfile: (state, action) => {
@@ -107,6 +124,18 @@ export const adminSlice = createSlice({
         });
         buider.addCase(getUserAdmin.rejected, (state) => {
             state.userstatus = 'idle';
+        });
+        buider.addCase(fetchRoles.pending, (state) => {
+            state.userstatus = 'pendingRoles';
+        });
+        buider.addCase(fetchRoles.fulfilled, (state, action) => {
+            state.roles = action.payload;
+            state.rolesloaded = true;
+            state.userstatus = 'idle';
+        });
+        buider.addCase(fetchRoles.rejected, (state, action) => {
+            state.userstatus = 'idle';
+            console.log(action.payload);
         });
     })
 })

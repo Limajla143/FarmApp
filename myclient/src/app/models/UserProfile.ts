@@ -10,6 +10,7 @@ export interface UserProfile {
   addressDto?: Address; 
   mobileNumber: number;
   isActive: boolean;
+  roles?: string[];
 }
 
 export interface UserProfileParams {

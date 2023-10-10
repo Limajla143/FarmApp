@@ -3,9 +3,9 @@ import { UserProfile } from "../../app/models/UserProfile"
 import { useAppDispatch } from "../../app/store/configStore";
 import { useEffect } from "react";
 import agent from "../../app/api/agent";
-import { getUserAdmin } from "./adminSlice";
+import { getUserAdmin, getUsersAdmin } from "./adminSlice";
 import { toast } from "react-toastify";
-import { Box, Paper, Typography, Grid, Button, TextField } from "@mui/material";
+import { Box, Paper, Typography, Grid, Button } from "@mui/material";
 import AppTextInput from "../../app/components/AppTextInput";
 import AppSelectList from "../../app/components/AppSelectList";
 import { userValidation } from "./userValidation";
@@ -13,6 +13,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {  LoadingButton } from "@mui/lab";
 import AppDropzone from "../../app/components/AppDropzone";
 import AppCheckbox from "../../app/components/AppCheckbox";
+import useUserProfiles from "../../app/hooks/useUserProfile";
+import AppMultiSelectList from "../../app/components/AppMultiSelectList";
 
 interface Props {
     user?: UserProfile;
@@ -28,6 +30,7 @@ export default function UseForm({user, cancelEdit}: Props) {
     
     const watchFile = watch('file', null);
     const dispatch = useAppDispatch();
+    const {roles} = useUserProfiles();
 
     useEffect(() => {
         if (user && !watchFile && !isDirty) {
@@ -40,12 +43,11 @@ export default function UseForm({user, cancelEdit}: Props) {
 
     async function handleSubmitData(data: FieldValues) {
         await agent.Admin.updateUserForAdmin(data).then(() => {
-            dispatch(getUserAdmin(user?.id!));
+            dispatch(getUsersAdmin());
         })
         .catch((error) => {
             toast.error(error.message);
         });
-        //console.log(data);
         cancelEdit();
     }
     
@@ -80,6 +82,9 @@ export default function UseForm({user, cancelEdit}: Props) {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <AppTextInput control={control} name='mobileNumber' label='Contact #' />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <AppMultiSelectList name='roles' label='Select Roles' control={control} options={roles} rules={{required: 'Please select at least one.'}} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <AppCheckbox control={control} name='isActive' label='Is Active' />

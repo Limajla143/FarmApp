@@ -23,7 +23,7 @@ namespace Infrastructure.Identity
         {
             return await _context.Users.Where(x => string.IsNullOrEmpty(usersParams.SearchUser) || 
                 x.UserName.ToLower().Contains(usersParams.SearchUser.ToLower()))
-                .Include(x => x.Address)
+                .Include(x => x.Address).Include(x => x.UserRoles).ThenInclude(x => x.Role)
                 .OrderBy(x => x.UserName).ToListAsync();  
         }
         public async Task<AppUser> GetUserByIdAsync(int id)

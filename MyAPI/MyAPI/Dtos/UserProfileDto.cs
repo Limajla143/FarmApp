@@ -11,5 +11,6 @@
         public AddressDto AddressDto { get; set; }
         public bool IsActive { get; set; }
         public string MobileNumber { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

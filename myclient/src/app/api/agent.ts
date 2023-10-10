@@ -80,7 +80,6 @@ function createFormDataNested(item: any) {
     const formData = new FormData();
 
     const flattenObject = ((obj : any, parentKey = '') => {
-
         for (const key in obj) {
             if (obj.hasOwnProperty(key)) {
                 const nestedKey = parentKey ? `${parentKey}.${key}` : key;
@@ -97,15 +96,20 @@ function createFormDataNested(item: any) {
                 }
             }
         }
-
     })
 
     flattenObject(item);
 
-    console.log('This is item,', item);
+    //console.log('This is item,', item);
 
     if (item.file) {
         formData.append('file', item.file);
+    }
+
+    if(Array.isArray(item.roles)) {
+        item.roles.forEach((role: string, index: number) => {
+            formData.append(`roles[${index}]`, role)
+        });
     }
 
     return formData;
@@ -120,7 +124,8 @@ const Account = {
 const Admin = {
     getUsersForAdmin: (params: URLSearchParams) => requests.get('account/getUsersByAdmin', params),
     getUserForAdmin: (id: number) => requests.get(`account/getUserByAdmin/${id}`),
-    updateUserForAdmin: (userProfileDto: any) => requests.putForm('account/updateUser', createFormDataNested(userProfileDto))
+    updateUserForAdmin: (userProfileDto: any) => requests.putForm('account/updateUser', createFormDataNested(userProfileDto)),
+    getRoles: () => requests.get('account/getRoles')
 }
 
 const AgriTypes = {

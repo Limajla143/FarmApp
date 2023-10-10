@@ -17,7 +17,6 @@ export default function UserProfileLists() {
 
     function handleSelectUserProfile(userProfile: UserProfile) {
         setSelectedUserProfile(userProfile);
-        console.log(userProfile);
         setEditMode(true);
     }
 

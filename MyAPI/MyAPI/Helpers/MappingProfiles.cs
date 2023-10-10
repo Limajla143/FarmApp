@@ -14,6 +14,7 @@ namespace MyAPI.Helpers
 
             CreateMap<AppUser, UserProfileDto>()
                  .ForMember(x => x.DateOfBirth, y => { y.MapFrom(z => z.DateOfBirth.ToString("yyyy-MM-dd")); } )
+                 .ForPath(x => x.Roles, y => y.MapFrom(z => z.UserRoles.Select(a => a.Role.Name)))
                  .ForPath(x => x.AddressDto.FirstName, opt => opt.MapFrom(y => y.Address.FirstName))
                  .ForPath(x => x.AddressDto.LastName, opt => opt.MapFrom(y => y.Address.LastName))
                  .ForPath(x => x.AddressDto.Street, opt => opt.MapFrom(y => y.Address.Street))
