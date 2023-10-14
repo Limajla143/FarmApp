@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
+import { useAppDispatch, useAppSelector } from "../../../app/store/configStore";
 import { TextField, debounce } from "@mui/material";
 import { setUserProfileParams } from "./adminSlice";
 

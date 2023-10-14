@@ -31,6 +31,14 @@ namespace MyAPI.Helpers
                  .ForPath(x => x.Address.ZipCode, opt => opt.MapFrom(y => y.AddressDto.Zipcode));
 
             CreateMap<Address, AddressDto>().ReverseMap();
+
+            CreateMap<Product, ProductToReturn>()
+                .ForMember(x => x.AgriType, y => y.MapFrom(z => z.AgriType.Name));
+
+            CreateMap<ProductAddUpdateDto, Product>()
+                .ForPath(x => x.AgriType.Name, y => y.MapFrom(z => z.AgriType));
+
+            
         }
     }
 }

@@ -1,5 +1,5 @@
 import { TextField, debounce } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
+import { useAppDispatch, useAppSelector } from "../../../app/store/configStore";
 import { useState } from "react";
 import { setAgriTypeParams } from "./agriTypeSlice";
 

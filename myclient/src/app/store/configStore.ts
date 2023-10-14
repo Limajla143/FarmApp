@@ -1,8 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { accountSlice } from "../../features/account/accountSlice";
-import { agriTypeSlice } from "../../features/agriTypes/agriTypeSlice";
-import { adminSlice } from "../../features/admin/adminSlice";
+import { agriTypeSlice } from "../../features/moderator/agriTypes/agriTypeSlice";
+import { adminSlice } from "../../features/admin/users/adminSlice";
+import { productSlice } from "../../features/moderator/products/productSlice";
 
 
 
@@ -10,7 +11,8 @@ export const store = configureStore({
     reducer: {
         account: accountSlice.reducer,
         agritype: agriTypeSlice.reducer,
-        admin: adminSlice.reducer
+        admin: adminSlice.reducer,
+        product: productSlice.reducer
     }
 })
 

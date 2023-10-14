@@ -84,7 +84,6 @@ function createFormDataNested(item: any) {
             if (obj.hasOwnProperty(key)) {
                 const nestedKey = parentKey ? `${parentKey}.${key}` : key;
                 const value = obj[key];
-
                 if (typeof value === 'object' && value !== null) {
                     // Recursively flatten nested objects
                     flattenObject(value, nestedKey);
@@ -97,11 +96,7 @@ function createFormDataNested(item: any) {
             }
         }
     })
-
     flattenObject(item);
-
-    //console.log('This is item,', item);
-
     if (item.file) {
         formData.append('file', item.file);
     }
@@ -111,7 +106,6 @@ function createFormDataNested(item: any) {
             formData.append(`roles[${index}]`, role)
         });
     }
-
     return formData;
 }
 
@@ -135,10 +129,19 @@ const AgriTypes = {
     addUpdateAgriType: (agriType: any) => requests.postForm('agriTypes', createFormData(agriType))
 }
 
+const Products = {
+    products: (params: URLSearchParams) => requests.get('products/getProducts', params),
+    product: (id: number) => requests.get(`products/getProduct/${id}`),
+    removeProduct: (id: number) => requests.delete(`products/${id}`),
+    addUpdateProduct: (product: any) => requests.postForm('products/addUpdateProduct', product),
+    fetchfilters: () => requests.get('products/prodFilters')
+}
+
 const agent = {
   Account,
   AgriTypes,
-  Admin
+  Admin,
+  Products
 }
 
 export default agent;

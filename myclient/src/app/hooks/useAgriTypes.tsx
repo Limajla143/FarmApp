@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { agriTypeSelectors, getAgriTypes } from "../../features/agriTypes/agriTypeSlice";
+import { agriTypeSelectors, getAgriTypes } from "../../features/moderator/agriTypes/agriTypeSlice";
 import { useAppDispatch, useAppSelector } from "../store/configStore";
 
 export default function useAgriTypes() {

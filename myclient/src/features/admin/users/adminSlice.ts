@@ -1,8 +1,9 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
-import agent from "../../app/api/agent";
-import { RootState } from "../../app/store/configStore";
-import { MetaData } from "../../app/models/pagination";
-import { UserProfile, UserProfileParams } from "../../app/models/UserProfile";
+import { UserProfile, UserProfileParams } from "../../../app/models/UserProfile";
+import { MetaData } from "../../../app/models/pagination";
+import { RootState } from "../../../app/store/configStore";
+import agent from "../../../app/api/agent";
+
 
 interface UserProfileState {
     userProfile: UserProfile | null;

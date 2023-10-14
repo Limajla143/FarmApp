@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/configStore";
-import { fetchRoles, getUsersAdmin, userProfileSelectors } from "../../features/admin/adminSlice";
+import { fetchRoles, getUsersAdmin, userProfileSelectors } from "../../features/admin/users/adminSlice";
 
 export default function useUserProfiles() {
     const userProfileLists = useAppSelector(userProfileSelectors.selectAll);

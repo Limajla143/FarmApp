@@ -1,8 +1,8 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
-import { AgriType, AgriTypeParams } from "../../app/models/agriType";
-import agent from "../../app/api/agent";
-import { RootState } from "../../app/store/configStore";
-import { MetaData } from "../../app/models/pagination";
+import { AgriType, AgriTypeParams } from "../../../app/models/agriType";
+import agent from "../../../app/api/agent";
+import { RootState } from "../../../app/store/configStore";
+import { MetaData } from "../../../app/models/pagination";
 
 interface AgriTypeState {
     agritype: AgriType | null;

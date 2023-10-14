@@ -14,6 +14,7 @@ namespace Infrastructure.Data
         public EntityDbContext(DbContextOptions<EntityDbContext> options) : base(options) {}
 
         public DbSet<AgriType> AgriTypes { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

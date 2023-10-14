@@ -16,3 +16,8 @@ export function mMMMddyyyy(inputDate: Date) : string  {
       };
       return inputDate.toLocaleDateString('en-US', options);
 };
+
+
+export function currencyFormat(amount: number) {
+    return '$' + amount.toFixed(2);
+  }

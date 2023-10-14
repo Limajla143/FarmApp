@@ -1,14 +1,14 @@
 import {  useState } from "react";
-import { useAppDispatch } from "../../app/store/configStore";
-import { AgriType } from "../../app/models/agriType";
-import agent from "../../app/api/agent";
+import { useAppDispatch } from "../../../app/store/configStore";
+import { AgriType } from "../../../app/models/agriType";
+import agent from "../../../app/api/agent";
 import { removeAgriType, setPageNumber } from "./agriTypeSlice";
 import AgriTypeForm from "./AgriForm";
 import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
-import useAgriTypes from "../../app/hooks/useAgriTypes";
+import useAgriTypes from "../../../app/hooks/useAgriTypes";
 import { Delete, Edit } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import AppPagination from "../../app/components/AppPagination";
+import AppPagination from "../../../app/components/AppPagination";
 import AgriTypeSearchInput from "./AgriTypeSearchInput";
 
 export default function AgriTypeLists() {

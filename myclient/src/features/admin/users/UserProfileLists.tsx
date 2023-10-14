@@ -1,13 +1,13 @@
 import { Edit } from "@mui/icons-material";
 import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
-import useUserProfiles from "../../app/hooks/useUserProfile";
-import { useAppDispatch } from "../../app/store/configStore";
+import { useAppDispatch } from "../../../app/store/configStore";
 import { useState } from "react";
-import { UserProfile } from "../../app/models/UserProfile";
-import AppPagination from "../../app/components/AppPagination";
+import { UserProfile } from "../../../app/models/UserProfile";
+import AppPagination from "../../../app/components/AppPagination";
 import { setUsersPageNumber } from "./adminSlice";
 import UserSearchInput from "./UserSearchInput";
 import UserForm from "./UserForm";
+import useUserProfiles from "../../../app/hooks/useUserProfile";
 
 export default function UserProfileLists() {
     const {userProfileLists, metaData} = useUserProfiles();

@@ -1,15 +1,15 @@
 
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { useAppDispatch } from "../../app/store/configStore";
+import { useAppDispatch } from "../../../app/store/configStore";
 import { setAgriType } from "./agriTypeSlice";
 import { useEffect } from "react";
 import {  FieldValues, useForm } from "react-hook-form";
-import { AgriType } from "../../app/models/agriType";
+import { AgriType } from "../../../app/models/agriType";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { agriTypeSchema } from "./agriTypeValidation";
-import agent from "../../app/api/agent";
-import AppTextInput from "../../app/components/AppTextInput";
+import agent from "../../../app/api/agent";
+import AppTextInput from "../../../app/components/AppTextInput";
 
 interface Props {
     agriType?: AgriType;
