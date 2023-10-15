@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Specifiactions;
 using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
 using MyAPI.Dtos;
@@ -60,24 +61,41 @@ namespace MyAPI.Controllers
         [HttpPost("AddUpdateProduct")]
         public async Task<ActionResult<ProductToReturn>> CreateUpdateProduct([FromForm] ProductAddUpdateDto productAddUpdateDto)
         {
-            var productToModify = _mapper.Map<Product>(productAddUpdateDto);
+            var productToModify = new Product();
+            string imageUrl = "";
 
-            if(productToModify.SalesTax != 0)
+            if(productAddUpdateDto.SalesTax != 0)
             {
-                productToModify.Price = ComputeRealPrice(productToModify.Price, productToModify.SalesTax);
+                productAddUpdateDto.Price = ComputeRealPrice(productAddUpdateDto.Price, productAddUpdateDto.SalesTax);
             }
 
             if(productAddUpdateDto.File != null)
             {
-                productToModify.PictureUrl = await _fileStorageService.EditFile(prodContainer, productAddUpdateDto.File, productToModify.PictureUrl);
+                imageUrl = await _fileStorageService.EditFile(prodContainer, productAddUpdateDto.File, imageUrl);
             }
+
+            var agriTypeParam = new AgriTypeParam();
+            agriTypeParam.Search = productAddUpdateDto.AgriType;
+
+            var agriTypeSpecs = new AgriTypeSpecs(agriTypeParam);
+            var agriType = await _agriType.GetEntityWithSpec(agriTypeSpecs);
 
             if(productAddUpdateDto.Id == 0)
             {
+                productToModify = _mapper.Map<Product>(productAddUpdateDto);
+                productToModify.AgriTypeId = agriType.Id;
+                productToModify.PictureUrl = imageUrl;
                 _productsRepo.Add(productToModify);
             }
             else
             {
+                productToModify = await _productsRepo.GetIdByAsync(productAddUpdateDto.Id);
+                productToModify.Name = productAddUpdateDto.Name;
+                productToModify.Description = productAddUpdateDto.Description;
+                productToModify.Price = productAddUpdateDto.Price;
+                productToModify.SalesTax = productAddUpdateDto.SalesTax;
+                productToModify.Quantity = productAddUpdateDto.Quantity;
+                productToModify.AgriTypeId = agriType.Id;
                 _productsRepo.Update(productToModify);
             }
 

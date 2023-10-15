@@ -49,14 +49,18 @@ export default function AgriTypeLists() {
                 <Typography sx={{ p: 2 }} variant='h4'>Agri Types</Typography>
                 <Button onClick={() => setEditMode(true)} sx={{ m: 2 }} size='large' variant='contained'>Create</Button>
             </Box>
-            <Box  sx={{margin: 1}}>
-                <AgriTypeSearchInput />
+
+            <Box  sx={{marginBottom: 1}}>
+                <Paper sx={{width: '500px'}}>
+                    <AgriTypeSearchInput />
+                </Paper>
             </Box>
+
             <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="a dense table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="left" sx={{fontStyle: "Monospace", fontSize: 20}}>Product Name</TableCell>
+                            <TableCell align="left" sx={{fontStyle: "Monospace", fontSize: 20}}>Product Types</TableCell>
                             <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>

@@ -11,6 +11,7 @@ import { Edit, Delete } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import AppPagination from "../../../app/components/AppPagination";
 import { currencyFormat } from "../../../app/utility/utils";
+import ProductSearchInput from "./ProductSearchInput";
 
 export default function ProductInventory() {
     const {products, metaData} = useProducts();
@@ -44,17 +45,24 @@ export default function ProductInventory() {
     return (
         <>
         <Box display='flex' justifyContent='space-between'>
-           <Typography sx={{ p: 2 }} variant='h4'>Inventory</Typography>
+           <Typography sx={{ p: 2 }} variant='h4'>Product Inventory</Typography>
            <Button onClick={() => setEditMode(true)} sx={{ m: 2 }} size='large' variant='contained'>Create</Button>
        </Box>
+
+        <Box sx={{marginBottom: 1}}>
+          <Paper sx={{width: '600px'}}>
+            <ProductSearchInput />
+          </Paper>
+        </Box>
+
        <TableContainer component={Paper}>
            <Table sx={{ minWidth: 650 }} aria-label="simple table">
                <TableHead>
                    <TableRow>
-                       <TableCell align="left">Product</TableCell>
-                       <TableCell align="right">Price</TableCell>
-                       <TableCell align="center">Type</TableCell>
-                       <TableCell align="center">Quantity</TableCell>
+                       <TableCell align="center">Product</TableCell>
+                       <TableCell align="left">Price</TableCell>
+                       <TableCell align="left">Type</TableCell>
+                       <TableCell align="left">Quantity</TableCell>
                        <TableCell align="right"></TableCell>
                    </TableRow>
                </TableHead>
@@ -70,9 +78,9 @@ export default function ProductInventory() {
                                    <span>{product.name}</span>
                                </Box>
                            </TableCell>
-                           <TableCell align="right">{currencyFormat(product.price)}</TableCell>
-                           <TableCell align="center">{product.agriType}</TableCell>
-                           <TableCell align="center">{product.quantity}</TableCell>
+                           <TableCell align="left">{currencyFormat(product.price)}</TableCell>
+                           <TableCell align="left">{product.agriType}</TableCell>
+                           <TableCell align="left">{product.quantity}</TableCell>
                            <TableCell align="right">
                                <Button onClick={() => handleSelectProduct(product)} startIcon={<Edit />} />
                                <LoadingButton 

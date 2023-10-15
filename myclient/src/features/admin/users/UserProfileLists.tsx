@@ -32,9 +32,13 @@ export default function UserProfileLists() {
              <Box display='flex' justifyContent='space-between'>
                 <Typography sx={{ p: 2 }} variant='h4'>Users</Typography>
             </Box>
-            <Box  sx={{margin: 1}}>
+           
+            <Box  sx={{marginBottom: 1}}>
+                <Paper sx={{width: '500px'}}>
                 <UserSearchInput />
+                </Paper>
             </Box>
+            
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
