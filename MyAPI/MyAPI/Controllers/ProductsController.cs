@@ -134,14 +134,6 @@ namespace MyAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet("prodFilters")]
-        public async Task<ActionResult<List<string>>> GetFilters()
-        {
-            var agriTypes = await _agriType.ListAllAsync();
-
-            return Ok(agriTypes.Select(x => x.Name).ToList());
-        }
-
         private long ComputeRealPrice(long price, int salesTax)
         {
             return  (long)(price * ((double)salesTax / 100)) + price;

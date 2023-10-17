@@ -9,7 +9,7 @@ namespace Core.Specifications
 {
     public class ProductParams : PaginationParams
     {
-        public int? AgriTypeId { get; set; }
+        public string Types { get; set; }
         public string Sort { get; set; }
 
         private string _search;

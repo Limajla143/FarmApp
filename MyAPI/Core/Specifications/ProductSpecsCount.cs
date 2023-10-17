@@ -10,8 +10,7 @@ namespace Core.Specifications
     public class ProductSpecsCount : BaseSpecification<Product>
     {
         public ProductSpecsCount(ProductParams productParams) : base(x => (string.IsNullOrEmpty(productParams.Search) ||
-        x.Name.ToLower().Contains(productParams.Search)) &&
-        (!productParams.AgriTypeId.HasValue || x.AgriTypeId == productParams.AgriTypeId))
+        x.Name.ToLower().Contains(productParams.Search)))
         { }
     }
 }

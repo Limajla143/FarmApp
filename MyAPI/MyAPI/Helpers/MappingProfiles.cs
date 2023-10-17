@@ -39,7 +39,8 @@ namespace MyAPI.Helpers
                 .ForMember(x => x.PictureUrl, y => y.Ignore())
                 .ForMember(x => x.AgriType, y => y.Ignore());
 
-            
+            CreateMap<Product, ProductDto>()
+                .ForMember(x => x.AgriType, y => y.MapFrom(z => z.AgriType.Name));
         }
     }
 }
