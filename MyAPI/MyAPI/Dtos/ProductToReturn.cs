@@ -8,7 +8,7 @@ namespace MyAPI.Dtos
         public string Name { get; set; }
         public string Description { get; set; }
         public string PictureUrl { get; set; }
-        public long Price { get; set; }
+        public decimal Price { get; set; }
         public int SalesTax { get; set; }
         public string AgriType { get; set; }
         public int Quantity { get; set; }

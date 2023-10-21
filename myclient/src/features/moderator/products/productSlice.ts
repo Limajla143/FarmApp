@@ -22,7 +22,7 @@ function getProductParams(productParams: ProductParams) {
     params.append('sort', productParams.sort);
     
     if (productParams.search) params.append('search', productParams.search);
-    if (productParams.agritypes.length > 0) params.append('brands', productParams.agritypes.toString());
+    if (productParams.types.length > 0) params.append('types', productParams.types.toString());
 
     return params;
 }
@@ -56,7 +56,7 @@ export const fetchFilters = createAsyncThunk(
     'catalog/fetchFilters',
     async(_, thunkAPI) => {
         try {
-            return agent.Products.fetchfilters();
+            return agent.ProductForUsers.fetchfilters();
         } catch (error: any) {
             return thunkAPI.rejectWithValue({error: error.data});
         }
@@ -68,7 +68,7 @@ function initParams() {
         pageNumber: 1,
         pageSize: 6,
         sort: 'name',
-        agritypes: []
+        types: []
     }
 }
 

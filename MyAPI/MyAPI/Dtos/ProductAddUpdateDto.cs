@@ -13,8 +13,8 @@ namespace MyAPI.Dtos
         public string Description { get; set; }
 
         [Required]
-        [Range(100, Double.PositiveInfinity)]
-        public long Price { get; set; }
+        [Range(1, Double.PositiveInfinity)]
+        public double Price { get; set; } 
 
         [Required]
         public int SalesTax { get; set; }

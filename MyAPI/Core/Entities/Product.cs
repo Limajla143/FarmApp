@@ -11,7 +11,7 @@ namespace Core.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public string PictureUrl { get; set; }
-        public long Price { get; set; }
+        public double Price { get; set; }
         public int SalesTax { get; set; }
         public int AgriTypeId { get; set; }
         public AgriType AgriType { get; set; }

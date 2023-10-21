@@ -11,6 +11,7 @@ interface Props {
 const midLinks = [
     {title: 'Tours', path: '/tours'},
     {title: 'Products', path: '/products'},
+    {title: 'Inventory', path: '/inventory'},
     {title: 'AgriTypes', path: '/agritypes'},
     {title: 'Users', path: '/users'}
 ]

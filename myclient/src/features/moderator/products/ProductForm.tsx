@@ -13,6 +13,7 @@ import AppDropzone from "../../../app/components/AppDropzone";
 import AppSelectList from "../../../app/components/AppSelectList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { prodValidationSchema } from "./productValidation";
+import { fetchProductUsersAsync } from "../../productUsers/productUsersSlice";
 
 interface Props {
     product?: Product;
@@ -38,6 +39,7 @@ export default function ProductForm({product, cancelEdit}: Props) {
     async function handleSubmitData(data: FieldValues) {
         await agent.Products.addUpdateProduct(data).then((response) => {
             dispatch(setProduct(response));
+            dispatch(fetchProductUsersAsync());
         }).catch((error) => {
             toast.error(error);
         });

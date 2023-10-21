@@ -10,6 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { agriTypeSchema } from "./agriTypeValidation";
 import agent from "../../../app/api/agent";
 import AppTextInput from "../../../app/components/AppTextInput";
+import { fetchFilters } from "../../productUsers/productUsersSlice";
 
 interface Props {
     agriType?: AgriType;
@@ -33,6 +34,7 @@ export default function AgriTypeForm({agriType, cancelEdit} : Props) {
         try {           
             const response = await agent.AgriTypes.addUpdateAgriType(data);
             dispatch(setAgriType(response));
+            dispatch(fetchFilters());
             cancelEdit();
         } catch (error) {
             console.log(error);

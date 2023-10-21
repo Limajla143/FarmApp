@@ -4,6 +4,7 @@ import { accountSlice } from "../../features/account/accountSlice";
 import { agriTypeSlice } from "../../features/moderator/agriTypes/agriTypeSlice";
 import { adminSlice } from "../../features/admin/users/adminSlice";
 import { productSlice } from "../../features/moderator/products/productSlice";
+import { productUsersSlice } from "../../features/productUsers/productUsersSlice";
 
 
 
@@ -12,7 +13,8 @@ export const store = configureStore({
         account: accountSlice.reducer,
         agritype: agriTypeSlice.reducer,
         admin: adminSlice.reducer,
-        product: productSlice.reducer
+        product: productSlice.reducer,
+        productUsers: productUsersSlice.reducer
     }
 })
 

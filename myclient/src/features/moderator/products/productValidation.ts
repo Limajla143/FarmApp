@@ -3,7 +3,7 @@ import * as yup from 'yup';
 export const prodValidationSchema = yup.object({
     name: yup.string().required(),
     agriType: yup.string().required(),
-    price: yup.number().required().moreThan(100),
+    price: yup.number().required().moreThan(1),
     salesTax: yup.number().required().lessThan(101),
     quantity: yup.number().required().min(0),
     description: yup.string().required(),

@@ -9,6 +9,8 @@ import NotFound from "../errors/NotFound";
 import AgriTypeLists from "../../features/moderator/agriTypes/AgriTypeLists";
 import UserProfileLists from "../../features/admin/users/UserProfileLists";
 import ProductInventory from "../../features/moderator/products/ProductInventory";
+import ProductCatalog from "../../features/productUsers/ProductCatalog";
+import ProductUserDetail from "../../features/productUsers/ProductUserDetail";
 
 export const router = createBrowserRouter([
     {
@@ -18,7 +20,9 @@ export const router = createBrowserRouter([
             {path: '/', element: <HomePage /> },
             {path: 'login', element: <Login />},
             {path: 'register', element: <Register />},
-            {path: 'products', element: <ProductInventory />},
+            {path: 'products', element: <ProductCatalog />},
+            {path: 'products/:id', element: <ProductUserDetail />},
+            {path: 'inventory', element: <ProductInventory />},
             {path: 'agritypes', element: <AgriTypeLists />},
             {path: 'users', element: <UserProfileLists />},
             {path: 'server-error', element: <ServerError /> },

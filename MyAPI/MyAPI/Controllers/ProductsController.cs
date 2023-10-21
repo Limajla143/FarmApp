@@ -64,11 +64,6 @@ namespace MyAPI.Controllers
             var productToModify = new Product();
             string imageUrl = "";
 
-            if(productAddUpdateDto.SalesTax != 0)
-            {
-                productAddUpdateDto.Price = ComputeRealPrice(productAddUpdateDto.Price, productAddUpdateDto.SalesTax);
-            }
-
             if(productAddUpdateDto.File != null)
             {
                 imageUrl = await _fileStorageService.EditFile(prodContainer, productAddUpdateDto.File, imageUrl);
@@ -82,6 +77,7 @@ namespace MyAPI.Controllers
 
             if(productAddUpdateDto.Id == 0)
             {
+                productAddUpdateDto.Price = productAddUpdateDto.SalesTax != 0 ? ComputeRealPrice(productAddUpdateDto.Price, productAddUpdateDto.SalesTax) : productAddUpdateDto.Price;
                 productToModify = _mapper.Map<Product>(productAddUpdateDto);
                 productToModify.AgriTypeId = agriType.Id;
                 productToModify.PictureUrl = imageUrl;
@@ -92,10 +88,13 @@ namespace MyAPI.Controllers
                 productToModify = await _productsRepo.GetIdByAsync(productAddUpdateDto.Id);
                 productToModify.Name = productAddUpdateDto.Name;
                 productToModify.Description = productAddUpdateDto.Description;
-                productToModify.Price = productAddUpdateDto.Price;
-                productToModify.SalesTax = productAddUpdateDto.SalesTax;
                 productToModify.Quantity = productAddUpdateDto.Quantity;
                 productToModify.AgriTypeId = agriType.Id;
+                productToModify.SalesTax = productAddUpdateDto.SalesTax;
+                productToModify.Price = (productToModify.SalesTax == productAddUpdateDto.SalesTax && productToModify.Price.Equals(productAddUpdateDto.Price))
+                    ? productToModify.Price : ComputeRealPrice(productAddUpdateDto.Price, productAddUpdateDto.SalesTax) ;
+
+                productToModify.PictureUrl = String.IsNullOrEmpty(imageUrl) ? productToModify.PictureUrl : imageUrl;
                 _productsRepo.Update(productToModify);
             }
 
@@ -134,9 +133,9 @@ namespace MyAPI.Controllers
             return NoContent();
         }
 
-        private long ComputeRealPrice(long price, int salesTax)
+        private double ComputeRealPrice(double price, int salesTax)
         {
-            return  (long)(price * ((double)salesTax / 100)) + price;
+            return  (price * (double)salesTax / 100) + price;
         }
 
     }
