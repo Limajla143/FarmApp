@@ -75,7 +75,7 @@ namespace MyAPI.Controllers
 
             var role = await _userManager.AddToRoleAsync(user, "Member");
 
-            if (!result.Succeeded || !role.Succeeded) return BadRequest(new ApiResponse(400));
+            if (!result.Succeeded || !role.Succeeded) return BadRequest(new ApiResponse(400, result.Errors.FirstOrDefault().Description));
 
             return new UserDto
             {

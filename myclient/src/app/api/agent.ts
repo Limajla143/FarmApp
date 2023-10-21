@@ -36,10 +36,9 @@ axios.interceptors.response.use(async response => {
                         modelStateErrors.push(data.errors[key])
                     }
                 }
-                toast.error(data.errors);
+                toast.error(data.message);
                 throw modelStateErrors.flat();
             }
-            console.log(data);
             break;
         case 401:
             toast.error(data.message);

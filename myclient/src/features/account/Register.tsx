@@ -15,8 +15,7 @@ export default function Register() {
     })
 
     function handleApiErrors(errors: any) {
-        console.log(errors);
-        if (errors) {
+        if (Array.isArray(errors)) {
             errors.forEach((error: string, index: number) => {
                 if (error.includes('Password')) {
                     setError('password', { message: error })
@@ -27,6 +26,17 @@ export default function Register() {
                 }
             });
         }
+        else if (typeof errors === 'string') {
+            // Handle a single error message
+            if (errors.includes('Password')) {
+                setError('password', { message: errors });
+            } else if (errors.includes('Email')) {
+                setError('email', { message: errors });
+            } else if (errors.includes('Username')) {
+                setError('username', { message: errors });
+            }
+        }
+        toast.error(errors.data.message);
     }
 
     return (
@@ -44,7 +54,9 @@ export default function Register() {
                     toast.success('Registration successful - you can now login');
                     navigate('/login');
             })
-            .catch(error => handleApiErrors(error)))}
+            .catch(error => 
+                handleApiErrors(error)           
+            ))}
         >
             <TextField
                 margin="normal"
