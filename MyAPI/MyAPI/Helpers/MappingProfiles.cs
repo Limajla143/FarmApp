@@ -41,6 +41,9 @@ namespace MyAPI.Helpers
 
             CreateMap<Product, ProductDto>()
                 .ForMember(x => x.AgriType, y => y.MapFrom(z => z.AgriType.Name));
+
+            CreateMap<Product, BasketProduct>()
+                .ForMember(x => x.Types, y => y.MapFrom(z => z.AgriType.Name));
         }
     }
 }

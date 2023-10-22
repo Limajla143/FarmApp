@@ -1,10 +1,12 @@
 ﻿using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Data.Migrations;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyAPI.Helpers;
 using MyAPI.Middleware.Errors;
+using StackExchange.Redis;
 
 namespace MyAPI.Extensions
 {
@@ -15,14 +17,15 @@ namespace MyAPI.Extensions
 
             services.AddDbContext<EntityDbContext>(x => x.UseSqlServer(config.GetConnectionString("FarmStoreConnection")));
 
-            //services.AddSingleton<IConnectionMultiplexer>(c =>
-            //{
-            //    var options = ConfigurationOptions.Parse(config.GetConnectionString("Redis"));
-            //    return ConnectionMultiplexer.Connect(options);
-            //});
+            services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
+                var options = ConfigurationOptions.Parse(config.GetConnectionString("Redis"));
+                return ConnectionMultiplexer.Connect(options);
+            });
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddSingleton<IFileStorageService, FileStorageService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

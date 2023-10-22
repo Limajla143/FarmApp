@@ -54,10 +54,12 @@ namespace MyAPI.Controllers
 
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
 
+            string resultToken = await _tokenService.CreateToken(user);
+
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = resultToken,
                 Username = user.UserName
             };
         }
@@ -77,10 +79,12 @@ namespace MyAPI.Controllers
 
             if (!result.Succeeded || !role.Succeeded) return BadRequest(new ApiResponse(400, result.Errors.FirstOrDefault().Description));
 
+            string resultToken = await _tokenService.CreateToken(user);
+
             return new UserDto
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = resultToken,
                 Email = user.Email
             };
         }
@@ -89,15 +93,19 @@ namespace MyAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
-            var user = await _userManager.FindByEmailFromClaimsPrincipal(User);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            string resultToken = await _tokenService.CreateToken(user);
 
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = resultToken,
                 Username = user.UserName
             };
         }
+
+    
 
         //ADMIN SIDE
 
