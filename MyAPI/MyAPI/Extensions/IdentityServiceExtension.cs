@@ -15,7 +15,6 @@ namespace MyAPI.Extensions
         public static IServiceCollection AddIdentityServices(this IServiceCollection services,
            IConfiguration config)
         {
-            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddDbContext<AppIdentityDbContext>(opt =>
             {
@@ -25,7 +24,6 @@ namespace MyAPI.Extensions
             services.AddIdentityCore<AppUser>(opt =>
             {
                 // add identity options here
-               
             })
             .AddRoles<AppRole>()
             .AddRoleManager<RoleManager<AppRole>>()
@@ -37,16 +35,18 @@ namespace MyAPI.Extensions
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),
                         ValidIssuer = config["Token:Issuer"],
+                        ValidateIssuerSigningKey = true,
                         ValidateIssuer = true,
-                        ValidateAudience = false
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
                     };
                 });
 
-            services.AddAuthentication();
             services.AddAuthorization();
+
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

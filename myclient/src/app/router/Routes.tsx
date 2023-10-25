@@ -11,6 +11,7 @@ import UserProfileLists from "../../features/admin/users/UserProfileLists";
 import ProductInventory from "../../features/moderator/products/ProductInventory";
 import ProductCatalog from "../../features/productUsers/ProductCatalog";
 import ProductUserDetail from "../../features/productUsers/ProductUserDetail";
+import BasketPage from "../../features/basket/BasketPage";
 
 export const router = createBrowserRouter([
     {
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
             {path: 'inventory', element: <ProductInventory />},
             {path: 'agritypes', element: <AgriTypeLists />},
             {path: 'users', element: <UserProfileLists />},
+            {path: 'basket', element: <BasketPage />},
             {path: 'server-error', element: <ServerError /> },
             {path: 'not-found', element: <NotFound /> },
             {path: '*', element: <Navigate replace to='/not-found' />}

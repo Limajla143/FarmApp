@@ -54,12 +54,11 @@ namespace MyAPI.Controllers
 
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
 
-            string resultToken = await _tokenService.CreateToken(user);
 
             return new UserDto
             {
                 Email = user.Email,
-                Token = resultToken,
+                Token = await _tokenService.CreateToken(user),
                 Username = user.UserName
             };
         }
@@ -79,12 +78,10 @@ namespace MyAPI.Controllers
 
             if (!result.Succeeded || !role.Succeeded) return BadRequest(new ApiResponse(400, result.Errors.FirstOrDefault().Description));
 
-            string resultToken = await _tokenService.CreateToken(user);
-
             return new UserDto
             {
                 Username = user.UserName,
-                Token = resultToken,
+                Token = await _tokenService.CreateToken(user),
                 Email = user.Email
             };
         }
@@ -95,17 +92,13 @@ namespace MyAPI.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
-            string resultToken = await _tokenService.CreateToken(user);
-
             return new UserDto
             {
                 Email = user.Email,
-                Token = resultToken,
+                Token = await _tokenService.CreateToken(user),
                 Username = user.UserName
             };
-        }
-
-    
+        }  
 
         //ADMIN SIDE
 

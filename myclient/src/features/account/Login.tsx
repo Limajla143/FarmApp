@@ -5,6 +5,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { signInUser } from "./accountSlice";
 import { useAppDispatch } from "../../app/store/configStore";
 import { LoadingButton } from "@mui/lab";
+import { fetchBasketAsync } from "../basket/basketSlice";
 
 export default function Login(){
     const navigate = useNavigate();

@@ -5,6 +5,7 @@ import { agriTypeSlice } from "../../features/moderator/agriTypes/agriTypeSlice"
 import { adminSlice } from "../../features/admin/users/adminSlice";
 import { productSlice } from "../../features/moderator/products/productSlice";
 import { productUsersSlice } from "../../features/productUsers/productUsersSlice";
+import { basketSlice } from "../../features/basket/basketSlice";
 
 
 
@@ -14,7 +15,8 @@ export const store = configureStore({
         agritype: agriTypeSlice.reducer,
         admin: adminSlice.reducer,
         product: productSlice.reducer,
-        productUsers: productUsersSlice.reducer
+        productUsers: productUsersSlice.reducer,
+        basket: basketSlice.reducer
     }
 })
 

@@ -36,9 +36,9 @@ axios.interceptors.response.use(async response => {
                         modelStateErrors.push(data.errors[key])
                     }
                 }
-                toast.error(data.message);
                 throw modelStateErrors.flat();
             }
+            toast.error(data.message);
             break;
         case 401:
             toast.error(data.message);
@@ -142,12 +142,19 @@ const ProductForUsers = {
     product: (id: number) => requests.get(`usersProduct/getProduct/${id}`)
 }
 
+const Basket = {
+    getBasketItem: () => requests.get('basket/getBasket'),
+    addBasketItem: (productId: number, quantity = 1) => requests.post(`basket/addItemToBasket?productId=${productId}&quantity=${quantity}`, {}),
+    removeBasketItem: (productId: number, quantity = 1) => requests.delete(`basket/removeItemFromBasket?productId=${productId}&quantity=${quantity}`)
+}
+
 const agent = {
   Account,
   AgriTypes,
   Admin,
   Products,
-  ProductForUsers
+  ProductForUsers,
+  Basket
 }
 
 export default agent;

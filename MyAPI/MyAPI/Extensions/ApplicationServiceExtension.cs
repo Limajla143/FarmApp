@@ -23,15 +23,13 @@ namespace MyAPI.Extensions
                 return ConnectionMultiplexer.Connect(options);
             });
 
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddSingleton<IFileStorageService, FileStorageService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
