@@ -24,10 +24,11 @@ namespace MyAPI.Controllers
         private readonly IFileStorageService _fileStorageService;
         private readonly RoleManager<AppRole> _roleManager;
         private string container = "usersImg";
+        private IBasketRepository _basketRepository;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
             ITokenService tokenService, IMapper mapper, IUserRepository userRepository, IFileStorageService fileStorageService,
-            RoleManager<AppRole> roleManager)
+            RoleManager<AppRole> roleManager, IBasketRepository basketRepository)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -36,6 +37,7 @@ namespace MyAPI.Controllers
             _userManager = userManager;
             _fileStorageService = fileStorageService;
             _roleManager = roleManager;
+            _basketRepository = basketRepository;
         }
 
         [HttpPost("login")]
@@ -54,12 +56,14 @@ namespace MyAPI.Controllers
 
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
 
+            var basket = await _basketRepository.GetBasketAsync(user.UserName);
 
             return new UserDto
             {
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user),
-                Username = user.UserName
+                Username = user.UserName,
+                Basket = basket != null ? basket.MapBasketToDto() : null
             };
         }
 
@@ -87,16 +91,19 @@ namespace MyAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("currentUser")]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            var basket = await _basketRepository.GetBasketAsync(User.Identity.Name);
 
             return new UserDto
             {
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user),
-                Username = user.UserName
+                Username = user.UserName,
+                Basket = basket != null ? basket.MapBasketToDto() : null
             };
         }  
 

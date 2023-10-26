@@ -2,10 +2,9 @@ import { Container, Paper, Avatar, Typography, Box, TextField, Grid } from "@mui
 import { LockOutlined } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FieldValues, useForm } from "react-hook-form";
-import { signInUser } from "./accountSlice";
+import { fetchCurrentUser, setUser, signInUser } from "./accountSlice";
 import { useAppDispatch } from "../../app/store/configStore";
 import { LoadingButton } from "@mui/lab";
-import { fetchBasketAsync } from "../basket/basketSlice";
 
 export default function Login(){
     const navigate = useNavigate();
@@ -18,7 +17,7 @@ export default function Login(){
     async function submitForm(data: FieldValues) {
         try {
             await dispatch(signInUser(data));
-            navigate(location.state?.from || '/home');
+            navigate('/');
         } catch (error) {
             console.log(error);
         }

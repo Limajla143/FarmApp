@@ -31,9 +31,9 @@ const navStyles = {
 }
 
 export default function Header({darkMode, handleThemeChange}: Props) {
-    //const {basket} = useAppSelector(state => state.basket);
+    const {basket} = useAppSelector(state => state.basket);
     const {user} = useAppSelector(state => state.account);
-    //const itemCount = basket ? basket?.items.reduce((sum, item) => sum + item.quantity, 0) : 0; 
+    const itemCount = basket ? basket?.items.reduce((sum, item) => sum + item.quantity, 0) : 0; 
     return (
         <AppBar position='static' sx={{mb: 4}} >
             <Toolbar sx={{display: 'flex', justifyContent: 'space-between', overflowX: 'auto'}}>
@@ -61,7 +61,7 @@ export default function Header({darkMode, handleThemeChange}: Props) {
 
                 <Box display='flex' alignItems='center'>
 
-                {/* {user ? (
+                {user ? (
                      <IconButton component={Link} to='/basket' size='large' sx={{color: 'inherit'}}>
                         <Badge badgeContent={itemCount} color="secondary"> 
                             <ShoppingCart />
@@ -69,7 +69,7 @@ export default function Header({darkMode, handleThemeChange}: Props) {
                     </IconButton>
                 ) : (
                     <></>
-                ) } */}
+                ) }
                 
                 
                 {user ? (

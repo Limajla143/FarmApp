@@ -45,6 +45,7 @@ export default function HomePage() {
                <FeaturedPost key={post.title} post={post} />
              ))}
            </Grid>     */}
+           Hello World
        </main>
        <Footer
          title="Footer"

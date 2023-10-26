@@ -2,8 +2,9 @@ import { LoadingButton } from "@mui/lab";
 import { Card, CardHeader, Avatar, CardMedia, CardContent, Typography, CardActions, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import { ProductUsers } from "../../app/models/productUsers"
-import { useAppDispatch } from "../../app/store/configStore";
+import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
 import { currencyFormat } from "../../app/utility/utils";
+import { addBasketItemAsync } from "../basket/basketSlice";
 
 interface Props {
     productUser: ProductUsers
@@ -12,6 +13,7 @@ interface Props {
 
 export default function ProductUserCard({productUser} : Props){
     const dispatch = useAppDispatch();
+    const {status} = useAppSelector(state => state.basket);
     return (
         <Card>
             <CardHeader
@@ -39,7 +41,9 @@ export default function ProductUserCard({productUser} : Props){
           </Typography>
         </CardContent>
         <CardActions>
-          <LoadingButton size="small">Add to Cart</LoadingButton>
+          <LoadingButton loading={status === 'pendingAddItem' + productUser.id} 
+          onClick={() => dispatch(addBasketItemAsync({productId: productUser.id}))} 
+          size="small">Add to Cart</LoadingButton>
           <Button component={Link} to={`/products/${productUser.id}`}>View</Button>
         </CardActions>
       </Card>

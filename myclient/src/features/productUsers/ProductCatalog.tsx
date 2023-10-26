@@ -40,13 +40,13 @@ export default function ProductCatalog() {
             </Grid>
             <Grid item xs={9}>
                 <ProductUsersList productUsers={productUsers}/>
-            </Grid>
 
-            <Grid item xs={9} sx={{mb: 2}}>
+                <Grid item xs={9} sx={{mb: 2}}>
                 {metaData && 
                     <AppPagination metaData={metaData} onPageChange={(page: number) => dispatch(setPageNumber({pageNumber: page}))} />
                 }
             </Grid>   
+            </Grid>
         </Grid>
     )
 }
