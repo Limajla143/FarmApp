@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core;
 using Core.Entities;
+using Core.Entities.OrderAggregate;
 using MyAPI.Dtos;
 
 namespace MyAPI.Helpers
@@ -44,6 +45,8 @@ namespace MyAPI.Helpers
 
             CreateMap<Product, BasketProduct>()
                 .ForMember(x => x.Types, y => y.MapFrom(z => z.AgriType.Name));
+
+            CreateMap<OrderAddress, AddressDto>().ReverseMap();
         }
     }
 }
