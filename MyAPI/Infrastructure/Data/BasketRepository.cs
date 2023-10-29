@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data.Migrations
+namespace Infrastructure.Data
 {
     public class BasketRepository : IBasketRepository
     {
