@@ -136,7 +136,7 @@ namespace MyAPI.Controllers
         [HttpPut("UpdateUser")]
         public async Task<ActionResult> UpdateUser([FromForm] UserCreateDto userProfileDto)
         {
-            var userToUpdate = await _userManager.FindUserByClaimsPrincipleWithAddress(userProfileDto.Id);
+            var userToUpdate = await _userManager.FindUserByClaimsById(userProfileDto.Id);
 
             userToUpdate.UserName = userProfileDto.UserName;
             userToUpdate.Email = userProfileDto.Email;
@@ -186,6 +186,32 @@ namespace MyAPI.Controllers
             var roles = await _roleManager.Roles.ToListAsync();
 
             return Ok(roles.Select(x => x.Name).ToList());
+        }
+
+
+        [Authorize]
+        [HttpGet("getAddress")]
+        public async Task<ActionResult<AddressDto>> GetSavedAddress()
+        {
+            var user = await _userManager.FindUserByClaimsPrincipleWithAddress(User);
+
+            return _mapper.Map<Address, AddressDto>(user.Address);
+        }
+
+
+        [Authorize]
+        [HttpPut("address")]
+        public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto address)
+        {
+            var user = await _userManager.FindUserByClaimsPrincipleWithAddress(User);
+
+            user.Address = _mapper.Map<AddressDto, Address>(address);
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded) return Ok(_mapper.Map<AddressDto>(user.Address));
+
+            return BadRequest("Problem updating the user");
         }
 
     }

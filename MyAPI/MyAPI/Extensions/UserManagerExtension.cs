@@ -19,10 +19,19 @@ namespace MyAPI.Extensions
             return await userManager.Users.SingleOrDefaultAsync(x => x.Id == Id);
         }
 
-        public static async Task<AppUser> FindUserByClaimsPrincipleWithAddress(this UserManager<AppUser> userManager, int Id)
+        public static async Task<AppUser> FindUserByClaimsById(this UserManager<AppUser> userManager, int Id)
         {
             return await userManager.Users.Include(x => x.Address)
                 .SingleOrDefaultAsync(x => x.Id == Id);
+        }
+
+        public static async Task<AppUser> FindUserByClaimsPrincipleWithAddress(this UserManager<AppUser> userManager,
+           ClaimsPrincipal user)
+        {
+            var email = user.FindFirstValue(ClaimTypes.Email);
+
+            return await userManager.Users.Include(x => x.Address)
+                .SingleOrDefaultAsync(x => x.Email == email);
         }
     }
 }
