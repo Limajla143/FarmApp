@@ -22,14 +22,14 @@ namespace MyAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpPost("createOrder")]
         public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
         {
             var username = HttpContext.User?.RetrieveNameFromPrincipal();
 
             var address = _mapper.Map<AddressDto, OrderAddress>(orderDto.ShipToAddress);
 
-            var order = await _orderService.CreateOrderAsync(username, orderDto.DeliveryMethodId, orderDto.BasketId, address);
+            var order = await _orderService.CreateOrderAsync(username, orderDto.DeliveryMethodId, username, address);
 
             if (order == null) return BadRequest(new ApiResponse(400, "Problem creating order"));
 
@@ -39,9 +39,9 @@ namespace MyAPI.Controllers
         [HttpGet("GetOrdersForUsers")]
         public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUser()
         {
-            var email = User.RetrieveNameFromPrincipal();
+            var username = User.RetrieveNameFromPrincipal();
 
-            var orders = await _orderService.GetOrdersForUserAsync(email);
+            var orders = await _orderService.GetOrdersForUserAsync(username);
 
             return Ok(_mapper.Map<IReadOnlyList<OrderToReturnDto>>(orders));
         }
@@ -49,9 +49,9 @@ namespace MyAPI.Controllers
         [HttpGet("GetOrderByIdForUser/{id}")]
         public async Task<ActionResult<OrderToReturnDto>> GetOrderByIdForUser(int id)
         {
-            var email = User.RetrieveNameFromPrincipal();
+            var username = User.RetrieveNameFromPrincipal();
 
-            var order = await _orderService.GetOrderByIdAsync(id, email);
+            var order = await _orderService.GetOrderByIdAsync(id, username);
 
             if (order == null) return NotFound(new ApiResponse(404));
 

@@ -5,11 +5,13 @@ import agent from "../../app/api/agent";
 interface BasketState {
     basket: Basket | null;
     status: string;
+    deliveryPrice: number;
 }
 
 const initialState: BasketState = {
     basket: null,
-    status: 'idle'
+    status: 'idle',
+    deliveryPrice: 0
 }
 
 export const fetchBasketAsync = createAsyncThunk<Basket>(
@@ -54,6 +56,9 @@ export const basketSlice = createSlice({
         },
         clearBasket: (state) => {
             state.basket = null
+        },
+        setDeliverPrice: (state, action) => {
+            state.deliveryPrice = action.payload;
         }
     },
     extraReducers: (builder => {
@@ -98,4 +103,4 @@ export const basketSlice = createSlice({
 })
 
 
-export const {setBasket, clearBasket} = basketSlice.actions
+export const {setBasket, clearBasket, setDeliverPrice} = basketSlice.actions

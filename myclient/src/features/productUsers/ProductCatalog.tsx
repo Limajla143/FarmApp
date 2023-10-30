@@ -29,7 +29,7 @@ export default function ProductCatalog() {
                 </Paper>
                 <Paper sx={{mb: 2, p: 2}}>
                     <AppRadioButtonGroup options={sortOptions}  selectedValue={productUsersParams.sort}
-                        onChange={(e) => dispatch(setProductUsersParams({sort: e.target.value}))} />
+                        onChange={(e) => dispatch(setProductUsersParams({sort: e.target.value}))} horizontal={false} />
                 </Paper>
 
                 <Paper sx={{mb: 2, p: 2}}>

@@ -19,5 +19,5 @@ export function mMMMddyyyy(inputDate: Date) : string  {
 
 
 export function currencyFormat(amount: number) {
-    return '$' + amount.toFixed(2);
+    return 'Php ' + amount.toFixed(2);
   }

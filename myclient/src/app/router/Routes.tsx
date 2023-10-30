@@ -12,6 +12,8 @@ import ProductInventory from "../../features/moderator/products/ProductInventory
 import ProductCatalog from "../../features/productUsers/ProductCatalog";
 import ProductUserDetail from "../../features/productUsers/ProductUserDetail";
 import BasketPage from "../../features/basket/BasketPage";
+import CheckoutPage from "../../features/checkOut/CheckoutPage";
+import Orders from "../../features/order/Orders";
 
 export const router = createBrowserRouter([
     {
@@ -27,6 +29,8 @@ export const router = createBrowserRouter([
             {path: 'users', element: <UserProfileLists />},
             {path: 'basket', element: <BasketPage />},
             {path: 'server-error', element: <ServerError /> },
+            {path: 'checkout', element: <CheckoutPage />},
+            {path: 'orders', element: <Orders /> },
             {path: 'not-found', element: <NotFound /> },
             {path: '*', element: <Navigate replace to='/not-found' />}
         ]

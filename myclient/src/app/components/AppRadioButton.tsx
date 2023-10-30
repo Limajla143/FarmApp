@@ -4,16 +4,18 @@ interface Props {
     options: any[];
     onChange: (event: any) => void;
     selectedValue: string;
+    name?: string;
+    horizontal: boolean;
 }
 
-export default function AppRadioButtonGroup({options, onChange, selectedValue} : Props) {
+export default function AppRadioButtonGroup({options, onChange, selectedValue, name, horizontal} : Props) {
     return (
         <FormControl>
-                    <RadioGroup onChange={onChange} value={selectedValue}>
-                        {options.map(({value, label}) => (
-                            <FormControlLabel value={value} control={<Radio />} label={label} key={value} />
-                        ))}
-                    </RadioGroup>
-                </FormControl>
+         <RadioGroup onChange={onChange} value={selectedValue} style={{ flexDirection: horizontal ? 'row' : 'column' }}>
+                {options.map(({value, label}) => (
+                    <FormControlLabel value={value} control={<Radio  key={value} />} label={label} key={value} name={name} />
+                ))}
+            </RadioGroup>    
+        </FormControl>
     )
 }

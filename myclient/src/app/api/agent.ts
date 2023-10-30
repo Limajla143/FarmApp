@@ -111,7 +111,8 @@ function createFormDataNested(item: any) {
 const Account = {
     login: (values: any) => requests.post('account/login', values),
     register: (values: any) => requests.post('account/register', values),
-    currentUser: () => requests.get('account/currentUser')
+    currentUser: () => requests.get('account/currentUser'),
+    getUserAddress: () => requests.get('account/getAddress')
 }
 
 const Admin = {
@@ -147,13 +148,21 @@ const Basket = {
     removeBasketItem: (productId: number, quantity = 1) => requests.delete(`basket/removeItemFromBasket?productId=${productId}&quantity=${quantity}`)
 }
 
+const Orders = {
+    getOrders: () => requests.get('orders/getOrdersForUsers'),
+    getOrder: (id: number) => requests.get(`orders/getOrderByIdForUser/${id}`),
+    createOrder: (values: any) => requests.post('orders/createOrder', values),
+    getdeliverMethods: () => requests.get('orders/deliveryMethods')
+}
+
 const agent = {
   Account,
   AgriTypes,
   Admin,
   Products,
   ProductForUsers,
-  Basket
+  Basket,
+  Orders
 }
 
 export default agent;

@@ -22,7 +22,7 @@ namespace Infrastructure.Services
             _basketRepo = basketRepo;
             _unitOfWork = unitOfWork;
         }
-        public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethodId, string basketId, OrderAddress shippingAddress)
+        public async Task<Order> CreateOrderAsync(string buyer, int deliveryMethodId, string basketId, OrderAddress shippingAddress)
         {
             var basket = await _basketRepo.GetBasketAsync(basketId);
 
@@ -43,7 +43,7 @@ namespace Infrastructure.Services
             var subtotal = items.Sum(item => item.Price * item.Quantity);
 
             // create order
-            var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal);
+            var order = new Order(items, buyer, shippingAddress, deliveryMethod, subtotal);
             _unitOfWork.Repository<Order>().Add(order);
 
             // TO DO: save to db
@@ -67,9 +67,9 @@ namespace Infrastructure.Services
             return await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
         }
 
-        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyer)
         {
-            var spec = new OrdersWithItemsSpecification(buyerEmail);
+            var spec = new OrdersWithItemsSpecification(buyer);
 
             return await _unitOfWork.Repository<Order>().ListSpecAsync(spec);
         }
