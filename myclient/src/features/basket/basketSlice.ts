@@ -59,6 +59,11 @@ export const basketSlice = createSlice({
         },
         setDeliverPrice: (state, action) => {
             state.deliveryPrice = action.payload;
+        },
+        updateDeliveryMethod: (state, action) => {
+            if(state.basket != null) {
+              state.basket.deliveryMethodId = action.payload;
+            }
         }
     },
     extraReducers: (builder => {
@@ -103,4 +108,4 @@ export const basketSlice = createSlice({
 })
 
 
-export const {setBasket, clearBasket, setDeliverPrice} = basketSlice.actions
+export const {setBasket, clearBasket, setDeliverPrice, updateDeliveryMethod} = basketSlice.actions

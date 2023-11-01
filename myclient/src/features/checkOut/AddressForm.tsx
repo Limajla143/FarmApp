@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import agent from "../../app/api/agent";
 import { toast } from "react-toastify";
 import AppRadioButtonGroup from "../../app/components/AppRadioButton";
-import { setDeliverPrice } from "../basket/basketSlice";
+import { setDeliverPrice, updateDeliveryMethod } from "../basket/basketSlice";
 import { useAppDispatch } from "../../app/store/configStore";
 
 export default function AddressForm() {
@@ -23,6 +23,7 @@ export default function AddressForm() {
     const deliveryP = deliveryPrices.find(price => price.deliveryId === Number((event.target as HTMLInputElement).value));
 
     dispatch(setDeliverPrice(deliveryP?.price));
+    dispatch(updateDeliveryMethod(deliveryP?.deliveryId));
   };
  
   useEffect(() => {

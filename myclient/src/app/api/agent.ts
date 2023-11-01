@@ -156,7 +156,7 @@ const Orders = {
 }
 
 const Payments = {
-    createPaymentIntent: (basketId: string) => requests.post(`createPaymentIntent/${basketId}`, {})
+    createPaymentIntent: (basketId: string, deliveryMethodId: any) => requests.post(`createPaymentIntent/${basketId}`, {})
 }
 
 const agent = {

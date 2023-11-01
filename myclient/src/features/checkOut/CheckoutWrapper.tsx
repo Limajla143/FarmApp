@@ -10,12 +10,13 @@ import LoadingComponent from "../../app/layout/Loading";
 const stripePromise = loadStripe('pk_test_51MYsW4L9cMDwJt2vwb0wYTIWJHpfFy5rmUPMwTy96DvNHNWWWRrYIDxTuPNCxGDV7gWLdutOaFV0fix7Sx6BV7zf00zA9xoVLr');
 
 export default function CheckoutWrapper() {
-    const {user} = useAppSelector(state => state.account);    
+    const {user} = useAppSelector(state => state.account);
+    const {basket} = useAppSelector(state => state.basket);    
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        agent.Payments.createPaymentIntent(user?.username!)
+        agent.Payments.createPaymentIntent(user?.username!, basket?.deliveryMethodId)
                 .then(basket => dispatch(setBasket(basket)))
                 .catch(error => console.log(error))
                 .finally(() => setLoading(false))

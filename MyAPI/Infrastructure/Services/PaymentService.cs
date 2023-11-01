@@ -24,7 +24,7 @@ namespace Infrastructure.Services
             _basketRepository = basketRepository;
             _unitOfWork = unitOfWork;
         }
-        public async Task<CustomerBasket> CreateOrUpdatePaymentIntent(string basketId)
+        public async Task<CustomerBasket> CreateOrUpdatePaymentIntent(string basketId, int? deliveryMethodId)
         {
             StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"];
 
@@ -34,7 +34,7 @@ namespace Infrastructure.Services
 
             var shippingPrice = 0.00;
 
-            if (basket.DeliveryMethodId.HasValue)
+            if (deliveryMethodId.HasValue)
             {
                 var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetIdByAsync((int)basket.DeliveryMethodId);
                 shippingPrice = deliveryMethod.Price;
