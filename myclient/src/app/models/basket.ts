@@ -11,4 +11,6 @@ export interface BasketItem {
 export interface Basket {
     id: string;
     items: BasketItem[];
+    paymentIntentId?: string;
+    clientSecret?: string;
 }

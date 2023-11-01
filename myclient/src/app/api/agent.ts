@@ -155,6 +155,10 @@ const Orders = {
     getdeliverMethods: () => requests.get('orders/deliveryMethods')
 }
 
+const Payments = {
+    createPaymentIntent: (basketId: string) => requests.post(`createPaymentIntent/${basketId}`, {})
+}
+
 const agent = {
   Account,
   AgriTypes,
@@ -162,7 +166,8 @@ const agent = {
   Products,
   ProductForUsers,
   Basket,
-  Orders
+  Orders,
+  Payments
 }
 
 export default agent;
