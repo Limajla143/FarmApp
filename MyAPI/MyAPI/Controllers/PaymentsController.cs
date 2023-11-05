@@ -10,20 +10,21 @@ namespace MyAPI.Controllers
 {
     public class PaymentsController : BaseApiController
     {
-        private const string WhSecret = "";
+        private readonly string _whSecret = "";
         private readonly IPaymentService _paymentService;
         private readonly ILogger<PaymentsController> _logger;
-        public PaymentsController(IPaymentService paymentService, ILogger<PaymentsController> logger)
+        public PaymentsController(IPaymentService paymentService, ILogger<PaymentsController> logger, IConfiguration config)
         {
             _logger = logger;
             _paymentService = paymentService;
+            _whSecret = config.GetSection("StripeSettings:WhSecret").Value;
         }
 
         [Authorize]
-        [HttpPost("createPaymentIntent/{basketId}")]
-        public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId, int? deliveryMethodId)
+        [HttpPost("createPaymentIntent")]
+        public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
         {
-            var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId, deliveryMethodId);
+            var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
 
             if (basket == null) return BadRequest(new ApiResponse(400, "Problem with your basket"));
 
@@ -36,7 +37,7 @@ namespace MyAPI.Controllers
             var json = await new StreamReader(Request.Body).ReadToEndAsync();
 
             var stripeEvent = EventUtility.ConstructEvent(json,
-                Request.Headers["Stripe-Signature"], WhSecret);
+                Request.Headers["Stripe-Signature"], _whSecret);
 
             PaymentIntent intent;
             Order order;

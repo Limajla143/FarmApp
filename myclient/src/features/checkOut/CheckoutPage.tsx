@@ -73,7 +73,7 @@ export default function CheckoutPage() {
 
     async function submitOrder(data: FieldValues) {
         setLoading(true);
-        const { nameOnCard, saveAddress, deliveryMethodId, ...address } = data;
+        const { nameOnCard, saveAddress, ...address } = data;
         if (!stripe || !elements) return; // stripe not ready
         try {
             const cardElement = elements.getElement(CardNumberElement);
@@ -87,7 +87,7 @@ export default function CheckoutPage() {
             });
             console.log(paymentResult);
             if (paymentResult.paymentIntent?.status === 'succeeded') {
-                const orderNumber = await agent.Orders.createOrder({saveAddress, deliveryMethodId, shipToAddress: address});
+                const orderNumber = await agent.Orders.createOrder({saveAddress, shipToAddress: address});
                 setOrderNumber(orderNumber);
                 setPaymentSucceeded(true);
                 setPaymentMessage('Thank you - we have received your payment');

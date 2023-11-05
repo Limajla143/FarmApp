@@ -20,7 +20,9 @@ namespace MyAPI.Extensions
                     PictureUrl = item.PictureUrl,
                     Types = item.Types,
                     Quantity = item.Quantity
-                }).ToList()
+                }).ToList(),
+                DeliveryMethodId = basket.DeliveryMethodId ?? 0,
+                ShippingPrice = basket.ShippingPrice,
             };
         }
     }

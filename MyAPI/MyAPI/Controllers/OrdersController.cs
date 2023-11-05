@@ -29,11 +29,14 @@ namespace MyAPI.Controllers
 
             var address = _mapper.Map<AddressDto, OrderAddress>(orderDto.ShipToAddress);
 
-            var order = await _orderService.CreateOrderAsync(username, orderDto.DeliveryMethodId, username, address);
+            var order = await _orderService.CreateOrderAsync(username, username, address);
 
-            if (order == null) return BadRequest(new ApiResponse(400, "Problem creating order"));
+            if(order.Id > 0)
+            {
+                return CreatedAtRoute("GetOrderByIdForUser", new { id = order.Id }, order.Id);
+            }
 
-            return Ok(order);
+            return BadRequest(new ApiResponse(400, "Problem creating order"));
         }
 
         [HttpGet("GetOrdersForUsers")]
@@ -46,7 +49,7 @@ namespace MyAPI.Controllers
             return Ok(_mapper.Map<IReadOnlyList<OrderToReturnDto>>(orders));
         }
 
-        [HttpGet("GetOrderByIdForUser/{id}")]
+        [HttpGet("{id}", Name = "GetOrderByIdForUser")]
         public async Task<ActionResult<OrderToReturnDto>> GetOrderByIdForUser(int id)
         {
             var username = User.RetrieveNameFromPrincipal();

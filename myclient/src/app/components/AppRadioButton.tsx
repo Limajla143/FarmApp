@@ -13,7 +13,7 @@ export default function AppRadioButtonGroup({options, onChange, selectedValue, n
         <FormControl>
          <RadioGroup onChange={onChange} value={selectedValue} style={{ flexDirection: horizontal ? 'row' : 'column' }}>
                 {options.map(({value, label}) => (
-                    <FormControlLabel value={value} control={<Radio  key={value} />} label={label} key={value} name={name} />
+                    <FormControlLabel value={value} control={<Radio key={value} />} label={label} key={value} name={name} />
                 ))}
             </RadioGroup>    
         </FormControl>

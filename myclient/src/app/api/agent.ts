@@ -145,7 +145,8 @@ const ProductForUsers = {
 const Basket = {
     getBasketItem: () => requests.get('basket/getBasket'),
     addBasketItem: (productId: number, quantity = 1) => requests.post(`basket/addItemToBasket?productId=${productId}&quantity=${quantity}`, {}),
-    removeBasketItem: (productId: number, quantity = 1) => requests.delete(`basket/removeItemFromBasket?productId=${productId}&quantity=${quantity}`)
+    removeBasketItem: (productId: number, quantity = 1) => requests.delete(`basket/removeItemFromBasket?productId=${productId}&quantity=${quantity}`),
+    deliveryMethodForBasket: (deliveryMethodId: number) => requests.post(`basket/deliveryMethodForBasket?deliveryMethodId=${deliveryMethodId}`, {})
 }
 
 const Orders = {
@@ -156,7 +157,7 @@ const Orders = {
 }
 
 const Payments = {
-    createPaymentIntent: (basketId: string, deliveryMethodId: any) => requests.post(`createPaymentIntent/${basketId}`, {})
+    createPaymentIntent: (basketId: string) => requests.post(`payments/createPaymentIntent?basketId=${basketId}`, {})
 }
 
 const agent = {

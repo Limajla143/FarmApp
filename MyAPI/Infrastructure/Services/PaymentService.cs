@@ -24,7 +24,7 @@ namespace Infrastructure.Services
             _basketRepository = basketRepository;
             _unitOfWork = unitOfWork;
         }
-        public async Task<CustomerBasket> CreateOrUpdatePaymentIntent(string basketId, int? deliveryMethodId)
+        public async Task<CustomerBasket> CreateOrUpdatePaymentIntent(string basketId)
         {
             StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"];
 
@@ -34,7 +34,7 @@ namespace Infrastructure.Services
 
             var shippingPrice = 0.00;
 
-            if (deliveryMethodId.HasValue)
+            if (basket.DeliveryMethodId.HasValue)
             {
                 var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetIdByAsync((int)basket.DeliveryMethodId);
                 shippingPrice = deliveryMethod.Price;
@@ -57,7 +57,7 @@ namespace Infrastructure.Services
             {
                 var options = new PaymentIntentCreateOptions
                 {
-                    Amount = (long)basket.Items.Sum(i => i.Quantity * (i.Price)) + (long)shippingPrice,
+                    Amount = (long)basket.Items.Sum(i => i.Quantity * (i.Price * 100)) + (long)shippingPrice * 100,
                     Currency = "php",
                     PaymentMethodTypes = new List<string> { "card" }
                 };
@@ -69,7 +69,7 @@ namespace Infrastructure.Services
             {
                 var options = new PaymentIntentUpdateOptions
                 {
-                    Amount = (long)basket.Items.Sum(i => i.Quantity * (i.Price)) + (long)shippingPrice
+                    Amount = (long)basket.Items.Sum(i => i.Quantity * (i.Price * 100)) + (long)shippingPrice * 100
                 };
                 await service.UpdateAsync(basket.PaymentIntentId, options);
             }

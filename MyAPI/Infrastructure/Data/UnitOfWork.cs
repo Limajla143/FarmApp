@@ -19,7 +19,16 @@ namespace Infrastructure.Data
         }
         public async Task<int> Complete()
         {
-            return await _context.SaveChangesAsync();
+            int ret = -1;
+            try
+            {
+                ret = await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                
+            }
+            return ret;
         }
 
         public void Dispose()

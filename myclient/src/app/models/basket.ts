@@ -14,4 +14,5 @@ export interface Basket {
     paymentIntentId?: string;
     clientSecret?: string;
     deliveryMethodId?: string;
+    shippingPrice: number;
 }

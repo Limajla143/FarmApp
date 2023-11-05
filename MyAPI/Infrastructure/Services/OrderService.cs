@@ -22,7 +22,7 @@ namespace Infrastructure.Services
             _basketRepo = basketRepo;
             _unitOfWork = unitOfWork;
         }
-        public async Task<Order> CreateOrderAsync(string buyer, int deliveryMethodId, string basketId, OrderAddress shippingAddress)
+        public async Task<Order> CreateOrderAsync(string buyer, string basketId, OrderAddress shippingAddress)
         {
             var basket = await _basketRepo.GetBasketAsync(basketId);
 
@@ -37,7 +37,7 @@ namespace Infrastructure.Services
             }
 
             //get delivery method from repo'
-            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetIdByAsync(deliveryMethodId);
+            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetIdByAsync(basket.DeliveryMethodId ?? 0);
 
             // calc subtotal
             var subtotal = items.Sum(item => item.Price * item.Quantity);
@@ -50,6 +50,9 @@ namespace Infrastructure.Services
             var result = await _unitOfWork.Complete();
 
             if (result <= 0) return null;
+
+            //delete basket
+            await _basketRepo.DeleteBasketAsync(basketId);
 
             // return order
             return order;

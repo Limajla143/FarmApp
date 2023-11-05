@@ -5,13 +5,11 @@ import agent from "../../app/api/agent";
 interface BasketState {
     basket: Basket | null;
     status: string;
-    deliveryPrice: number;
 }
 
 const initialState: BasketState = {
     basket: null,
-    status: 'idle',
-    deliveryPrice: 0
+    status: 'idle'
 }
 
 export const fetchBasketAsync = createAsyncThunk<Basket>(
@@ -47,6 +45,17 @@ export const removeBasketItemAsync = createAsyncThunk<void, {productId: number, 
     }
 )
 
+export const deliveryMethodBasketAsync = createAsyncThunk<Basket, {deliveryMethodId: number}>(
+    'basket/deliveryMethodBasketAsync',
+    async ({deliveryMethodId}, thunkAPI) => {
+       try {
+           return await agent.Basket.deliveryMethodForBasket(deliveryMethodId);
+       } catch (error: any) {
+           return thunkAPI.rejectWithValue({error: error.data})
+       }
+    }
+)
+
 export const basketSlice = createSlice({
     name: 'basket',
     initialState,
@@ -56,14 +65,6 @@ export const basketSlice = createSlice({
         },
         clearBasket: (state) => {
             state.basket = null
-        },
-        setDeliverPrice: (state, action) => {
-            state.deliveryPrice = action.payload;
-        },
-        updateDeliveryMethod: (state, action) => {
-            if(state.basket != null) {
-              state.basket.deliveryMethodId = action.payload;
-            }
         }
     },
     extraReducers: (builder => {
@@ -92,6 +93,18 @@ export const basketSlice = createSlice({
                 state.basket.items.splice(itemIndex, 1);
             state.status = 'idle';
         });
+        builder.addCase(deliveryMethodBasketAsync.pending, (state, action) => {
+            console.log(action);
+            state.status = 'pendingDeliveryMethodForBasket';
+        });
+        builder.addCase(deliveryMethodBasketAsync.fulfilled, (state, action) => {
+            state.basket = action.payload;
+            state.status = 'idle';
+        });
+        builder.addCase(deliveryMethodBasketAsync.rejected, (state, action) => {
+            state.status = 'idle';
+            console.log(action.payload);
+        });
         builder.addCase(removeBasketItemAsync.rejected, (state, action) => {
             state.status = 'idle';
             console.log(action.payload);
@@ -108,4 +121,4 @@ export const basketSlice = createSlice({
 })
 
 
-export const {setBasket, clearBasket, setDeliverPrice, updateDeliveryMethod} = basketSlice.actions
+export const {setBasket, clearBasket} = basketSlice.actions

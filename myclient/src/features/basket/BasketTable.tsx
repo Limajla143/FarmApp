@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
 import { Remove, Add, Delete } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { removeBasketItemAsync, addBasketItemAsync } from "./basketSlice";
+import { currencyFormat } from "../../app/utility/utils";
 
 interface Props {
     items: BasketItem[];
@@ -40,7 +41,7 @@ export default function BasketTable({items, isBasket = true}: Props) {
                                 <span>{item.name}</span>
                             </Box>
                         </TableCell>
-                        <TableCell align="right">${(item.price).toFixed(2)}</TableCell>
+                        <TableCell align="right">{currencyFormat(item.price)}</TableCell>
                         <TableCell align="center">
                         {isBasket && 
                             <LoadingButton 
@@ -55,7 +56,7 @@ export default function BasketTable({items, isBasket = true}: Props) {
                                 <Add />
                              </LoadingButton>}
                         </TableCell>
-                        <TableCell align="right">${((item.price) * item.quantity).toFixed(2)}</TableCell>
+                        <TableCell align="right">{currencyFormat((item.price) * item.quantity)}</TableCell>
                         {isBasket && 
                         <TableCell>
                             <LoadingButton 

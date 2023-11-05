@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Entities;
+using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
@@ -14,14 +15,14 @@ namespace MyAPI.Controllers
     public class BasketController : BaseApiController
     {
         private readonly IBasketRepository _basketRepository;
-        private readonly IGenericRepository<Product> _productRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public BasketController(IBasketRepository basketRepository, IGenericRepository<Product> productRepository,
+        public BasketController(IBasketRepository basketRepository, IUnitOfWork unitOfWork,
             IMapper mapper)
         {
             _basketRepository = basketRepository;
-            _productRepository = productRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -45,7 +46,7 @@ namespace MyAPI.Controllers
             if (basket == null) basket = await CreateBasket();
 
             ProductSpecs spec = new ProductSpecs(productId);
-            var product = await _productRepository.GetEntityWithSpec(spec);
+            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
             if(product == null) return BadRequest(new ApiResponse(401, "Product not found!"));
 
             var bkProduct = _mapper.Map<BasketProduct>(product);
@@ -69,8 +70,8 @@ namespace MyAPI.Controllers
         {
             //get basket
             var basket = await RetrieveBasket();
-            if (basket == null) return NotFound();
 
+            if (basket == null) return NotFound(new ApiResponse(404, "You have no orders!"));
            
             try
             {
@@ -92,6 +93,34 @@ namespace MyAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new ApiResponse(400, "Problem removing item from basket"));
+            }
+        }
+
+        [HttpPost("DeliveryMethodForBasket")]
+        public async Task<ActionResult<BasketDto>> DeliveryMethodForBasket(int deliveryMethodId)
+        {
+            //get basket
+            var basket = await RetrieveBasket();
+
+            //create basket
+            if (basket == null) basket = await CreateBasket();
+
+            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetIdByAsync(deliveryMethodId);
+
+            if(deliveryMethod == null) return NotFound(new ApiResponse(404, "DeliveryMethod not found!"));
+
+            basket.DeliveryMethodId = deliveryMethod.Id;
+            basket.ShippingPrice = deliveryMethod.Price;
+
+            try
+            {
+                await _basketRepository.UpdateBasketAsync(basket);
+
+                return Ok(basket.MapBasketToDto());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, ex.Message));
             }
         }
 
