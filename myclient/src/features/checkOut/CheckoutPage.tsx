@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
 import ReviewView from "./ReviewView";
 import { StripeElementType } from "@stripe/stripe-js";
 import { CardNumberElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { error } from "console";
+import { toast } from "react-toastify";
 
 const steps = ['Shipping address', 'Review your order', 'Payment details'];
 
@@ -70,11 +72,16 @@ export default function CheckoutPage() {
                 }
             })
     }, [methods])
-
+   
     async function submitOrder(data: FieldValues) {
         setLoading(true);
         const { nameOnCard, saveAddress, ...address } = data;
         if (!stripe || !elements) return; // stripe not ready
+        const orderNumber = await agent.Orders.createOrder({ saveAddress, shippingAddress: address })
+        .catch(error => {
+            toast.error(error);
+        });
+
         try {
             const cardElement = elements.getElement(CardNumberElement);
             const paymentResult = await stripe.confirmCardPayment(basket?.clientSecret!, {
@@ -87,7 +94,6 @@ export default function CheckoutPage() {
             });
             console.log(paymentResult);
             if (paymentResult.paymentIntent?.status === 'succeeded') {
-                const orderNumber = await agent.Orders.createOrder({saveAddress, shipToAddress: address});
                 setOrderNumber(orderNumber);
                 setPaymentSucceeded(true);
                 setPaymentMessage('Thank you - we have received your payment');
@@ -98,6 +104,7 @@ export default function CheckoutPage() {
                 setPaymentMessage(paymentResult.error?.message!);
                 setPaymentSucceeded(false);
                 setLoading(false);
+                dispatch(clearBasket());
                 setActiveStep(activeStep + 1);
             }
         } catch (error) {
@@ -105,6 +112,7 @@ export default function CheckoutPage() {
             setLoading(false);
         }
     }
+
 
     const handleNext = async (data: FieldValues) => {
         if(activeStep === steps.length - 1) {

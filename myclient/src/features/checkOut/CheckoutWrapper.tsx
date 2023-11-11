@@ -19,7 +19,7 @@ export default function CheckoutWrapper() {
                 .then(basket => dispatch(setBasket(basket)))
                 .catch(error => console.log(error))
                 .finally(() => setLoading(false))
-    }, [dispatch]);
+    }, [dispatch, user]);
 
     if(loading) return <LoadingComponent message="Loading Checkout..." />
 

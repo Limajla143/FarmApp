@@ -3,6 +3,7 @@ using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyAPI.Middleware.Errors;
 using Stripe;
 
@@ -13,6 +14,7 @@ namespace MyAPI.Controllers
         private readonly string _whSecret = "";
         private readonly IPaymentService _paymentService;
         private readonly ILogger<PaymentsController> _logger;
+        private readonly IConfiguration _config;
         public PaymentsController(IPaymentService paymentService, ILogger<PaymentsController> logger, IConfiguration config)
         {
             _logger = logger;
@@ -35,6 +37,8 @@ namespace MyAPI.Controllers
         public async Task<ActionResult> StripeWebhook()
         {
             var json = await new StreamReader(Request.Body).ReadToEndAsync();
+
+            //var stripeEvent = EventUtility.ParseEvent(json, throwOnApiVersionMismatch: false);
 
             var stripeEvent = EventUtility.ConstructEvent(json,
                 Request.Headers["Stripe-Signature"], _whSecret);
@@ -60,5 +64,6 @@ namespace MyAPI.Controllers
 
             return new EmptyResult();
         }
+
     }
 }

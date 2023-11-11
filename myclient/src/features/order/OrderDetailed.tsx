@@ -21,7 +21,7 @@ export default function OrderDetailed({ order, setSelectedOrder }: Props) {
             <Grid container>
                 <Grid item xs={6} />
                 <Grid item xs={6}>
-                    <BasketSummary subtotal={subtotal} />
+                    <BasketSummary subtotal={subtotal} deliveryFeeOrd={order.shippingPrice} toSetDelivery={false}/>
                 </Grid>
             </Grid>
         </>

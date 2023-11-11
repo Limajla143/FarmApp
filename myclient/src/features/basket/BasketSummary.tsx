@@ -9,10 +9,11 @@ import { deliveryMethodBasketAsync } from "./basketSlice";
 
 interface Props {
     subtotal?: number;
+    deliveryFeeOrd?: number;
     toSetDelivery?: boolean;
 }
 
-export default function BasketSummary({subtotal, toSetDelivery = true}: Props) {
+export default function BasketSummary({subtotal, deliveryFeeOrd, toSetDelivery = true}: Props) {
     const dispatch = useAppDispatch();
     const { basket } = useAppSelector(state => state.basket)
 
@@ -29,6 +30,10 @@ export default function BasketSummary({subtotal, toSetDelivery = true}: Props) {
     let deliveryFee = 0.00;
     if(basket?.shippingPrice) {
         deliveryFee = basket.shippingPrice;
+    }
+
+    if(deliveryFeeOrd != undefined) {
+      deliveryFee = deliveryFeeOrd;
     }
 
   const handleChangeDelivery = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +86,7 @@ export default function BasketSummary({subtotal, toSetDelivery = true}: Props) {
                         </TableRow>
                         <TableRow>
                             <TableCell colSpan={2}>Total: </TableCell>
-                            <TableCell align="right">{ currencyFormat(subtotal + deliveryFee)}</TableCell>
+                            <TableCell align="right">{currencyFormat(subtotal + deliveryFee)}</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

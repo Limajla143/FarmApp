@@ -51,9 +51,6 @@ namespace Infrastructure.Services
 
             if (result <= 0) return null;
 
-            //delete basket
-            await _basketRepo.DeleteBasketAsync(basketId);
-
             // return order
             return order;
         }

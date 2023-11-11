@@ -5,6 +5,7 @@ namespace MyAPI.Dtos
 {
     public class OrderToReturnDto
     {
+        public int Id { get; set; }
         public string Buyer { get; set; }
         public DateTime OrderDate { get; set; }
         public OrderAddress ShipToAddress { get; set; }
@@ -13,6 +14,6 @@ namespace MyAPI.Dtos
         public IReadOnlyList<OrderItemDto> OrderItems { get; set; }
         public double Subtotal { get; set; }
         public double Total { get; set; }
-        public string Status { get; set; }
+        public string OrderStatus { get; set; }
     }
 }
