@@ -27,6 +27,7 @@ namespace MyAPI.Controllers
         [HttpGet("getProducts")]
         public async Task<ActionResult<PagedList<ProductDto>>> GetProducts([FromQuery] ProductParams productParams)
         {
+            productParams.QuantityNotZero = true;
             var spec = new ProductSpecs(productParams);
             var productsResult = await _productsRepo.ListSpecAsync(spec);
 

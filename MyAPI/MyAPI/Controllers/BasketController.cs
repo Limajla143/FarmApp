@@ -47,7 +47,14 @@ namespace MyAPI.Controllers
 
             ProductSpecs spec = new ProductSpecs(productId);
             var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
-            if(product == null) return BadRequest(new ApiResponse(401, "Product not found!"));
+            if(product == null) return BadRequest(new ApiResponse(400, "Product not found!"));
+
+            var itemProduct = basket.Items.Find(x => x.Id == product.Id);
+
+            if (quantity > product.Quantity || (itemProduct!=null && (itemProduct.Quantity+quantity) > product.Quantity))
+            {
+                return BadRequest(new ApiResponse(400, $"No available {product.Name}...")); 
+            }
 
             var bkProduct = _mapper.Map<BasketProduct>(product);
 

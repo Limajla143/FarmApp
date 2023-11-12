@@ -21,3 +21,10 @@ export interface Order {
     shippingPrice: number;
     total: number;
 }
+
+export interface OrderParams {
+    pageNumber: number;
+    pageSize: number;
+    dateFrom?: string;
+    dateTo?: string;
+}

@@ -92,7 +92,7 @@ export const productSlice = createSlice({
             state.productParams = {...state.productParams, ...action.payload};
         },
         setMetaData: (state, action) => {
-            state.metaData = action.payload
+            state.metaData = action.payload;
         },
         resetProductParams: (state) => {
             state.productParams = initParams();

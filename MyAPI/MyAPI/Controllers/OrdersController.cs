@@ -2,10 +2,12 @@
 using Core;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyAPI.Dtos;
 using MyAPI.Extensions;
+using MyAPI.Helpers;
 using MyAPI.Middleware.Errors;
 
 namespace MyAPI.Controllers
@@ -40,13 +42,17 @@ namespace MyAPI.Controllers
         }
 
         [HttpGet("GetOrdersForUsers")]
-        public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUser()
+        public async Task<ActionResult<PagedList<OrderToReturnDto>>> GetOrdersForUser([FromQuery] OrderParams orderParams)
         {
-            var username = User.RetrieveNameFromPrincipal();
+            orderParams.username = User.RetrieveNameFromPrincipal();
 
-            var orders = await _orderService.GetOrdersForUserAsync(username);
+            var orders = await _orderService.GetOrdersForUserAsync(orderParams);
 
-            return Ok(_mapper.Map<IReadOnlyList<OrderToReturnDto>>(orders));
+            var data = PagedList<Order>.ToPagedList(orders, orderParams.PageNumber, orderParams.PageSize, orders.Count());
+
+            Response.AddPaginationHeader(data.MetaData);
+
+            return Ok(_mapper.Map<IReadOnlyList<OrderToReturnDto>>(data));
         }
 
         [HttpGet("{id}", Name = "GetOrderByIdForUser")]

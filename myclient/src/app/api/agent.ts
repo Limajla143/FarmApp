@@ -150,7 +150,7 @@ const Basket = {
 }
 
 const Orders = {
-    getOrders: () => requests.get('orders/getOrdersForUsers'),
+    getOrders: (params: URLSearchParams) => requests.get('orders/getOrdersForUsers', params),
     getOrder: (id: number) => requests.get(`orders/getOrderByIdForUser/${id}`),
     createOrder: (values: any) => requests.post('orders/createOrder', values),
     getdeliverMethods: () => requests.get('orders/deliveryMethods')

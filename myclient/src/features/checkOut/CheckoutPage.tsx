@@ -12,7 +12,6 @@ import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
 import ReviewView from "./ReviewView";
 import { StripeElementType } from "@stripe/stripe-js";
 import { CardNumberElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { error } from "console";
 import { toast } from "react-toastify";
 
 const steps = ['Shipping address', 'Review your order', 'Payment details'];

@@ -1,4 +1,5 @@
 ﻿using Core.Entities.OrderAggregate;
+using Core.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Core.Interfaces
     public interface IOrderService
     {
         Task<Order> CreateOrderAsync(string buyerEmail, string basketId, OrderAddress shippingAddress);
-        Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyer);
+        Task<IReadOnlyList<Order>> GetOrdersForUserAsync(OrderParams orderParams);
         Task<Order> GetOrderByIdAsync(int id, string buyer);
         Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync();
     }

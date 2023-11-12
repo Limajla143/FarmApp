@@ -9,7 +9,8 @@ namespace Core.Specifications
 {
     public class OrdersWithItemsSpecification : BaseSpecification<Order>
     {
-        public OrdersWithItemsSpecification(string username) : base(o => o.Buyer == username)
+        public OrdersWithItemsSpecification(OrderParams orderParams) : base(o => o.Buyer == orderParams.username || (o.OrderDate >= orderParams.DateFrom &&
+            o.OrderDate <= orderParams.DateTo))
         {
             AddInclude(o => o.OrderItems);
             AddInclude(o => o.DeliveryMethod);

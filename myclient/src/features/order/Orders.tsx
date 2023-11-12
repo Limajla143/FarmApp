@@ -1,22 +1,23 @@
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Order } from "../../app/models/order";
 import agent from "../../app/api/agent";
 import OrderDetailed from "./OrderDetailed";
 import LoadingComponent from "../../app/layout/Loading";
 import { currencyFormat } from "../../app/utility/utils";
+import useOrders from "../../app/hooks/useOrders";
+import AppPagination from "../../app/components/AppPagination";
+import { useAppDispatch } from "../../app/store/configStore";
+import { setPageNumber } from "./orderSlice";
 
 export default function Orders() {
-    const [orders, setOrders] = useState<Order[] | null>(null);
-    const [loading, setLoading] = useState(true);
+    const {orders, metaData} = useOrders();
+    const dispatch = useAppDispatch();
+    
+    const [loading, setLoading] = useState(false);
     const [selectedOrderNumber, setSelectedOrderNumber] = useState(0);
 
-    useEffect(() => {
-        agent.Orders.getOrders()
-            .then(orders => setOrders(orders))
-            .catch(error => console.log(error))
-            .finally(() => setLoading(false))
-    }, []);
+  
 
     if (loading) return <LoadingComponent message="Loading orders..." />
 
@@ -28,6 +29,7 @@ export default function Orders() {
     )
 
     return (
+        <>
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
@@ -61,5 +63,13 @@ export default function Orders() {
                 </TableBody>
             </Table>
         </TableContainer>
+        {metaData && 
+            <Box sx={{pt: 2}}>
+                <AppPagination 
+                    metaData={metaData} 
+                    onPageChange={(page: number) => dispatch(setPageNumber({pageNumber: page}))} />
+            </Box>
+        }       
+        </>
     )
 }

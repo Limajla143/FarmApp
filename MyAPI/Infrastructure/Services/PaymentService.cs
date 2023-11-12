@@ -102,6 +102,11 @@ namespace Infrastructure.Services
 
             if (order == null) return null;
 
+            var basket = await _basketRepository.GetBasketAsync(order.Buyer);
+            var products = await _unitOfWork.Repository<Core.Entities.Product>().ListAllAsync();
+
+            await DecrementProductQuantityAsync(products.ToList(), basket.Items);
+
             order.Status = OrderStatus.PaymentReceived;
             await _unitOfWork.Complete();
 
@@ -109,6 +114,17 @@ namespace Infrastructure.Services
             await _basketRepository.DeleteBasketAsync(order.Buyer);
 
             return order;
+        }
+
+        private async Task DecrementProductQuantityAsync(IList<Core.Entities.Product> products, IList<BasketItem> basketItems)
+        {
+            foreach (var prod in basketItems )
+            {
+                var product = products.Where(x => x.Id == prod.Id).FirstOrDefault();
+                product.Quantity = product.Quantity - prod.Quantity;
+
+                await _unitOfWork.Complete();
+            }
         }
     }
 }

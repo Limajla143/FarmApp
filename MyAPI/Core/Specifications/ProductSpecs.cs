@@ -47,10 +47,22 @@ namespace Core.Specifications
                 types = productParams.Types.ToLower().Split(",");
             }
 
-            return x =>
+            if (productParams.QuantityNotZero)
+            {
+              return x =>
+               (string.IsNullOrEmpty(productParams.Search) || x.Name.ToLower().Contains(productParams.Search.ToLower())) && x.Quantity > 0 &&
+                (string.IsNullOrEmpty(productParams.Types) ||
+                    types.Contains(x.AgriType.Name.ToLower()));
+            }
+            else
+            {
+                return x =>
                (string.IsNullOrEmpty(productParams.Search) || x.Name.ToLower().Contains(productParams.Search.ToLower())) &&
                 (string.IsNullOrEmpty(productParams.Types) ||
                     types.Contains(x.AgriType.Name.ToLower()));
+            }
+
+            
         }
     }
 }

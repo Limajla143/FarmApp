@@ -18,5 +18,7 @@ namespace Core.Specifications
             get => _search;
             set => _search = value.ToLower();
         }
+
+        public bool QuantityNotZero { get; set; } = false;
     }
 }
