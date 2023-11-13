@@ -60,9 +60,9 @@ namespace Infrastructure.Services
             return await _unitOfWork.Repository<DeliveryMethod>().ListAllAsync();
         }
 
-        public async Task<Order> GetOrderByIdAsync(int id, string buyerEmail)
+        public async Task<Order> GetOrderByIdAsync(int id, string buyer)
         {
-            var spec = new OrdersWithItemsSpecification(id, buyerEmail);
+            var spec = new OrdersWithItemsSpecification(id, buyer);
 
             return await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
         }
@@ -72,6 +72,15 @@ namespace Infrastructure.Services
             var spec = new OrdersWithItemsSpecification(orderParams);
 
             return await _unitOfWork.Repository<Order>().ListSpecAsync(spec);
+        }
+
+        public async Task SoftRemoveOrder(int id, string buyer)
+        {
+            var spec = new OrdersWithItemsSpecification(id, buyer);
+            var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+            order.IsDelete = true;
+
+            await _unitOfWork.Complete();
         }
     }
 }

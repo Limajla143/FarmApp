@@ -153,7 +153,8 @@ const Orders = {
     getOrders: (params: URLSearchParams) => requests.get('orders/getOrdersForUsers', params),
     getOrder: (id: number) => requests.get(`orders/getOrderByIdForUser/${id}`),
     createOrder: (values: any) => requests.post('orders/createOrder', values),
-    getdeliverMethods: () => requests.get('orders/deliveryMethods')
+    getdeliverMethods: () => requests.get('orders/deliveryMethods'),
+    removeOrder: (id: number) => requests.delete(`orders/removeOrder/${id}`)
 }
 
 const Payments = {

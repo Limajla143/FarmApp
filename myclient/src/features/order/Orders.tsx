@@ -8,7 +8,10 @@ import { currencyFormat } from "../../app/utility/utils";
 import useOrders from "../../app/hooks/useOrders";
 import AppPagination from "../../app/components/AppPagination";
 import { useAppDispatch } from "../../app/store/configStore";
-import { setPageNumber } from "./orderSlice";
+import { getOrdersAsync, removeOrder, setPageNumber } from "./orderSlice";
+import { toast } from "react-toastify";
+import { LoadingButton } from "@mui/lab";
+import { Delete } from "@mui/icons-material";
 
 export default function Orders() {
     const {orders, metaData} = useOrders();
@@ -16,10 +19,16 @@ export default function Orders() {
     
     const [loading, setLoading] = useState(false);
     const [selectedOrderNumber, setSelectedOrderNumber] = useState(0);
+    const [target, setTarget] = useState(0);
 
-  
-
-    if (loading) return <LoadingComponent message="Loading orders..." />
+    function handleDeleteOrder(id: number) {
+        setLoading(true);
+        setTarget(id);
+        agent.Orders.removeOrder(id)
+            .then(() => dispatch(removeOrder(id)))
+            .catch(error => toast.error(error))
+            .finally(() => setLoading(false));
+    }
 
     if (selectedOrderNumber > 0) return (
         <OrderDetailed
@@ -57,6 +66,10 @@ export default function Orders() {
                                 <Button onClick={() => setSelectedOrderNumber(order.id)}>
                                     View
                                 </Button>
+                                <LoadingButton 
+                                   loading={loading && target === order.id} 
+                                   onClick={() => handleDeleteOrder(order.id)} 
+                                   startIcon={<Delete />} color='error' />
                             </TableCell>
                         </TableRow>
                     ))}

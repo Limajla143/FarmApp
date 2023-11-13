@@ -29,7 +29,7 @@ namespace Core.Entities.OrderAggregate
         public double Subtotal { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public string PaymentIntentId { get; set; }
-
+        public bool IsDelete { get; set; }
         public double GetTotal()
         {
             return Subtotal + DeliveryMethod.Price;

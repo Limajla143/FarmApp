@@ -14,5 +14,6 @@ namespace Core.Interfaces
         Task<IReadOnlyList<Order>> GetOrdersForUserAsync(OrderParams orderParams);
         Task<Order> GetOrderByIdAsync(int id, string buyer);
         Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync();
+        Task SoftRemoveOrder(int id, string buyer);
     }
 }

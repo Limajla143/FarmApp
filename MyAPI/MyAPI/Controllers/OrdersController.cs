@@ -67,6 +67,20 @@ namespace MyAPI.Controllers
             return _mapper.Map<OrderToReturnDto>(order);
         }
 
+        [HttpDelete("RemoveOrder/{id}")]
+        public async Task<ActionResult> DeleteOrder(int id)
+        {
+            var username = User.RetrieveNameFromPrincipal();
+
+            var order = await _orderService.GetOrderByIdAsync(id, username);
+
+            if (order == null) return NotFound(new ApiResponse(404));
+
+            await _orderService.SoftRemoveOrder(id, username);
+
+            return NoContent();
+        }
+
         [HttpGet("deliveryMethods")]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
         {
