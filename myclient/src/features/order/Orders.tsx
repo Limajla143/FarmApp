@@ -1,17 +1,16 @@
 import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { useEffect, useState } from "react";
-import { Order } from "../../app/models/order";
+import { useState } from "react";
 import agent from "../../app/api/agent";
 import OrderDetailed from "./OrderDetailed";
-import LoadingComponent from "../../app/layout/Loading";
 import { currencyFormat } from "../../app/utility/utils";
 import useOrders from "../../app/hooks/useOrders";
 import AppPagination from "../../app/components/AppPagination";
 import { useAppDispatch } from "../../app/store/configStore";
-import { getOrdersAsync, removeOrder, setPageNumber } from "./orderSlice";
+import { removeOrder, setPageNumber } from "./orderSlice";
 import { toast } from "react-toastify";
 import { LoadingButton } from "@mui/lab";
 import { Delete } from "@mui/icons-material";
+import OrderDateSearch from "./OrderDateSearch";
 
 export default function Orders() {
     const {orders, metaData} = useOrders();
@@ -39,6 +38,11 @@ export default function Orders() {
 
     return (
         <>
+        <Box  sx={{marginBottom: 1}}>
+                <Paper >
+                    <OrderDateSearch />
+                </Paper>
+        </Box>
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>

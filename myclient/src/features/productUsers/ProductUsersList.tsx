@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function ProductUsersList({productUsers}: Props) {
-    const { productUsersLoaded} = useAppSelector(state => state.productUsers);
+    const { productUsersLoaded } = useAppSelector(state => state.productUsers);
     return (
         <Grid container spacing={4}>
         { productUsers.map(productUser => (
