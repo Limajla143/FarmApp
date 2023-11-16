@@ -12,7 +12,6 @@ import ProductInventory from "../../features/moderator/products/ProductInventory
 import ProductCatalog from "../../features/productUsers/ProductCatalog";
 import ProductUserDetail from "../../features/productUsers/ProductUserDetail";
 import BasketPage from "../../features/basket/BasketPage";
-import CheckoutPage from "../../features/checkOut/CheckoutPage";
 import Orders from "../../features/order/Orders";
 import CheckoutWrapper from "../../features/checkOut/CheckoutWrapper";
 
@@ -23,15 +22,24 @@ export const router = createBrowserRouter([
         children: [
             {path: 'login', element: <Login />},
             {path: 'register', element: <Register />},
-            {path: 'products', element: <ProductCatalog />},
-            {path: 'products/:id', element: <ProductUserDetail />},
-            {path: 'inventory', element: <ProductInventory />},
-            {path: 'agritypes', element: <AgriTypeLists />},
-            {path: 'users', element: <UserProfileLists />},
-            {path: 'basket', element: <BasketPage />},
+            {element: <RequireAuth />, children: [
+                {path: 'products', element: <ProductCatalog />},
+                {path: 'products/:id', element: <ProductUserDetail />},
+                {path: 'basket', element: <BasketPage />},
+                {path: 'orders', element: <Orders /> },
+                {path: 'checkout', element: <CheckoutWrapper />},
+            ]},
+            // for moderator and admin only
+            {element: <RequireAuth role={['Admin', 'Moderator']}/>, children: [
+                {path: 'inventory', element: <ProductInventory />},
+                {path: 'agritypes', element: <AgriTypeLists />}
+            ]},           
+            // for admin only
+            {element: <RequireAuth role={['Admin']}/>, children: [
+                {path: 'users', element: <UserProfileLists />},
+
+            ]},
             {path: 'server-error', element: <ServerError /> },
-            {path: 'checkout', element: <CheckoutWrapper />},
-            {path: 'orders', element: <Orders /> },
             {path: 'not-found', element: <NotFound /> },
             {path: '*', element: <Navigate replace to='/not-found' />}
         ]

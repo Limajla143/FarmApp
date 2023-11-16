@@ -105,10 +105,36 @@ namespace MyAPI.Controllers
                 Username = user.UserName,
                 Basket = basket != null ? basket.MapBasketToDto() : null
             };
-        }  
+        }
+
+        [Authorize]
+        [HttpGet("getAddress")]
+        public async Task<ActionResult<AddressDto>> GetSavedAddress()
+        {
+            var user = await _userManager.FindUserByClaimsPrincipleWithAddress(User);
+
+            return _mapper.Map<Address, AddressDto>(user.Address);
+        }
+
+
+        [Authorize]
+        [HttpPut("savedAddress")]
+        public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto address)
+        {
+            var user = await _userManager.FindUserByClaimsPrincipleWithAddress(User);
+
+            user.Address = _mapper.Map<AddressDto, Address>(address);
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded) return Ok(_mapper.Map<AddressDto>(user.Address));
+
+            return BadRequest("Problem updating the user");
+        }
 
         //ADMIN SIDE
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetUsersByAdmin")]
         public async Task<ActionResult<PagedList<UserProfileDto>>> GetUsersByAdmin([FromQuery] UsersParam usersParams)
         {
@@ -122,7 +148,7 @@ namespace MyAPI.Controllers
             return Ok(pagedUsers.OrderBy(x => x.UserName));
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetUserByAdmin/{id}")]
         public async Task<ActionResult<UserProfileDto>> GetUserByAdmin(int id)
         {
@@ -133,6 +159,7 @@ namespace MyAPI.Controllers
             return _mapper.Map<AppUser, UserProfileDto>(user);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateUser")]
         public async Task<ActionResult> UpdateUser([FromForm] UserCreateDto userProfileDto)
         {
@@ -180,39 +207,14 @@ namespace MyAPI.Controllers
             return BadRequest("Problem updating the user");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetRoles")]
         public async Task<ActionResult<List<string>>> GetAllRoles()
         {
             var roles = await _roleManager.Roles.ToListAsync();
 
             return Ok(roles.Select(x => x.Name).ToList());
-        }
-
-
-        [Authorize]
-        [HttpGet("getAddress")]
-        public async Task<ActionResult<AddressDto>> GetSavedAddress()
-        {
-            var user = await _userManager.FindUserByClaimsPrincipleWithAddress(User);
-
-            return _mapper.Map<Address, AddressDto>(user.Address);
-        }
-
-
-        [Authorize]
-        [HttpPut("savedAddress")]
-        public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto address)
-        {
-            var user = await _userManager.FindUserByClaimsPrincipleWithAddress(User);
-
-            user.Address = _mapper.Map<AddressDto, Address>(address);
-
-            var result = await _userManager.UpdateAsync(user);
-
-            if (result.Succeeded) return Ok(_mapper.Map<AddressDto>(user.Address));
-
-            return BadRequest("Problem updating the user");
-        }
+        }      
 
     }
 }

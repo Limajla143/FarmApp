@@ -10,7 +10,16 @@ interface Props {
 }
 
 const midLinks = [
-    {title: 'Tours', path: '/tours'},
+    {title: 'Products', path: '/products'}
+]
+
+const midLinksForModerator = [
+    {title: 'Products', path: '/products'},
+    {title: 'Inventory', path: '/inventory'},
+    {title: 'AgriTypes', path: '/agritypes'},
+]
+
+const midLinksForAdmin = [
     {title: 'Products', path: '/products'},
     {title: 'Inventory', path: '/inventory'},
     {title: 'AgriTypes', path: '/agritypes'},
@@ -18,8 +27,7 @@ const midLinks = [
 ]
 
 const rightLinks = [
-    {title: 'login', path: '/login'},
-    {title: 'register', path: '/register'}
+    {title: 'login', path: '/login'}
 ]
 
 const navStyles = {
@@ -47,20 +55,49 @@ export default function Header({darkMode, handleThemeChange}: Props) {
                 </Box>
 
                 <List sx={{display: 'flex'}}>
-                    {midLinks.map(({title, path}) => (
-                        <ListItem
+                    { user && user.role?.includes('Admin') && user.role?.includes('Moderator') && user.role?.includes('Member') &&
+                         midLinksForAdmin.map(({title, path}) => (
+                            <ListItem
                             component={NavLink}
                             to={path}
                             key={path}
                             sx={navStyles}
                         >
-                            {title}
+                            {title.toUpperCase()}
                           </ListItem>
-                    ))}
+                        ))
+                    }
+
+                     { user && !user.role?.includes('Admin') && user.role?.includes('Moderator') && user.role?.includes('Member') && 
+                         midLinksForModerator.map(({title, path}) => (
+                            <ListItem
+                            component={NavLink}
+                            to={path}
+                            key={path}
+                            sx={navStyles}
+                        >
+                            {title.toUpperCase()}
+                          </ListItem>
+                        ))
+                      }
+
+                      {user &&  user.role?.includes('Member') &&
+                        midLinks.map(({title, path}) => (
+                            <ListItem
+                                component={NavLink}
+                                to={path}
+                                key={path}
+                                sx={navStyles}
+                            >
+                                {title.toUpperCase()}
+                              </ListItem>
+                        ))
+                      }
+
                 </List>
 
-                <Box display='flex' alignItems='center'>
 
+                <Box display='flex' alignItems='center'>
                 {user ? (
                      <IconButton component={Link} to='/basket' size='large' sx={{color: 'inherit'}}>
                         <Badge badgeContent={itemCount} color="secondary"> 
@@ -87,8 +124,7 @@ export default function Header({darkMode, handleThemeChange}: Props) {
                           </ListItem>
                         ))}
                     </List>
-                )}
-                
+                )}                
                 </Box>
 
             </Toolbar>
