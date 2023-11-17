@@ -164,6 +164,14 @@ const Payments = {
     createPaymentIntent: (basketId: string) => requests.post(`payments/createPaymentIntent?basketId=${basketId}`, {})
 }
 
+const TestErrors = {
+    get400Error: () => requests.get('testerror/bad-request'),
+    get401Error: () => requests.get('testerror/test-auth'),
+    get404Error: () => requests.get('testerror/not-found'),
+    get500Error: () => requests.get('testerror/server-error'),
+    getValidationError: () => requests.get('testerror/validation-error')
+}
+
 const agent = {
   Account,
   AgriTypes,
@@ -172,7 +180,8 @@ const agent = {
   ProductForUsers,
   Basket,
   Orders,
-  Payments
+  Payments,
+  TestErrors
 }
 
 export default agent;

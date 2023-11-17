@@ -89,9 +89,6 @@ namespace Infrastructure.Services
             order.Status = OrderStatus.PaymentFailed;
             await _unitOfWork.Complete();
 
-            //delete basket
-            await _basketRepository.DeleteBasketAsync(order.Buyer);
-
             return order;
         }
 

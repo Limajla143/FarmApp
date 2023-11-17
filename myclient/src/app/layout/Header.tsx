@@ -10,7 +10,7 @@ interface Props {
 }
 
 const midLinks = [
-    {title: 'Products', path: '/products'}
+    {title: 'Products', path: '/products'},
 ]
 
 const midLinksForModerator = [
@@ -81,7 +81,7 @@ export default function Header({darkMode, handleThemeChange}: Props) {
                         ))
                       }
 
-                      {user &&  user.role?.includes('Member') &&
+                      {user && !user.role?.includes('Admin') && !user.role?.includes('Moderator') && user.role?.includes('Member') &&
                         midLinks.map(({title, path}) => (
                             <ListItem
                                 component={NavLink}
@@ -93,7 +93,6 @@ export default function Header({darkMode, handleThemeChange}: Props) {
                               </ListItem>
                         ))
                       }
-
                 </List>
 
 
@@ -126,7 +125,6 @@ export default function Header({darkMode, handleThemeChange}: Props) {
                     </List>
                 )}                
                 </Box>
-
             </Toolbar>
         </AppBar>
     )

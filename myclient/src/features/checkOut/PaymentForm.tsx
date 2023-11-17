@@ -27,7 +27,7 @@ export default function PaymentForm({cardState, onCardInputChange} : Props) {
         <Grid item xs={12} md={6}>
         <TextField
             onChange={onCardInputChange}
-            error={!cardState.elementError.cardNumber}
+            error={!!cardState.elementError.cardNumber}
             helperText={cardState.elementError.cardNumber}
             id="cardNumber"
             label="Card number"
@@ -46,7 +46,7 @@ export default function PaymentForm({cardState, onCardInputChange} : Props) {
         <Grid item xs={12} md={6}>
         <TextField
             onChange={onCardInputChange}
-            error={!cardState.elementError.cardExpiry}
+            error={!!cardState.elementError.cardExpiry}
             helperText={cardState.elementError.cardExpiry}
             id="expDate"
             label="Expiry date"
@@ -65,7 +65,7 @@ export default function PaymentForm({cardState, onCardInputChange} : Props) {
         <Grid item xs={12} md={6}>
         <TextField
             onChange={onCardInputChange}
-            error={!cardState.elementError.cardCvc}
+            error={!!cardState.elementError.cardCvc}
             helperText={cardState.elementError.cardCvc}
             id="cvv"
             label="CVV"

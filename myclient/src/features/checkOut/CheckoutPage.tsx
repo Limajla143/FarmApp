@@ -125,6 +125,17 @@ export default function CheckoutPage() {
         setActiveStep(activeStep - 1);
     };
 
+    function submitDisabled(): boolean {
+        if (activeStep === steps.length - 1) {
+            return !cardComplete.cardCvc
+                || !cardComplete.cardExpiry
+                || !cardComplete.cardNumber
+                || !methods.formState.isValid
+        } else {
+            return !methods.formState.isValid
+        }
+    }
+
     return (
         <FormProvider {...methods}>
             <Paper variant="outlined" sx={{my: {xs: 3, md: 6}, p: {xs: 2, md: 3}}}>
@@ -166,7 +177,7 @@ export default function CheckoutPage() {
                                     Back
                                 </Button>
                             )}
-                            <LoadingButton disabled={!methods.formState.isValid}
+                            <LoadingButton disabled={submitDisabled()}
                                 loading={loading}
                                 variant="contained"
                                 type="submit"
