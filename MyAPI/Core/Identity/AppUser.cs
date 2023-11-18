@@ -12,5 +12,6 @@ namespace Core
         public bool IsActive { get; set; }
         public string MobileNumber { get; set; }
         public ICollection<AppUserRole> UserRoles { get; set; }
+        public string PublicId { get; set; }
     }
 }

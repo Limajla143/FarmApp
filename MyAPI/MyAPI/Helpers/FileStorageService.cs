@@ -1,22 +1,26 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Security.Policy;
 
 namespace MyAPI.Helpers
 {
     public class FileStorageService : IFileStorageService
     {
-        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _config;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public FileStorageService(IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor)
+        private readonly IWebHostEnvironment _env;
+        public FileStorageService(IConfiguration config, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment env)
         {
-            _env = env;
+            _config = config;
             _httpContextAccessor = httpContextAccessor;
+            _env = env;
         }
 
         public async Task<string> SaveFile(string containerName, IFormFile file)
         {
             var extension = Path.GetExtension(file.FileName);
             var fileName = $"{Guid.NewGuid()}{extension}";
-            string folder = Path.Combine(_env.WebRootPath, containerName);
+            string Content = _env.WebRootPath;
+            string folder = Path.Combine(Content.Replace("wwwroot", "Content"), containerName);
 
             if (!Directory.Exists(folder))
             {
@@ -32,7 +36,8 @@ namespace MyAPI.Helpers
                 await File.WriteAllBytesAsync(route, content);
             }
 
-            var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+            //var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+            var url = _config["ApiUrlStaticImages"];
             var routeForDB = Path.Combine(url, containerName, fileName).Replace("\\", "/");
             return routeForDB;
         }
@@ -49,7 +54,8 @@ namespace MyAPI.Helpers
             }
 
             var fileName = Path.GetFileName(fileRoute);
-            var fileDirectory = Path.Combine(_env.WebRootPath, containerName, fileName);
+            string Content = _env.WebRootPath;
+            var fileDirectory = Path.Combine(Content.Replace("wwwroot", "Content"), containerName, fileName);
 
             if (File.Exists(fileDirectory))
             {

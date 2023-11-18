@@ -21,13 +21,12 @@ namespace MyAPI.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        private readonly IFileStorageService _fileStorageService;
+        private readonly ICloudinaryImageService _imageService;
         private readonly RoleManager<AppRole> _roleManager;
-        private string container = "usersImg";
         private IBasketRepository _basketRepository;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenService tokenService, IMapper mapper, IUserRepository userRepository, IFileStorageService fileStorageService,
+            ITokenService tokenService, IMapper mapper, IUserRepository userRepository, ICloudinaryImageService imageService,
             RoleManager<AppRole> roleManager, IBasketRepository basketRepository)
         {
             _mapper = mapper;
@@ -35,7 +34,7 @@ namespace MyAPI.Controllers
             _tokenService = tokenService;
             _signInManager = signInManager;
             _userManager = userManager;
-            _fileStorageService = fileStorageService;
+            _imageService = imageService;
             _roleManager = roleManager;
             _basketRepository = basketRepository;
         }
@@ -174,7 +173,16 @@ namespace MyAPI.Controllers
 
             if(userProfileDto.File != null)
             {
-                userToUpdate.Photo = await _fileStorageService.EditFile(container, userProfileDto.File, userToUpdate.Photo);
+                var imageResult = await _imageService.AddImageAsync(userProfileDto.File);
+
+                if (imageResult.Error != null)
+                    return BadRequest(new ApiResponse(400, imageResult.Error.Message));
+
+                if (!string.IsNullOrEmpty(userToUpdate.PublicId))
+                    await _imageService.DeleteImageAsync(userToUpdate.PublicId);
+
+                userToUpdate.Photo = imageResult.SecureUrl.ToString();
+                userToUpdate.PublicId = imageResult.PublicId;
             }
 
             if(userProfileDto.AddressDto != null)

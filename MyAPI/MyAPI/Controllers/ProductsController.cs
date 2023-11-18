@@ -64,12 +64,6 @@ namespace MyAPI.Controllers
         public async Task<ActionResult<ProductToReturn>> CreateUpdateProduct([FromForm] ProductAddUpdateDto productAddUpdateDto)
         {
             var productToModify = new Product();
-            string imageUrl = "";
-
-            if(productAddUpdateDto.File != null)
-            {
-                imageUrl = await _fileStorageService.EditFile(prodContainer, productAddUpdateDto.File, imageUrl);
-            }
 
             var agriTypeParam = new AgriTypeParam();
             agriTypeParam.Search = productAddUpdateDto.AgriType;
@@ -82,7 +76,7 @@ namespace MyAPI.Controllers
                 productAddUpdateDto.Price = productAddUpdateDto.SalesTax != 0 ? ComputeRealPrice(productAddUpdateDto.Price, productAddUpdateDto.SalesTax) : productAddUpdateDto.Price;
                 productToModify = _mapper.Map<Product>(productAddUpdateDto);
                 productToModify.AgriTypeId = agriType.Id;
-                productToModify.PictureUrl = imageUrl;
+                productToModify.PictureUrl = await _fileStorageService.SaveFile(prodContainer, productAddUpdateDto.File);
                 _productsRepo.Add(productToModify);
             }
             else
@@ -96,7 +90,8 @@ namespace MyAPI.Controllers
                 productToModify.Price = (productToModify.SalesTax == productAddUpdateDto.SalesTax && productToModify.Price.Equals(productAddUpdateDto.Price))
                     ? productToModify.Price : ComputeRealPrice(productAddUpdateDto.Price, productAddUpdateDto.SalesTax) ;
 
-                productToModify.PictureUrl = String.IsNullOrEmpty(imageUrl) ? productToModify.PictureUrl : imageUrl;
+                productToModify.PictureUrl = productAddUpdateDto.File != null ? await _fileStorageService.EditFile(prodContainer, productAddUpdateDto.File, productToModify.PictureUrl)
+                    : productToModify.PictureUrl;
                 _productsRepo.Update(productToModify);
             }
 
