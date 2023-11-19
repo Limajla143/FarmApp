@@ -9,6 +9,13 @@ interface Props {
     handleThemeChange: () => void;
 }
 
+const defaultLinks = [
+    {title: 'Home', path: '/'},
+    {title: 'About', path: '/about'},
+    {title: 'Contacts', path: '/contacts'},
+]
+
+
 const midLinks = [
     {title: 'Products', path: '/products'},
 ]
@@ -55,6 +62,18 @@ export default function Header({darkMode, handleThemeChange}: Props) {
                 </Box>
 
                 <List sx={{display: 'flex'}}>
+                    {
+                        defaultLinks.map(({title, path}) => (
+                            <ListItem
+                            component={NavLink}
+                            to={path}
+                            key={path}
+                            sx={navStyles}
+                        >
+                            {title.toUpperCase()}
+                          </ListItem>
+                        ))
+                    }
                     { user && user.role?.includes('Admin') && user.role?.includes('Moderator') && user.role?.includes('Member') &&
                          midLinksForAdmin.map(({title, path}) => (
                             <ListItem

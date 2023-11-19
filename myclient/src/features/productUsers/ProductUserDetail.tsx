@@ -21,7 +21,7 @@ export default function ProductUserDetail() {
         if (item) setQuantity(item.quantity);
         if(!product && id)
             dispatch(fetchProductUserAsync(parseInt(id)));     
-    }, [id, dispatch, product])
+    }, [id, dispatch, product, item])
 
     function handleInputCart(event: any) {
         if(event.target.value >= 0) {

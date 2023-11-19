@@ -1,57 +1,44 @@
-import { Grid } from "@mui/material";
-import FeaturedPost from "./FeaturedPost";
-import Footer from "./Footer";
-import MainFeaturedPost from "./MainFeaturedPost";
-import Main from "./Main";
-
-const mainFeaturedPost = {
-   title: 'Title of a longer featured blog post',
-   description:
-     "Multiple lines of text that form the lede, informing new readers quickly and efficiently about what's most interesting in this post's contents.",
-   image: 'https://source.unsplash.com/random?wallpapers',
-   imageText: 'main image description',
-   linkText: 'Continue reading…',
- };
- 
- const featuredPosts = [
-   {
-     title: 'Featured post',
-     date: 'Nov 12',
-     description:
-       'This is a wider card with supporting text below as a natural lead-in to additional content.',
-     image: 'https://source.unsplash.com/random?wallpapers',
-     imageLabel: 'Image Text',
-   },
-   {
-     title: 'Post title',
-     date: 'Nov 11',
-     description:
-       'This is a wider card with supporting text below as a natural lead-in to additional content.',
-     image: 'https://source.unsplash.com/random?wallpapers',
-     imageLabel: 'Image Text',
-   },
- ];
-
- const posts = [""]
+import { Box, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import Slider from "react-slick";
+import agent from "../../app/api/agent";
+import { toast } from "react-toastify";
 
 export default function HomePage() {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 2,
+    slidesToScroll: 1
+};
+
+   const [homeImages, setHomeImages] = useState<string[]>([]);
+
+   useEffect(() => {
+      agent.Home.getHomeImages().then((response) => {
+        setHomeImages(response);
+      }).catch(error => {
+        toast.error(error);
+      });
+   }, []);
 
    return (
       <>
-      <main>
-           {/* <MainFeaturedPost post={mainFeaturedPost} /> */}
-           {/* <Grid container spacing={4}>
-             {featuredPosts.map((post) => (
-               <FeaturedPost key={post.title} post={post} />
-             ))}
-           </Grid>     */}
-           Hello World
-       </main>
-       <Footer
-         title="Footer"
-         description="Something here to give the footer a purpose!"
-       />
-    </>
+      <Box display='flex' justifyContent='center' sx={{ p: 4 }} >
+                <Typography variant='h1'>
+                    Welcome to MyFarm!
+                </Typography>
+            </Box>
+        <Slider {...settings}>
+          {homeImages?.map((img, index) => (
+          <div key={index} style={{ textAlign: 'center' }}>
+            <img src={img} alt="" style={{ display: 'inline-block', width: '100%', maxHeight: 500}} />
+          </div>
+        ))}
+        </Slider>
+            
+      </>
    )
   
 }

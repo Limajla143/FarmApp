@@ -64,18 +64,17 @@ export default function BasketSummary({subtotal, deliveryFeeOrd, toSetDelivery =
 
     return (
         <>
-          { toSetDelivery ? ( <>
-            <Typography variant="h6" gutterBottom>
-              Delivery Time:
-          </Typography>
-            <AppRadioButtonGroup options={deliveryMethods} selectedValue={deliverymethod} name='deliveryMethodId'
-                onChange={handleChangeDelivery} horizontal={true} />
-          </>) : (<></>)}
-        
-
             <TableContainer component={Paper} variant={'outlined'}>
                 <Table>
                     <TableBody>
+                        <TableRow sx={{ borderBottom: '1px solid #e0e0e0' }}>
+                        { toSetDelivery ? ( <>
+                          <Typography variant="h6" gutterBottom >
+                            Delivery Time: <br />
+                            <AppRadioButtonGroup options={deliveryMethods} selectedValue={deliverymethod} name='deliveryMethodId'
+                            onChange={handleChangeDelivery} horizontal={true} />
+                            </Typography> </>) : (<></>)}
+                        </TableRow>
                         <TableRow>
                             <TableCell colSpan={2}>Sub-Total: </TableCell>
                             <TableCell align="right">{currencyFormat(subtotal)}</TableCell>
@@ -86,7 +85,7 @@ export default function BasketSummary({subtotal, deliveryFeeOrd, toSetDelivery =
                         </TableRow>
                         <TableRow>
                             <TableCell colSpan={2}>Total: </TableCell>
-                            <TableCell align="right">{currencyFormat(subtotal + deliveryFee)}</TableCell>
+                            <TableCell align="right">{currencyFormat(subtotal + deliveryFee)} </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

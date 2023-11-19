@@ -164,6 +164,10 @@ const Payments = {
     createPaymentIntent: (basketId: string) => requests.post(`payments/createPaymentIntent?basketId=${basketId}`, {})
 }
 
+const Home = {
+    getHomeImages: () => requests.get('home/getHomeImages')
+}
+
 const TestErrors = {
     get400Error: () => requests.get('testerror/bad-request'),
     get401Error: () => requests.get('testerror/test-auth'),
@@ -181,6 +185,7 @@ const agent = {
   Basket,
   Orders,
   Payments,
+  Home,
   TestErrors
 }
 

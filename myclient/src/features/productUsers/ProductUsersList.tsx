@@ -21,7 +21,7 @@ export default function ProductUsersList({productUsers}: Props) {
               )}
               
           </Grid>         
-        ))}
+        )) }
       </Grid>
 
     )

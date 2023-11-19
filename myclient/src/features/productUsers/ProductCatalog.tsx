@@ -1,4 +1,4 @@
-import { FormGroup, Grid, Paper } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import useProductUsers from "../../app/hooks/useProductUsers";
 import LoadingComponent from "../../app/layout/Loading";
 import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
