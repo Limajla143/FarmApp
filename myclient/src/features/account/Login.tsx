@@ -71,6 +71,13 @@ export default function Login(){
                         </Link>
                     </Grid>
                 </Grid>
+                <Grid container>
+                   <Grid item>
+                        <Link to='/forgotpassword' style={{ textDecoration: 'none' }}>
+                            {"Forgot password?"}
+                        </Link>
+                    </Grid>
+                </Grid>
             </Box>
         </Container>
     )

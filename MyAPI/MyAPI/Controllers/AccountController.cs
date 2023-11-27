@@ -110,13 +110,13 @@ namespace MyAPI.Controllers
         }
 
         [HttpPost("confirmemail")]
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        public async Task<ActionResult> ConfirmEmail(string userId, string token)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
-                return BadRequest(new ApiResponse(400, "User not found."));
+                return BadRequest(new ApiResponse(401, "Your account does not exist."));
             }
 
             try
@@ -139,6 +139,50 @@ namespace MyAPI.Controllers
             }
 
             return BadRequest(new ApiResponse(400, "Email confirmation failed. Please contact the admin."));
+        }
+
+        [HttpPost("forgotPassword")]
+        public async Task<ActionResult> ForgotPassword(string useremail) 
+        {
+            var user = await _userManager.FindByEmailAsync(useremail);
+
+            if (user == null)
+                return BadRequest(new ApiResponse(401, "Your account does not exist."));
+
+            if(user.EmailConfirmed)
+            {
+                var passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                var passwordResetLink = $"{_config["ClientUrl"]}/resetpassword/{user.Email}/{WebUtility.UrlEncode(passwordResetToken)}";
+
+                await _emailService.SendAsync(user.Email, "Reset your password from MyFarm App",
+                    $"Please click on this link to reset your password: {passwordResetLink}");
+
+                return Ok(new ApiResponse(200, "Verification code already sent to to your email."));
+
+            }
+            else
+            {
+                return BadRequest(new ApiResponse(401, "Your email not yet confirmed."));
+            }
+        }
+
+        [HttpPost("resetPassword")]
+        public async Task<ActionResult> ResetPassword(ResetPasswordDto resetPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(resetPassword.Email);
+
+            if (user == null)
+                return BadRequest(new ApiResponse(401, "Your account does not exist."));
+
+            var result = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.NewPassword);
+
+            if(result.Succeeded)
+            {
+                return Ok(new ApiResponse(200, "You may now login"));
+            }
+
+            return BadRequest(new ApiResponse(400, $"Change Password failed. {result.Errors.FirstOrDefault().Description}"));
         }
 
 
