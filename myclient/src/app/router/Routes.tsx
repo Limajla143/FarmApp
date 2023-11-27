@@ -17,6 +17,7 @@ import CheckoutWrapper from "../../features/checkOut/CheckoutWrapper";
 import ErrorPage from "../../features/testerrors/ErrorPage";
 import Contact from "../../features/home/Contact";
 import About from "../../features/home/About";
+import ConfirmEmail from "../../features/account/ConfirmEmail";
 
 export const router = createBrowserRouter([
     {
@@ -26,6 +27,8 @@ export const router = createBrowserRouter([
             {path: 'register', element: <Register />},
             {path: 'contacts', element: <Contact />},
             {path: 'about', element: <About />},
+            {path: 'confirmemail', element: <ConfirmEmail />},
+            {path: 'successconfirmemail/:userId/:token', element: <ConfirmEmail />},
             {element: <RequireAuth />, children: [
                 {path: 'products', element: <ProductCatalog />},
                 {path: 'products/:id', element: <ProductUserDetail />},

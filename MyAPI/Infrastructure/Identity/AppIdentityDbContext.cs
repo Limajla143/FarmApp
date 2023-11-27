@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace Infrastructure
 {
@@ -26,7 +27,11 @@ namespace Infrastructure
                 .HasMany(ur => ur.UserRoles)
                 .WithOne(u => u.Role)
                 .HasForeignKey(ur => ur.RoleId)
-                .IsRequired();
+            .IsRequired();
+
+            builder.Entity<AppUser>()
+                .Property(p => p.ConcurrencyStamp)
+                .IsConcurrencyToken();
         }
     }
 }

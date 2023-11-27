@@ -115,7 +115,8 @@ const Account = {
     login: (values: any) => requests.post('account/login', values),
     register: (values: any) => requests.post('account/register', values),
     currentUser: () => requests.get('account/currentUser'),
-    getUserAddress: () => requests.get('account/getAddress')
+    getUserAddress: () => requests.get('account/getAddress'),
+    confirmEmail: (userId: string, token: string) => requests.post(`account/confirmemail?userId=${userId}&token=${token}`, {})
 }
 
 const Admin = {

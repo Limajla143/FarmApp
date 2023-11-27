@@ -51,8 +51,8 @@ export default function Register() {
             noValidate sx={{ mt: 1 }}
             onSubmit={handleSubmit(data => agent.Account.register(data)
                 .then(() => {
-                    toast.success('Registration successful - you can now login');
-                    navigate('/login');
+                    toast.success('Registration successful');
+                    navigate('/confirmemail');
             })
             .catch(error => 
                 handleApiErrors(error)           

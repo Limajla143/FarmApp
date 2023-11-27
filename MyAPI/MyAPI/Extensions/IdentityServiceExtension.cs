@@ -1,7 +1,9 @@
 ﻿using Core;
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure;
 using Infrastructure.Identity;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,11 +26,18 @@ namespace MyAPI.Extensions
             services.AddIdentityCore<AppUser>(opt =>
             {
                 // add identity options here
+               opt.Lockout.MaxFailedAccessAttempts = 5;
+               opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(15);
+               opt.User.RequireUniqueEmail = true;
+               opt.SignIn.RequireConfirmedEmail = true;
             })
             .AddRoles<AppRole>()
             .AddRoleManager<RoleManager<AppRole>>()
             .AddEntityFrameworkStores<AppIdentityDbContext>()
-            .AddSignInManager<SignInManager<AppUser>>();
+            .AddSignInManager<SignInManager<AppUser>>()
+            .AddDefaultTokenProviders();
+
+            services.Configure<SmtpSetting>(config.GetSection("SMTP"));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -47,6 +56,7 @@ namespace MyAPI.Extensions
             services.AddAuthorization();
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddTransient<IEmailService, EmailService>();
 
             return services;
         }

@@ -11,6 +11,8 @@ using MyAPI.Dtos;
 using MyAPI.Extensions;
 using MyAPI.Helpers;
 using MyAPI.Middleware.Errors;
+using System.Net;
+using System.Net.Mail;
 
 namespace MyAPI.Controllers
 {
@@ -24,10 +26,12 @@ namespace MyAPI.Controllers
         private readonly ICloudinaryImageService _imageService;
         private readonly RoleManager<AppRole> _roleManager;
         private IBasketRepository _basketRepository;
+        private readonly IEmailService _emailService;
+        private readonly IConfiguration _config;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
             ITokenService tokenService, IMapper mapper, IUserRepository userRepository, ICloudinaryImageService imageService,
-            RoleManager<AppRole> roleManager, IBasketRepository basketRepository)
+            RoleManager<AppRole> roleManager, IBasketRepository basketRepository, IEmailService emailService, IConfiguration config)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -37,6 +41,8 @@ namespace MyAPI.Controllers
             _imageService = imageService;
             _roleManager = roleManager;
             _basketRepository = basketRepository;
+            _emailService = emailService;
+            _config = config;
         }
 
         [HttpPost("login")]
@@ -44,14 +50,19 @@ namespace MyAPI.Controllers
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-            if (user == null) return Unauthorized(new ApiResponse(401));
+            if (user == null) return Unauthorized(new ApiResponse(401, "Your account does not exist."));
 
             if(!user.IsActive)
             {
                 return Unauthorized(new ApiResponse(401, "Your account is inactive, inquire the sysdamin."));
             }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            if (!user.EmailConfirmed)
+            {
+                return Unauthorized(new ApiResponse(401, "Please confirm your email."));
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, true);
 
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
 
@@ -72,7 +83,8 @@ namespace MyAPI.Controllers
             var user = new AppUser
             {
                 Email = registerDto.Email,
-                UserName = registerDto.Username
+                UserName = registerDto.Username,
+                IsActive = true
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -81,13 +93,54 @@ namespace MyAPI.Controllers
 
             if (!result.Succeeded || !role.Succeeded) return BadRequest(new ApiResponse(400, result.Errors.FirstOrDefault().Description));
 
-            return new UserDto
+            if (result.Succeeded)
             {
-                Username = user.UserName,
-                Token = await _tokenService.CreateToken(user),
-                Email = user.Email
-            };
+                var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                var confirmationLink = $"{_config["ClientUrl"]}/successconfirmemail/{user.Id}/{WebUtility.UrlEncode(confirmationToken)}";
+
+                await _emailService.SendAsync(user.Email, "Please confirm email from MyFarm",
+                    $"Please click on this link to confirm you email address: {confirmationLink}");
+            }
+
+            //Url.Action("ConfirmEmail", "Account",
+            //values: new { userId = user.Id, token = confirmationToken }, Request.Scheme, Request.Host.ToString());
+
+            return Ok(result);
         }
+
+        [HttpPost("confirmemail")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return BadRequest(new ApiResponse(400, "User not found."));
+            }
+
+            try
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+
+                if (result.Succeeded)
+                {
+                    return Ok(new ApiResponse(200, "You may now login"));
+                }
+                else if (result.Errors.Any(x => x.Code.Equals("ConcurrencyFailure")))
+                {
+                    await _userManager.UpdateSecurityStampAsync(user);
+                    return NoContent();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponse(400, $"Email confirmation failed. {ex.Message}"));
+            }
+
+            return BadRequest(new ApiResponse(400, "Email confirmation failed. Please contact the admin."));
+        }
+
 
         [Authorize]
         [HttpGet("currentUser")]
