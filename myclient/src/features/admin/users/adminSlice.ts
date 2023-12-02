@@ -42,17 +42,17 @@ export const getUsersAdmin = createAsyncThunk<UserProfile[], void, {state: RootS
     }
 )
 
-export const getUserAdmin = createAsyncThunk<UserProfile, number>(
-    'admin/getUserAdmin',
-    async (id, thunkAPI) => {
-        try {
-            const user = await agent.Admin.getUserForAdmin(id);
-            return user;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue({error: error.data})
-        }
-    }
-)
+// export const getUserAdmin = createAsyncThunk<UserProfile, number>(
+//     'admin/getUserAdmin',
+//     async (id, thunkAPI) => {
+//         try {
+//             const user = await agent.Admin.getUserForAdmin(id);
+//             return user;
+//         } catch (error: any) {
+//             return thunkAPI.rejectWithValue({error: error.data})
+//         }
+//     }
+// )
 
 export const fetchRoles = createAsyncThunk(
     'admin/fetchRoles',
@@ -116,16 +116,16 @@ export const adminSlice = createSlice({
         buider.addCase(getUsersAdmin.rejected, (state) => {
             state.userstatus = 'idle';
         });
-        buider.addCase(getUserAdmin.pending, (state) => {
-            state.userstatus = 'pending';
-        });
-        buider.addCase(getUserAdmin.fulfilled, (state, action) => {
-            userProfileTypeAdapter.upsertOne(state, action.payload);
-            state.userstatus = 'idle';
-        });
-        buider.addCase(getUserAdmin.rejected, (state) => {
-            state.userstatus = 'idle';
-        });
+        // buider.addCase(getUserAdmin.pending, (state) => {
+        //     state.userstatus = 'pending';
+        // });
+        // buider.addCase(getUserAdmin.fulfilled, (state, action) => {
+        //     userProfileTypeAdapter.upsertOne(state, action.payload);
+        //     state.userstatus = 'idle';
+        // });
+        // buider.addCase(getUserAdmin.rejected, (state) => {
+        //     state.userstatus = 'idle';
+        // });
         buider.addCase(fetchRoles.pending, (state) => {
             state.userstatus = 'pendingRoles';
         });

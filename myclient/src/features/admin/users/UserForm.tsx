@@ -3,7 +3,7 @@ import { UserProfile } from "../../../app/models/UserProfile"
 import { useAppDispatch } from "../../../app/store/configStore";
 import { useEffect } from "react";
 import agent from "../../../app/api/agent";
-import { getUserAdmin, getUsersAdmin } from "./adminSlice";
+import {  getUsersAdmin } from "./adminSlice";
 import { toast } from "react-toastify";
 import { Box, Paper, Typography, Grid, Button } from "@mui/material";
 import AppTextInput from "../../../app/components/AppTextInput";

@@ -2,6 +2,7 @@
 using Core;
 using Core.Interfaces;
 using Core.Specifications;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,29 +21,30 @@ namespace MyAPI.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly ICloudinaryImageService _imageService;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
-        private readonly ICloudinaryImageService _imageService;
-        private readonly RoleManager<AppRole> _roleManager;
+     
+       
         private IBasketRepository _basketRepository;
         private readonly IEmailService _emailService;
+        private readonly ISmsSenderService _smsSenderService;
         private readonly IConfiguration _config;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenService tokenService, IMapper mapper, IUserRepository userRepository, ICloudinaryImageService imageService,
-            RoleManager<AppRole> roleManager, IBasketRepository basketRepository, IEmailService emailService, IConfiguration config)
+            ITokenService tokenService, IMapper mapper, ICloudinaryImageService imageService,
+            IBasketRepository basketRepository, IEmailService emailService, ISmsSenderService smsSenderService,
+            IConfiguration config)
         {
             _mapper = mapper;
-            _userRepository = userRepository;
             _tokenService = tokenService;
             _signInManager = signInManager;
             _userManager = userManager;
-            _imageService = imageService;
-            _roleManager = roleManager;
             _basketRepository = basketRepository;
             _emailService = emailService;
+            _smsSenderService = smsSenderService;
             _config = config;
+            _imageService = imageService;
         }
 
         [HttpPost("login")]
@@ -185,7 +187,6 @@ namespace MyAPI.Controllers
             return BadRequest(new ApiResponse(400, $"Change Password failed. {result.Errors.FirstOrDefault().Description}"));
         }
 
-
         [Authorize]
         [HttpGet("currentUser")]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
@@ -228,34 +229,17 @@ namespace MyAPI.Controllers
             return BadRequest("Problem updating the user");
         }
 
-        //ADMIN SIDE
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("GetUsersByAdmin")]
-        public async Task<ActionResult<PagedList<UserProfileDto>>> GetUsersByAdmin([FromQuery] UsersParam usersParams)
+        [HttpGet("GetUserByUser")]
+        public async Task<ActionResult<UserProfileDto>> GetUserByAdmin()
         {
-            var users = await _userRepository.GetUsersAsync(usersParams);
-
-            var pagedUsers = PagedList<UserProfileDto>.ToPagedList(_mapper.Map<IReadOnlyList<AppUser>, IReadOnlyList<UserProfileDto>>(users),
-                usersParams.PageNumber, usersParams.PageSize, users.Count());
-
-            Response.AddPaginationHeader(pagedUsers.MetaData);
-
-            return Ok(pagedUsers.OrderBy(x => x.UserName));
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("GetUserByAdmin/{id}")]
-        public async Task<ActionResult<UserProfileDto>> GetUserByAdmin(int id)
-        {
-            var user = await _userRepository.GetUserByIdAsync(id);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (user == null) return NotFound(new ApiResponse(404));
 
             return _mapper.Map<AppUser, UserProfileDto>(user);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpPut("UpdateUser")]
         public async Task<ActionResult> UpdateUser([FromForm] UserCreateDto userProfileDto)
         {
@@ -268,7 +252,7 @@ namespace MyAPI.Controllers
             userToUpdate.MobileNumber = userProfileDto.MobileNumber;
             userToUpdate.IsActive = userProfileDto.IsActive;
 
-            if(userProfileDto.File != null)
+            if (userProfileDto.File != null)
             {
                 var imageResult = await _imageService.AddImageAsync(userProfileDto.File);
 
@@ -282,27 +266,9 @@ namespace MyAPI.Controllers
                 userToUpdate.PublicId = imageResult.PublicId;
             }
 
-            if(userProfileDto.AddressDto != null)
+            if (userProfileDto.AddressDto != null)
             {
                 userToUpdate.Address = _mapper.Map<AddressDto, Address>(userProfileDto.AddressDto);
-            }
-
-            if(userProfileDto.Roles.Count > 0)
-            {
-                var userRoles = await _userManager.GetRolesAsync(userToUpdate);
-                var rolesIncludes = userProfileDto.Roles.Except(userRoles);
-                var rolesExcludes = userRoles.Except(userProfileDto.Roles);
-
-                foreach (var role in rolesIncludes)
-                {
-                    if (!await _roleManager.RoleExistsAsync(role))
-                    {
-                        return BadRequest($"Role '{role}' does not exist.");
-                    }
-                }
-
-                await _userManager.AddToRolesAsync(userToUpdate, rolesIncludes);
-                await _userManager.RemoveFromRolesAsync(userToUpdate, rolesExcludes);
             }
 
             var result = await _userManager.UpdateAsync(userToUpdate);
@@ -311,15 +277,5 @@ namespace MyAPI.Controllers
 
             return BadRequest("Problem updating the user");
         }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("GetRoles")]
-        public async Task<ActionResult<List<string>>> GetAllRoles()
-        {
-            var roles = await _roleManager.Roles.ToListAsync();
-
-            return Ok(roles.Select(x => x.Name).ToList());
-        }      
-
     }
 }

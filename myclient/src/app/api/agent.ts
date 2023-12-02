@@ -118,14 +118,14 @@ const Account = {
     getUserAddress: () => requests.get('account/getAddress'),
     confirmEmail: (userId: string, token: string) => requests.post(`account/confirmemail?userId=${userId}&token=${token}`, {}),
     forgotPassword: (useremail: string) => requests.post(`account/forgotpassword?useremail=${useremail}`, {}),
-    resetPassword: (values: any) => requests.post('account/resetpassword', values)
+    resetPassword: (values: any) => requests.post('account/resetpassword', values),
+    getUserByUser: () => requests.get(`account/getUserByUser`),
 }
 
 const Admin = {
-    getUsersForAdmin: (params: URLSearchParams) => requests.get('account/getUsersByAdmin', params),
-    getUserForAdmin: (id: number) => requests.get(`account/getUserByAdmin/${id}`),
-    updateUserForAdmin: (userProfileDto: any) => requests.putForm('account/updateUser', createFormDataNested(userProfileDto)),
-    getRoles: () => requests.get('account/getRoles')
+    getUsersForAdmin: (params: URLSearchParams) => requests.get('accountAdmin/getUsersByAdmin', params),
+    updateUserForAdmin: (userProfileDto: any) => requests.putForm('accountAdmin/updateUser', createFormDataNested(userProfileDto)),
+    getRoles: () => requests.get('accountAdmin/getRoles')
 }
 
 const AgriTypes = {
