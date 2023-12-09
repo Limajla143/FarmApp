@@ -14,6 +14,10 @@ export default function RequireAuth({role}: Props) {
         return <Navigate to='/login' state={{from: location}} />
     }
 
+    if(user.statusId == 5) {
+        return <Navigate to={`/getUser/${user.email}`} />
+    }
+
     if(role && !role.some(r => user.role?.includes(r))) {
         toast.error('Not authorized to access this.');
         return <Navigate to='/' />

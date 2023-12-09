@@ -8,10 +8,10 @@ namespace MyAPI.Extensions
     public static class UserManagerExtension
     {
         public static async Task<AppUser> FindByEmailFromClaimsPrincipal(this UserManager<AppUser> userManager,
-            ClaimsPrincipal user)
+            string email)
         {
-            return await userManager.Users
-                .SingleOrDefaultAsync(x => x.Email == user.FindFirstValue(ClaimTypes.Email));
+            return await userManager.Users.Include(x => x.Address)
+                .SingleOrDefaultAsync(x => x.Email.Equals(email));
         }
 
         public static async Task<AppUser> FindUserByIdAsync(this UserManager<AppUser> userManager, int Id)

@@ -6,7 +6,7 @@ import { UserProfile } from "../../../app/models/UserProfile";
 import AppPagination from "../../../app/components/AppPagination";
 import { setUsersPageNumber } from "./adminSlice";
 import UserSearchInput from "./UserSearchInput";
-import UserForm from "./UserForm";
+import UserAdminForm from "./UserAdminForm";
 import useUserProfiles from "../../../app/hooks/useUserProfile";
 
 export default function UserProfileLists() {
@@ -25,7 +25,7 @@ export default function UserProfileLists() {
         setEditMode(false);
     }
 
-    if (editMode) return <UserForm user={selectedUserProfile} cancelEdit={cancelEdit} />
+    if (editMode) return <UserAdminForm user={selectedUserProfile} cancelEdit={cancelEdit} />
 
     return (
         <>

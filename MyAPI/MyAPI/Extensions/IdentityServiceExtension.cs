@@ -38,7 +38,7 @@ namespace MyAPI.Extensions
             .AddDefaultTokenProviders();
 
             services.Configure<SmtpSetting>(config.GetSection("SMTP"));
-            services.Configure<TwilioSettings>(config.GetSection("TwilioSettings"));
+            services.Configure<TwilioSettings>(config.GetSection("TextLocalSettings"));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -59,7 +59,7 @@ namespace MyAPI.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<ISmsSenderService, SmsSenderService>();
-
+            services.AddSingleton<IConfig, Config>();
 
             return services;
         }

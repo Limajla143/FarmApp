@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { Container, Paper, Avatar, Typography, Box, TextField, Grid } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FieldValues, useForm } from "react-hook-form";
-import { fetchCurrentUser, setUser, signInUser } from "./accountSlice";
-import { useAppDispatch } from "../../app/store/configStore";
+import { signInUser } from "./accountSlice";
+import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
 import { LoadingButton } from "@mui/lab";
+import { toast } from "react-toastify";
+import Pin from "./Pin";
+
 
 export default function Login(){
     const navigate = useNavigate();
@@ -12,19 +16,30 @@ export default function Login(){
     const location = useLocation();
     const {register, handleSubmit, formState: {isSubmitting, errors, isValid}} = useForm({
         mode: 'onTouched'
-    })
+    });
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+      };
+    
+      const submitRequest = () => {
+        setOpen(false);
+    };
 
     async function submitForm(data: FieldValues) {
         try {
-            await dispatch(signInUser(data));
+            const user = await dispatch(signInUser(data));
             navigate('/');
-        } catch (error) {
-            console.log(error);
+        } catch (error : any) {
+            toast.error(error);
         }
-
     }
     return (
-        <Container component={Paper} maxWidth='sm' sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <>
+            <Pin isOpen={open} closeDialog={submitRequest} />
+
+            <Container component={Paper} maxWidth='sm' sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                 <LockOutlined />
             </Avatar>
@@ -38,7 +53,7 @@ export default function Login(){
                 <TextField
                     margin="normal"
                     fullWidth
-                    label="Username"
+                    label="Email"
                     autoFocus
                     {...register('email', {required: 'Username is required!'})}
                     error={!!errors.email}
@@ -80,5 +95,6 @@ export default function Login(){
                 </Grid>
             </Box>
         </Container>
+        </>
     )
 }

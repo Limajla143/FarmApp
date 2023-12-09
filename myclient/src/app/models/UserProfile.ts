@@ -13,6 +13,18 @@ export interface UserProfile {
   roles?: string[];
 }
 
+export interface UserToComplete {
+  id: number;
+  email: string;
+  userName: string;
+  dateOfBirth: Date;
+  gender: string;
+  photo: string;
+  addressDto?: Address; 
+  mobileNumber: number;
+  isActive: boolean;
+}
+
 export interface UserProfileParams {
     search?: string;
     pageNumber: number;

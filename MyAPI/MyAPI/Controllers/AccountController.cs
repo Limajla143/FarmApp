@@ -30,11 +30,12 @@ namespace MyAPI.Controllers
         private readonly IEmailService _emailService;
         private readonly ISmsSenderService _smsSenderService;
         private readonly IConfiguration _config;
+        private readonly IConfig _configv1;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
             ITokenService tokenService, IMapper mapper, ICloudinaryImageService imageService,
             IBasketRepository basketRepository, IEmailService emailService, ISmsSenderService smsSenderService,
-            IConfiguration config)
+            IConfiguration config, IConfig configv1)
         {
             _mapper = mapper;
             _tokenService = tokenService;
@@ -45,28 +46,38 @@ namespace MyAPI.Controllers
             _smsSenderService = smsSenderService;
             _config = config;
             _imageService = imageService;
+            _configv1 = configv1;
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
-
-            if (user == null) return Unauthorized(new ApiResponse(401, "Your account does not exist."));
-
-            if(!user.IsActive)
-            {
-                return Unauthorized(new ApiResponse(401, "Your account is inactive, inquire the sysdamin."));
-            }
-
-            if (!user.EmailConfirmed)
-            {
-                return Unauthorized(new ApiResponse(401, "Please confirm your email."));
-            }
+            var user = await _userManager.FindByEmailFromClaimsPrincipal(loginDto.Email);
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, true);
 
-            if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
+            LogInStatus logInStatus = _configv1.GetLoginStatus(user, result);
+
+            switch (logInStatus)
+            {
+                    case LogInStatus.EmailNotExist:
+                           return Unauthorized(new ApiResponse(401, "Your email does not exist."));
+                    case LogInStatus.Inactive:
+                           return Unauthorized(new ApiResponse(401, "Your account is inactive, inquire the sysdamin."));
+                    case LogInStatus.EmailUnconfirmed:
+                           return Unauthorized(new ApiResponse(401, "Please confirm your email."));
+                    //case LogInStatus.MobileNumberUnconfirmed:
+                    //        await GenerateOTP();
+                    //    break;
+                    case LogInStatus.Locked:
+                        return Unauthorized(new ApiResponse(401, "Your account is locked. Please try again later."));
+                    case LogInStatus.NotAllowed:
+                        return Unauthorized(new ApiResponse(401, "Your account is locked. Please try again later."));
+                    case LogInStatus.FailedAuthentication:
+                        return Unauthorized(new ApiResponse(401));
+                    default:
+                        break;
+            }
 
             var basket = await _basketRepository.GetBasketAsync(user.UserName);
 
@@ -75,7 +86,8 @@ namespace MyAPI.Controllers
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user),
                 Username = user.UserName,
-                Basket = basket != null ? basket.MapBasketToDto() : null
+                Basket = basket != null ? basket.MapBasketToDto() : null,
+                StatusId = (int)logInStatus
             };
         }
 
@@ -160,7 +172,7 @@ namespace MyAPI.Controllers
                 await _emailService.SendAsync(user.Email, "Reset your password from MyFarm App",
                     $"Please click on this link to reset your password: {passwordResetLink}");
 
-                return Ok(new ApiResponse(200, "Verification code already sent to to your email."));
+                return Ok(new ApiResponse(200, "Verification link already sent to to your email."));
 
             }
             else
@@ -226,13 +238,14 @@ namespace MyAPI.Controllers
 
             if (result.Succeeded) return Ok(_mapper.Map<AddressDto>(user.Address));
 
-            return BadRequest("Problem updating the user");
+            return BadRequest(new ApiResponse(500, "Problem updating the user"));
         }
 
-        [HttpGet("GetUserByUser")]
-        public async Task<ActionResult<UserProfileDto>> GetUserByAdmin()
+        [Authorize]
+        [HttpGet("GetUserByUser/{email}")]
+        public async Task<ActionResult<UserProfileDto>> GetUserByUser(string email)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null) return NotFound(new ApiResponse(404));
 
@@ -246,11 +259,9 @@ namespace MyAPI.Controllers
             var userToUpdate = await _userManager.FindUserByClaimsById(userProfileDto.Id);
 
             userToUpdate.UserName = userProfileDto.UserName;
-            userToUpdate.Email = userProfileDto.Email;
             userToUpdate.DateOfBirth = userProfileDto.DateOfBirth;
             userToUpdate.Gender = userProfileDto.Gender;
             userToUpdate.MobileNumber = userProfileDto.MobileNumber;
-            userToUpdate.IsActive = userProfileDto.IsActive;
 
             if (userProfileDto.File != null)
             {
@@ -273,9 +284,31 @@ namespace MyAPI.Controllers
 
             var result = await _userManager.UpdateAsync(userToUpdate);
 
-            if (result.Succeeded) return NoContent();
+            if (result.Succeeded) return Ok(new ApiResponse(200, "Successfully saved!"));
 
-            return BadRequest("Problem updating the user");
+            return BadRequest(new ApiResponse(500, "Problem updating the user"));
         }
+
+        //private async Task GenerateOTP()
+        //{
+        //    var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+        //    if (user == null)
+        //    {
+        //        throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+        //    }
+
+        //    try
+        //    {
+        //        var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Phone");
+        //        await _smsSenderService.SendSmsAsync(user.PhoneNumber, $"MyFarm OTP Code is: ${token}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        throw;
+        //    }
+        //}
+
     }
 }

@@ -20,6 +20,7 @@ import About from "../../features/home/About";
 import ConfirmEmail from "../../features/account/ConfirmEmail";
 import ForgotPassword from "../../features/account/ForgotPassword";
 import ResetPassword from "../../features/account/ResetPassword";
+import UserForm from "../../features/account/UserForm";
 
 export const router = createBrowserRouter([
     {
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
                 {path: 'basket', element: <BasketPage />},
                 {path: 'orders', element: <Orders /> },
                 {path: 'checkout', element: <CheckoutWrapper />},
+                {path: 'getUser/:email', element: <UserForm /> }
             ]},
             // for moderator and admin only
             {element: <RequireAuth role={['Admin', 'Moderator']}/>, children: [

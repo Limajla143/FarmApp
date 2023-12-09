@@ -119,12 +119,13 @@ const Account = {
     confirmEmail: (userId: string, token: string) => requests.post(`account/confirmemail?userId=${userId}&token=${token}`, {}),
     forgotPassword: (useremail: string) => requests.post(`account/forgotpassword?useremail=${useremail}`, {}),
     resetPassword: (values: any) => requests.post('account/resetpassword', values),
-    getUserByUser: () => requests.get(`account/getUserByUser`),
+    getUserByUser: (email: string) => requests.get(`account/getUserByUser/${email}`),
+    updateUser: (userProfileDto: any) => requests.putForm('account/updateUser', createFormDataNested(userProfileDto))
 }
 
 const Admin = {
     getUsersForAdmin: (params: URLSearchParams) => requests.get('accountAdmin/getUsersByAdmin', params),
-    updateUserForAdmin: (userProfileDto: any) => requests.putForm('accountAdmin/updateUser', createFormDataNested(userProfileDto)),
+    updateUserForAdmin: (userProfileDto: any) => requests.putForm('accountAdmin/updateUserAdmin', createFormDataNested(userProfileDto)),
     getRoles: () => requests.get('accountAdmin/getRoles')
 }
 

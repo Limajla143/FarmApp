@@ -5,5 +5,6 @@ export interface User {
     token: string;
     username: string;
     basket?: Basket;
+    statusId: number;
     role?: string[];
 }

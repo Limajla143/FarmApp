@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-export const userValidation = yup.object({
+export const userAdminValidation = yup.object({
     email: yup.string().required(),
     userName: yup.string().required(),
     dateOfBirth: yup.string().required(),

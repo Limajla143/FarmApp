@@ -1,65 +1,77 @@
-import { FieldValues, useForm } from "react-hook-form";
-import { UserProfile } from "../../../app/models/UserProfile"
-import { useAppDispatch } from "../../../app/store/configStore";
-import { useEffect } from "react";
-import agent from "../../../app/api/agent";
-import {  getUsersAdmin } from "./adminSlice";
-import { toast } from "react-toastify";
-import { Box, Paper, Typography, Grid, Button } from "@mui/material";
-import AppTextInput from "../../../app/components/AppTextInput";
-import AppSelectList from "../../../app/components/AppSelectList";
-import { userValidation } from "./userValidation";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {  LoadingButton } from "@mui/lab";
-import AppDropzone from "../../../app/components/AppDropzone";
-import AppCheckbox from "../../../app/components/AppCheckbox";
-import useUserProfiles from "../../../app/hooks/useUserProfile";
-import AppMultiSelectList from "../../../app/components/AppMultiSelectList";
-
-interface Props {
-    user?: UserProfile;
-    cancelEdit: () => void;
-}
+import { UserToComplete } from "../../app/models/UserProfile";
+import { FieldValues, useForm } from "react-hook-form";
+import { userValidation } from "./userValidation";
+import { useEffect, useState } from "react";
+import agent from "../../app/api/agent";
+import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
+import { LoadingButton } from "@mui/lab";
+import { Box, Paper, Typography, Grid, Button } from "@mui/material";
+import AppDropzone from "../../app/components/AppDropzone";
+import AppSelectList from "../../app/components/AppSelectList";
+import AppTextInput from "../../app/components/AppTextInput";
+import { useAppDispatch} from "../../app/store/configStore";
+import {  signOut } from "./accountSlice";
+import { clearBasket } from "../basket/basketSlice";
 
 const genderOptions = ['Male', 'Female'];
 
-export default function UseForm({user, cancelEdit}: Props) {
-    const { control, reset, handleSubmit, watch, formState: { isDirty, isSubmitting } } = useForm({
+export default function UserForm() {
+    const {email} = useParams<{email: string}>();
+
+    const { control, reset, handleSubmit, watch, formState: { isDirty, isSubmitting, isValid } } = useForm({
         resolver: yupResolver<any>(userValidation)
     });
     
     const watchFile = watch('file', null);
+    const [userDetails, setUserDetails] = useState<UserToComplete>();
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const {roles} = useUserProfiles();
 
     useEffect(() => {
-        if (user && !watchFile && !isDirty) {
-            reset(user);
+
+        const getUser = async () => {
+            await agent.Account.getUserByUser(email!).then(response => {
+                setUserDetails(response);
+              }).catch(error => {
+                toast.error(error);
+              });
+          };
+      
+          getUser();
+
+        if (userDetails && !watchFile && !isDirty) {
+            reset(userDetails);
         } 
         return () => {
             if (watchFile) URL.revokeObjectURL(watchFile.preview);
         }
-    }, [user, reset, isDirty, watchFile])
+    }, [email, userDetails, reset, isDirty, watchFile])
 
     async function handleSubmitData(data: FieldValues) {
-        await agent.Admin.updateUserForAdmin(data).then(() => {
-            dispatch(getUsersAdmin());
+        await agent.Account.updateUser(data).then((response) => {
+            if(response.statusCode == 200) {
+                toast.success(response.message);
+                dispatch(signOut());
+                dispatch(clearBasket());
+                navigate('/login');
+            }
         })
         .catch((error) => {
             toast.error(error.message);
         });
-        cancelEdit();
     }
     
     return (
         <Box component={Paper} sx={{ p: 4 }}>
             <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
-                User Details
+                Please complete you details to proceed ordering.
             </Typography>
             <form onSubmit={handleSubmit(handleSubmitData)}>
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={6}>
-                        <AppTextInput control={control} name='email' label='Email' />
+                        <AppTextInput control={control} name='email' label='Email' disabled defaultValue={email}/>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <AppTextInput control={control} name='userName' label='Username' />
@@ -76,18 +88,12 @@ export default function UseForm({user, cancelEdit}: Props) {
                                 {watchFile ? (
                                 <img src={watchFile.preview} alt="preview" style={{ maxHeight: 200 }} />
                                 ) : (
-                                <img src={user?.photo} alt={user?.userName} style={{ maxHeight: 200 }} />
+                                <img src={userDetails?.photo} alt={userDetails?.userName} style={{ maxHeight: 200 }} />
                                 )}
                         </Box>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <AppTextInput control={control} name='mobileNumber' label='Contact #' />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <AppMultiSelectList name='roles' label='Select Roles' control={control} options={roles} rules={{required: 'Please select at least one.'}} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <AppCheckbox control={control} name='isActive' label='Is Active' />
                     </Grid>
                     <Grid item xs={6}>
                         <AppTextInput control={control} name='addressDto.firstName' label='First Name' />
@@ -109,8 +115,7 @@ export default function UseForm({user, cancelEdit}: Props) {
                     </Grid>
                 </Grid>
                 <Box display='flex' justifyContent='space-between' sx={{ mt: 3 }}>
-                    <Button onClick={cancelEdit} variant='contained' color='inherit'>Cancel</Button>
-                    <LoadingButton loading={isSubmitting} type='submit' variant='contained' color='success'>Submit</LoadingButton>
+                    <LoadingButton loading={isSubmitting} type='submit' variant='contained' color='success' disabled={!isValid}>Submit</LoadingButton>
                 </Box>
             </form>
         </Box>
