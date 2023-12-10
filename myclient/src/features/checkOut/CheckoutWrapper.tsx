@@ -7,7 +7,7 @@ import { setBasket } from "../basket/basketSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
 import LoadingComponent from "../../app/layout/Loading";
 
-const stripePromise = loadStripe('');
+const stripePromise = loadStripe(agent.StripeConfig.PublishableKey);
 
 export default function CheckoutWrapper() {
     const {user} = useAppSelector(state => state.account);  

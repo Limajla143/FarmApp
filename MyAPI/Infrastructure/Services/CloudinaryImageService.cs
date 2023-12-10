@@ -15,13 +15,13 @@ namespace Infrastructure.Services
     {
         private readonly Cloudinary cloudinary;
 
-        public CloudinaryImageService(IConfiguration config)
+        public CloudinaryImageService(IConfig config)
         {
             var acc = new Account
             (
-                config["Cloudinary:CloudName"],
-                config["Cloudinary:ApiKey"],
-                config["Cloudinary:ApiSecret"]
+                config.CloudName,
+                config.ApiKey,
+                config.ApiSecret
             );
 
             cloudinary = new Cloudinary(acc);

@@ -15,14 +15,14 @@ namespace Infrastructure.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly IConfiguration _config;
+        private readonly IConfig _config;
         private readonly UserManager<AppUser> _userManager;
         private readonly SymmetricSecurityKey _key;
-        public TokenService(IConfiguration config, UserManager<AppUser> userManager)
+        public TokenService(IConfig config, UserManager<AppUser> userManager)
         {
             _config = config;
             _userManager = userManager;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.TokenKey));
         }
 
         public async Task<string> CreateToken(AppUser user)
@@ -46,7 +46,7 @@ namespace Infrastructure.Services
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(1),
                 SigningCredentials = creds,
-                Issuer = _config["Token:Issuer"]
+                Issuer = _config.TokenSecret
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

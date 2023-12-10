@@ -2,6 +2,7 @@
 using Core.Identity;
 using Core.Interfaces;
 using Infrastructure;
+using Infrastructure.Data.Config;
 using Infrastructure.Identity;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -38,7 +39,7 @@ namespace MyAPI.Extensions
             .AddDefaultTokenProviders();
 
             services.Configure<SmtpSetting>(config.GetSection("SMTP"));
-            services.Configure<TwilioSettings>(config.GetSection("TextLocalSettings"));
+            services.Configure<TwilioSettings>(config.GetSection("TwilioSettings"));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -58,7 +59,7 @@ namespace MyAPI.Extensions
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddTransient<IEmailService, EmailService>();
-            services.AddScoped<ISmsSenderService, SmsSenderService>();
+            services.AddTransient<ISmsSenderService, SmsSenderService>();
             services.AddSingleton<IConfig, Config>();
 
             return services;

@@ -1,14 +1,11 @@
-﻿using Core.Entities;
+﻿
+using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Core.Specifications;
-using Microsoft.Extensions.Configuration;
 using Stripe;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+
 
 namespace Infrastructure.Services
 {
@@ -16,9 +13,9 @@ namespace Infrastructure.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBasketRepository _basketRepository;
-        private readonly IConfiguration _config;
+        private readonly IConfig _config;
         public PaymentService(IUnitOfWork unitOfWork, IBasketRepository basketRepository,
-            IConfiguration config)
+            IConfig config)
         {
             _config = config;
             _basketRepository = basketRepository;
@@ -26,7 +23,7 @@ namespace Infrastructure.Services
         }
         public async Task<CustomerBasket> CreateOrUpdatePaymentIntent(string basketId)
         {
-            StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"];
+            StripeConfiguration.ApiKey = _config.SecretKey;
 
             var basket = await _basketRepository.GetBasketAsync(basketId);
 
@@ -58,7 +55,7 @@ namespace Infrastructure.Services
                 var options = new PaymentIntentCreateOptions
                 {
                     Amount = (long)basket.Items.Sum(i => i.Quantity * (i.Price * 100)) + (long)shippingPrice * 100,
-                    Currency = "php",
+                    Currency = _config.AppCurrency,
                     PaymentMethodTypes = new List<string> { "card" }
                 };
                 intent = await service.CreateAsync(options);

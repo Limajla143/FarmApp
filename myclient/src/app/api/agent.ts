@@ -180,6 +180,10 @@ const TestErrors = {
     getValidationError: () => requests.get('testerror/validation-error')
 }
 
+const StripeConfig = {
+    PublishableKey: ""
+}
+
 const agent = {
   Account,
   AgriTypes,
@@ -190,7 +194,8 @@ const agent = {
   Orders,
   Payments,
   Home,
-  TestErrors
+  TestErrors,
+  StripeConfig
 }
 
 export default agent;

@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Core.Interfaces;
+using Microsoft.AspNetCore.Http;
 using System.Security.Policy;
 
 namespace MyAPI.Helpers
 {
     public class FileStorageService : IFileStorageService
     {
-        private readonly IConfiguration _config;
+        private readonly IConfig _config;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IWebHostEnvironment _env;
-        public FileStorageService(IConfiguration config, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment env)
+        public FileStorageService(IConfig config, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment env)
         {
             _config = config;
             _httpContextAccessor = httpContextAccessor;
@@ -37,7 +38,7 @@ namespace MyAPI.Helpers
             }
 
             //var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
-            var url = _config["ApiUrlStaticImages"];
+            var url = _config.ApiUrlStaticImages;
             var routeForDB = Path.Combine(url, containerName, fileName).Replace("\\", "/");
             return routeForDB;
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Core.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 
@@ -6,8 +7,8 @@ namespace MyAPI.Controllers
 {
     public class HomeController : BaseApiController
     {
-        private readonly IConfiguration _config;
-        public HomeController(IConfiguration config)
+        private readonly IConfig _config;
+        public HomeController(IConfig config)
         {
             _config = config;
         }
@@ -31,7 +32,7 @@ namespace MyAPI.Controllers
 
             foreach (var imageFile in imageFiles)
             {
-                images.Add(_config["ApiUrlStaticImages"] + "/statics/" + imageFile.FileName);
+                images.Add($"{_config.ApiUrlStaticImages}/{imageFile.FileName}");
             }
 
             return images;

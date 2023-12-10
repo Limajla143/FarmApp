@@ -31,8 +31,8 @@ namespace MyAPI.Extensions
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<ICloudinaryImageService, CloudinaryImageService>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
 
-            services.AddSingleton<IFileStorageService, FileStorageService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<ApiBehaviorOptions>(options =>

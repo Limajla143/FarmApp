@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core;
+using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
 using Infrastructure.Identity;
@@ -29,13 +30,11 @@ namespace MyAPI.Controllers
         private IBasketRepository _basketRepository;
         private readonly IEmailService _emailService;
         private readonly ISmsSenderService _smsSenderService;
-        private readonly IConfiguration _config;
-        private readonly IConfig _configv1;
+        private readonly IConfig _config;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
             ITokenService tokenService, IMapper mapper, ICloudinaryImageService imageService,
-            IBasketRepository basketRepository, IEmailService emailService, ISmsSenderService smsSenderService,
-            IConfiguration config, IConfig configv1)
+            IBasketRepository basketRepository, IEmailService emailService, ISmsSenderService smsSenderService, IConfig config)
         {
             _mapper = mapper;
             _tokenService = tokenService;
@@ -46,7 +45,6 @@ namespace MyAPI.Controllers
             _smsSenderService = smsSenderService;
             _config = config;
             _imageService = imageService;
-            _configv1 = configv1;
         }
 
         [HttpPost("login")]
@@ -56,7 +54,7 @@ namespace MyAPI.Controllers
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, true);
 
-            LogInStatus logInStatus = _configv1.GetLoginStatus(user, result);
+            LogInStatus logInStatus = _config.GetLoginStatus(user, result);
 
             switch (logInStatus)
             {
@@ -111,7 +109,7 @@ namespace MyAPI.Controllers
             {
                 var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                var confirmationLink = $"{_config["ClientUrl"]}/successconfirmemail/{user.Id}/{WebUtility.UrlEncode(confirmationToken)}";
+                var confirmationLink = $"{_config.SuccessConfirmEmail}/{user.Id}/{WebUtility.UrlEncode(confirmationToken)}";
 
                 await _emailService.SendAsync(user.Email, "Please confirm email from MyFarm",
                     $"Please click on this link to confirm you email address: {confirmationLink}");
@@ -167,7 +165,7 @@ namespace MyAPI.Controllers
             {
                 var passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                var passwordResetLink = $"{_config["ClientUrl"]}/resetpassword/{user.Email}/{WebUtility.UrlEncode(passwordResetToken)}";
+                var passwordResetLink = $"{_config.ResetPassword}/{user.Email}/{WebUtility.UrlEncode(passwordResetToken)}";
 
                 await _emailService.SendAsync(user.Email, "Reset your password from MyFarm App",
                     $"Please click on this link to reset your password: {passwordResetLink}");
