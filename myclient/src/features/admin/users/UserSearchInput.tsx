@@ -9,7 +9,7 @@ export default function UserSearchInput() {
     const dispatch = useAppDispatch();
 
     const debounceSearch = debounce((event: any) => {
-        dispatch(setUserProfileParams ({search: event.target.value}))
+        dispatch(setUserProfileParams ({search: event.target.value}));
     }, 1000 );
     
     return (

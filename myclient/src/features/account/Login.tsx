@@ -4,7 +4,7 @@ import { LockOutlined } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FieldValues, useForm } from "react-hook-form";
 import { signInUser } from "./accountSlice";
-import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
+import { useAppDispatch } from "../../app/store/configStore";
 import { LoadingButton } from "@mui/lab";
 import { toast } from "react-toastify";
 import Pin from "./Pin";
@@ -21,7 +21,7 @@ export default function Login(){
 
     const handleClickOpen = () => {
         setOpen(true);
-      };
+    };
     
       const submitRequest = () => {
         setOpen(false);
@@ -29,7 +29,7 @@ export default function Login(){
 
     async function submitForm(data: FieldValues) {
         try {
-            const user = await dispatch(signInUser(data));
+            await dispatch(signInUser(data));
             navigate('/');
         } catch (error : any) {
             toast.error(error);
@@ -55,7 +55,7 @@ export default function Login(){
                     fullWidth
                     label="Email"
                     autoFocus
-                    {...register('email', {required: 'Username is required!'})}
+                    {...register('email', {required: 'Email is required!'})}
                     error={!!errors.email}
                     helperText={errors?.email?.message as string}
                 />

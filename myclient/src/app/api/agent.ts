@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../store/configStore";
 import { PaginatedResponse } from "../models/pagination";
+import { accountSlice } from "../../features/account/accountSlice";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -25,7 +26,7 @@ axios.interceptors.response.use(async response => {
     }
     return response
 }, (error: AxiosError) => {
-    const {data, status} = error.response as AxiosResponse;
+    const {data, status, headers} = error.response as AxiosResponse;
     switch(status) {
         case 400:
             if(data.errors) {
@@ -41,6 +42,11 @@ axios.interceptors.response.use(async response => {
             break;
         case 401:
             toast.error(data.message);
+            if(status === 401 && headers['www-authenticate'].startsWith('Bearer error="invalid_token"')) {
+                store.dispatch(accountSlice.actions.signOut());
+                router.navigate('/');
+                toast.error('Session expired - Please login again');
+            }
             break;
         case 403: 
             toast.error('You are not authorized for this!');
@@ -120,7 +126,8 @@ const Account = {
     forgotPassword: (useremail: string) => requests.post(`account/forgotpassword?useremail=${useremail}`, {}),
     resetPassword: (values: any) => requests.post('account/resetpassword', values),
     getUserByUser: (email: string) => requests.get(`account/getUserByUser/${email}`),
-    updateUser: (userProfileDto: any) => requests.putForm('account/updateUser', createFormDataNested(userProfileDto))
+    updateUser: (userProfileDto: any) => requests.putForm('account/updateUser', createFormDataNested(userProfileDto)),
+    refreshToken: () => requests.post('account/refreshToken', {})
 }
 
 const Admin = {
@@ -181,7 +188,7 @@ const TestErrors = {
 }
 
 const StripeConfig = {
-    PublishableKey: ""
+    PublishableKey: "pk_test_51OAvfGDm3gykg8BVPG8QJuhJgKa2V11Wk2h8RD1cQmNaIS2VMIVRPvUG71YLrxpcitpntuOQ2tXaL4ckYNjwGKEm00JypLEfFs"
 }
 
 const agent = {

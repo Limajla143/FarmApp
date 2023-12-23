@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace Core.Interfaces
     public interface ITokenService
     {
         Task<string> CreateToken(AppUser user);
+        RefreshToken GenerateRefreshToken();
     }
 }

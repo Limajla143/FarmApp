@@ -12,7 +12,7 @@ import AppDropzone from "../../app/components/AppDropzone";
 import AppSelectList from "../../app/components/AppSelectList";
 import AppTextInput from "../../app/components/AppTextInput";
 import { useAppDispatch} from "../../app/store/configStore";
-import {  signOut } from "./accountSlice";
+import { signOut } from "./accountSlice";
 import { clearBasket } from "../basket/basketSlice";
 
 const genderOptions = ['Male', 'Female'];

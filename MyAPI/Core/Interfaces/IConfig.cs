@@ -6,7 +6,7 @@ namespace Core.Interfaces
 {
     public interface IConfig
     {
-        LogInStatus GetLoginStatus(AppUser userInfo, SignInResult result);
+        LogInStatus GetLoginStatus(AppUser userInfo, SignInResult? result);
 
         //Static URLS
         string SuccessConfirmEmail { get; }

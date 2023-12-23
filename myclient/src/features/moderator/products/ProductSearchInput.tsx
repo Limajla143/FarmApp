@@ -9,7 +9,7 @@ export default function ProductSearchInput() {
     const dispatch = useAppDispatch();
 
     const debounceSearch = debounce((event: any) => {
-        dispatch(setProductParams({search: event.target.value}))
+        dispatch(setProductParams({search: event.target.value}));
     }, 1000);
 
     return (

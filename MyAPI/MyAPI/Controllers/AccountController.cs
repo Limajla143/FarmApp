@@ -15,9 +15,11 @@ using MyAPI.Helpers;
 using MyAPI.Middleware.Errors;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Claims;
 
 namespace MyAPI.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager;
@@ -73,6 +75,9 @@ namespace MyAPI.Controllers
                         return Unauthorized(new ApiResponse(401, "Your account is locked. Please try again later."));
                     case LogInStatus.FailedAuthentication:
                         return Unauthorized(new ApiResponse(401));
+                    case LogInStatus.Active:
+                        await SetRefreshToken(user);
+                        break;
                     default:
                         break;
             }
@@ -113,6 +118,8 @@ namespace MyAPI.Controllers
 
                 await _emailService.SendAsync(user.Email, "Please confirm email from MyFarm",
                     $"Please click on this link to confirm you email address: {confirmationLink}");
+
+                await SetRefreshToken(user);
             }
 
             //Url.Action("ConfirmEmail", "Account",
@@ -191,6 +198,7 @@ namespace MyAPI.Controllers
 
             if(result.Succeeded)
             {
+                await SetRefreshToken(user);
                 return Ok(new ApiResponse(200, "You may now login"));
             }
 
@@ -204,6 +212,8 @@ namespace MyAPI.Controllers
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
             var basket = await _basketRepository.GetBasketAsync(User.Identity.Name);
+
+            await SetRefreshToken(user);
 
             return new UserDto
             {
@@ -245,6 +255,8 @@ namespace MyAPI.Controllers
         {
             var user = await _userManager.FindByEmailAsync(email);
 
+            await SetRefreshToken(user);
+
             if (user == null) return NotFound(new ApiResponse(404));
 
             return _mapper.Map<AppUser, UserProfileDto>(user);
@@ -282,9 +294,57 @@ namespace MyAPI.Controllers
 
             var result = await _userManager.UpdateAsync(userToUpdate);
 
-            if (result.Succeeded) return Ok(new ApiResponse(200, "Successfully saved!"));
+            await SetRefreshToken(userToUpdate);
+
+            if (result.Succeeded)
+                return Ok(new ApiResponse(200, "Successfully saved!"));
 
             return BadRequest(new ApiResponse(500, "Problem updating the user"));
+        }
+
+        [Authorize]
+        [HttpPost("refreshToken")]
+        public async Task<ActionResult<UserDto>> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var user = await _userManager.FindUserByClaimsRefreshTokenAddress(User);
+
+            if (user == null) return Unauthorized(new ApiResponse(401));
+
+            var oldToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken);
+
+            if (oldToken != null && !oldToken.IsActive)
+                return Unauthorized(new ApiResponse(401));
+
+            var basket = await _basketRepository.GetBasketAsync(user.UserName);
+
+            UserDto userDto = new UserDto()
+            {
+                Email = user.Email,
+                Token = await _tokenService.CreateToken(user),
+                Username = user.UserName,
+                Basket = basket != null ? basket.MapBasketToDto() : null,
+                StatusId = (int)_config.GetLoginStatus(user, null)
+            };
+
+            return userDto;
+           
+        }
+
+        private async Task SetRefreshToken(AppUser user)
+        {
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            user.RefreshTokens.Add(refreshToken);
+            await _userManager.UpdateAsync(user);
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7),
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
         }
 
         //private async Task GenerateOTP()

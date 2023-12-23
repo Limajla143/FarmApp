@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using Core.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace Core
 {
@@ -12,6 +12,7 @@ namespace Core
         public bool IsActive { get; set; }
         public string MobileNumber { get; set; }
         public ICollection<AppUserRole> UserRoles { get; set; }
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public string PublicId { get; set; }
     }
 }

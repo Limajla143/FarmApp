@@ -9,6 +9,7 @@ using Stripe;
 
 namespace MyAPI.Controllers
 {
+    [Authorize]
     public class PaymentsController : BaseApiController
     {
         private readonly string _whSecret;

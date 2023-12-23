@@ -15,7 +15,7 @@ namespace Infrastructure.Data.Config
             _configuration = configuration;
         }
 
-        public LogInStatus GetLoginStatus(AppUser userInfo, SignInResult result)
+        public LogInStatus GetLoginStatus(AppUser userInfo, SignInResult? result)
         {
             LogInStatus statusId = new LogInStatus();
 
@@ -39,17 +39,25 @@ namespace Infrastructure.Data.Config
             {
                 statusId = LogInStatus.AddressRequired;
             }
-            else if (result.IsLockedOut)
+
+            else if(result != null)
             {
-                statusId = LogInStatus.Locked;
-            }
-            else if (result.IsNotAllowed)
-            {
-                statusId = LogInStatus.NotAllowed;
-            }
-            else if (!result.Succeeded)
-            {
-                statusId = LogInStatus.FailedAuthentication;
+                if (result.IsLockedOut)
+                {
+                    statusId = LogInStatus.Locked;
+                }
+                else if (result.IsNotAllowed)
+                {
+                    statusId = LogInStatus.NotAllowed;
+                }
+                else if (!result.Succeeded)
+                {
+                    statusId = LogInStatus.FailedAuthentication;
+                }
+                else 
+                {
+                    statusId = LogInStatus.Active;
+                }
             }
             else
             {

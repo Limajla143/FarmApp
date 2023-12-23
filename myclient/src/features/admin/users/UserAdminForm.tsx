@@ -35,7 +35,7 @@ export default function UseAdminForm({user, cancelEdit}: Props) {
     useEffect(() => {
         if (user && !watchFile && !isDirty) {
             reset(user);
-        } 
+        }
         return () => {
             if (watchFile) URL.revokeObjectURL(watchFile.preview);
         }

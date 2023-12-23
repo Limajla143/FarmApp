@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyAPI.Dtos;
@@ -11,6 +12,7 @@ using MyAPI.Middleware.Errors;
 
 namespace MyAPI.Controllers
 {
+    [Authorize]
     public class UsersProductController : BaseApiController
     {
         private readonly IGenericRepository<Product> _productsRepo;

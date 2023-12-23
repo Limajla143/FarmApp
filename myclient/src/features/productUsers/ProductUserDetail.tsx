@@ -20,7 +20,7 @@ export default function ProductUserDetail() {
     useEffect(() => {
         if (item) setQuantity(item.quantity);
         if(!product && id)
-            dispatch(fetchProductUserAsync(parseInt(id)));     
+            dispatch(fetchProductUserAsync(parseInt(id)));    
     }, [id, dispatch, product, item])
 
     function handleInputCart(event: any) {

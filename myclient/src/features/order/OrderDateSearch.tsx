@@ -10,7 +10,7 @@ export default function OrderDateSearch() {
     const dispatch = useAppDispatch();
 
     const debounceSearch = debounce(() => {
-        dispatch(setOrderParams({dateFrom: dateFrom, dateTo: dateTo}))
+        dispatch(setOrderParams({dateFrom: dateFrom, dateTo: dateTo}));
     }, 1000 );
 
     const handleFromDateChange = (dateFrom: any) => {

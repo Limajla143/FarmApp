@@ -28,7 +28,7 @@ namespace MyAPI.Extensions
             {
                 // add identity options here
                opt.Lockout.MaxFailedAccessAttempts = 5;
-               opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(15);
+               opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(60);
                opt.User.RequireUniqueEmail = true;
                opt.SignIn.RequireConfirmedEmail = true;
             })
@@ -46,12 +46,13 @@ namespace MyAPI.Extensions
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
+                        ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),
                         ValidIssuer = config["Token:Issuer"],
-                        ValidateIssuerSigningKey = true,
                         ValidateIssuer = true,
                         ValidateAudience = false,
                         ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
 
