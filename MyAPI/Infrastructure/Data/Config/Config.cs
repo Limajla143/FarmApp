@@ -86,12 +86,12 @@ namespace Infrastructure.Data.Config
         public string CloudName => _configuration["Cloudinary:CloudName"];
         public string ApiKey => _configuration["Cloudinary:ApiKey"];
         public string ApiSecret => _configuration["Cloudinary:ApiSecret"];
-
         public string TokenKey => _configuration["Token:Key"];
-
         public string TokenSecret => _configuration["Token:Issuer"];
 
-        // Token
 
+        // TIMER
+        public string RefreshTokenTimer => _configuration["RefreshTokenTimerMinutes"];
+        public string IdleTimer => _configuration["IdleTimerMinutes"];
     }
 }

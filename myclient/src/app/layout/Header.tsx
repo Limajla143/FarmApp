@@ -93,8 +93,7 @@ export default function Header({darkMode, handleThemeChange}: Props) {
                             component={NavLink}
                             to={path}
                             key={path}
-                            sx={navStyles}
-                        >
+                            sx={navStyles}>
                             {title.toUpperCase()}
                           </ListItem>
                         ))

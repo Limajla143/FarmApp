@@ -5,17 +5,20 @@ import { router } from "../../app/router/Routes";
 import { toast } from "react-toastify";
 import { User } from "../../app/models/User";
 import { setBasket } from "../basket/basketSlice";
+import { minToMilliSecond } from "../../app/utility/utils";
 
 interface AccountState {
     user: User | null;
     refreshTokenTimeout: NodeJS.Timeout | null;
     showTimerDialog: boolean;
+    showIdleDialog: boolean;
 }
 
 const initialState: AccountState = {
     user: null,
     refreshTokenTimeout: null,
-    showTimerDialog: false
+    showTimerDialog: false,
+    showIdleDialog: false
 }
 
 export const signInUser = createAsyncThunk<User, FieldValues>(
@@ -26,6 +29,7 @@ export const signInUser = createAsyncThunk<User, FieldValues>(
             const {basket, ...user} = userDto;
             if(basket) thunkAPI.dispatch(setBasket(basket));
             localStorage.setItem('user', JSON.stringify(user));
+
             startRefreshTokenTimer(user, thunkAPI);          
             return user;
         } catch (error: any) {
@@ -83,13 +87,12 @@ const startRefreshTokenTimer = (user: User, thunkAPI: any) => {
     const expires = new Date(jwtToken.exp * 1000);
     const timeout = expires.getTime() - Date.now() - 30 * 1000;
     let countdown = Math.ceil(timeout / 1000);
-
+    console.log(countdown);
     const countdownInterval = setInterval(() => {
         countdown -= 1;
       }, 1000);
   
     thunkAPI.dispatch(setRefreshTokenTimeout(setTimeout(() => {
-        console.log('Timeout ', countdown);
         clearInterval(countdownInterval); 
         thunkAPI.dispatch(setShowTimerDialog(true));
     }, timeout)));
@@ -103,6 +106,7 @@ const startRefreshTokenTimer = (user: User, thunkAPI: any) => {
         console.log(timeout);
     }
   };
+
 
 export const accountSlice = createSlice({
     name: 'account',
@@ -126,6 +130,10 @@ export const accountSlice = createSlice({
             console.log('Set ShowTimer');
             state.showTimerDialog = action.payload;
         },
+        setIdleDialog: (state, action: PayloadAction<boolean>) => {
+            console.log('Set IDle TIMER');
+            state.showIdleDialog = action.payload;
+        }
     },
     extraReducers: (builder => {
         builder.addCase(fetchCurrentUser.rejected, (state) => {
@@ -145,4 +153,4 @@ export const accountSlice = createSlice({
     })
 })
 
-export const {signOut, setUser, setRefreshTokenTimeout, setShowTimerDialog} = accountSlice.actions;
+export const {signOut, setUser, setRefreshTokenTimeout, setShowTimerDialog, setIdleDialog} = accountSlice.actions;

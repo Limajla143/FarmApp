@@ -20,4 +20,8 @@ export function mMMMddyyyy(inputDate: Date) : string  {
 
 export function currencyFormat(amount: number) {
     return 'Php ' + amount.toFixed(2);
-  }
+}
+
+export function minToMilliSecond(amount: number) {
+    return amount * 60000;
+}

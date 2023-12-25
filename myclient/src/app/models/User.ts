@@ -7,4 +7,5 @@ export interface User {
     basket?: Basket;
     statusId: number;
     role?: string[];
+    idleTimer: any;
 }

@@ -8,6 +8,7 @@
         public string Token { get; set; }
         public BasketDto Basket { get; set; }
         public int StatusId { get; set; }
+        public int IdleTimer { get; set; }
 
     }
 }

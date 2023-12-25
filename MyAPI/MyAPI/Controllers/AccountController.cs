@@ -90,7 +90,8 @@ namespace MyAPI.Controllers
                 Token = await _tokenService.CreateToken(user),
                 Username = user.UserName,
                 Basket = basket != null ? basket.MapBasketToDto() : null,
-                StatusId = (int)logInStatus
+                StatusId = (int)logInStatus,
+                IdleTimer = int.Parse(_config.IdleTimer)
             };
         }
 
@@ -220,7 +221,8 @@ namespace MyAPI.Controllers
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user),
                 Username = user.UserName,
-                Basket = basket != null ? basket.MapBasketToDto() : null
+                Basket = basket != null ? basket.MapBasketToDto() : null,
+                IdleTimer = int.Parse(_config.IdleTimer)
             };
         }
 
@@ -253,7 +255,7 @@ namespace MyAPI.Controllers
         [HttpGet("GetUserByUser/{email}")]
         public async Task<ActionResult<UserProfileDto>> GetUserByUser(string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailFromClaimsPrincipal(email);
 
             await SetRefreshToken(user);
 
@@ -324,7 +326,8 @@ namespace MyAPI.Controllers
                 Token = await _tokenService.CreateToken(user),
                 Username = user.UserName,
                 Basket = basket != null ? basket.MapBasketToDto() : null,
-                StatusId = (int)_config.GetLoginStatus(user, null)
+                StatusId = (int)_config.GetLoginStatus(user, null),
+                IdleTimer = int.Parse(_config.IdleTimer)
             };
 
             return userDto;

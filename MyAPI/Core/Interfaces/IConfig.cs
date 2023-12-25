@@ -27,5 +27,7 @@ namespace Core.Interfaces
         //Token
         string TokenKey { get; }
         string TokenSecret { get; }
+        string RefreshTokenTimer { get; }
+        string IdleTimer { get; }
     }
 }
