@@ -29,14 +29,14 @@
 
   <ItemGroup>
     <Folder Include="Content\" />
-    <Folder Include="wwwroot\usersImg\" />
+	 <Folder Include="wwwroot\" />
   </ItemGroup>
 
 	<ItemGroup>
-		<None Update="Content\products\**\*.*">
+		<None Update="wwwroot\**\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="Content\statics\**\*.*">
+		<None Update="Content\**\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

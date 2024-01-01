@@ -7,7 +7,7 @@ import { accountSlice } from "../../features/account/accountSlice";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
 
-axios.defaults.baseURL = 'https://localhost:44386/api/';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -18,7 +18,7 @@ axios.interceptors.request.use(config => {
 });
 
 axios.interceptors.response.use(async response => {
-    await sleep();
+    if (process.env.NODE_ENV === 'development') await sleep();
     const pagination = response.headers['pagination'];
     if(pagination) {
         response.data = new PaginatedResponse(response.data, JSON.parse(pagination));
@@ -188,7 +188,7 @@ const TestErrors = {
 }
 
 const StripeConfig = {
-    PublishableKey: ""
+    PublishableKey: "pk_test_51OTbc7KihzjGkPtu0GLHTAeEwZXdJzpJimAJGQZ7QuiGrpxgxtkArkKoTEJUNslifBAzHyATrUN7IH5s2c7Sq0EE00Tu9b0evJ"
 }
 
 const agent = {

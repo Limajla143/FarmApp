@@ -28,3 +28,8 @@ dotnet user-secrets clear
 https://learn.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-8.0&tabs=visual-studio%2Clinux-ubuntu
 
 https://www.altcademy.com/blog/how-to-enable-https-in-reactjs/#:~:text=Implementing%20HTTPS%20in%20ReactJS,-Now%20that%20we&text=By%20default%2C%20it%20uses%20HTTP,tweaking%20the%20npm%20start%20script.&text=Here%2C%20HTTPS%3Dtrue%20tells%20the,key%20files%20we%20generated%20earlier.
+
+
+#PUBLISHING REACTJS
+npm run build
+npm install -g serve -s ..\MyAPI\MyAPI\wwwroot
