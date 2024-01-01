@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
-import { refreshToken,  setIdleDialog,  signOut } from "./accountSlice";
-import { setShowTimerDialog } from "./accountActions";
+import { useAppDispatch, useAppSelector } from "../store/configStore";
+import { refreshToken,  setIdleDialog,  signOut } from "../../features/account/accountSlice";
+import { setShowTimerDialog } from "../../features/account/accountActions";
 import { Modal, Backdrop, Fade, Box, Typography, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -20,6 +21,7 @@ export default function TimerDialog() {
     const {showTimerDialog, showIdleDialog} = useAppSelector(state => state.account);
     const [timer, setTimer] = useState(60);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if(showTimerDialog || showIdleDialog) {
@@ -41,7 +43,7 @@ export default function TimerDialog() {
     const handleNoClick = () => {
          dispatch(signOut());
          isShowDialog();
-         window.location.reload();
+         navigate('/');
     };
 
       const isShowDialog = () => {
@@ -53,7 +55,7 @@ export default function TimerDialog() {
         if (timer <= 0) {
             dispatch(signOut());
             isShowDialog();
-            window.location.reload();
+            navigate('/');
         }
       }, [timer]);
     

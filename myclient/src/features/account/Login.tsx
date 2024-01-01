@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Container, Paper, Avatar, Typography, Box, TextField, Grid } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FieldValues, useForm } from "react-hook-form";
 import { signInUser } from "./accountSlice";
 import { useAppDispatch } from "../../app/store/configStore";
@@ -13,7 +13,6 @@ import Pin from "./Pin";
 export default function Login(){
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const location = useLocation();
     const {register, handleSubmit, formState: {isSubmitting, errors, isValid}} = useForm({
         mode: 'onTouched'
     });

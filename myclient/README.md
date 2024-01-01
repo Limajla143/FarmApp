@@ -44,3 +44,17 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+# SSL CERT https://medium.com/projectwt/react-js-localhost-with-https-using-mkcert-338927e94212
+install chocolatey
+
+then, the actual certificate library, 'choco install mkcert'
+
+the actual command to create the certificates.
+
+    //create a certficate folder
+    mkdir -p .cert
+    
+    //create the actual certificates in the folder 
+    mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem "localhost"

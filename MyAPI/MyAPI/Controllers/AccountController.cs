@@ -75,10 +75,8 @@ namespace MyAPI.Controllers
                         return Unauthorized(new ApiResponse(401, "Your account is locked. Please try again later."));
                     case LogInStatus.FailedAuthentication:
                         return Unauthorized(new ApiResponse(401));
-                    case LogInStatus.Active:
-                        await SetRefreshToken(user);
-                        break;
                     default:
+                        await SetRefreshToken(user);
                         break;
             }
 
@@ -119,8 +117,6 @@ namespace MyAPI.Controllers
 
                 await _emailService.SendAsync(user.Email, "Please confirm email from MyFarm",
                     $"Please click on this link to confirm you email address: {confirmationLink}");
-
-                await SetRefreshToken(user);
             }
 
             //Url.Action("ConfirmEmail", "Account",
@@ -257,8 +253,6 @@ namespace MyAPI.Controllers
         {
             var user = await _userManager.FindByEmailFromClaimsPrincipal(email);
 
-            await SetRefreshToken(user);
-
             if (user == null) return NotFound(new ApiResponse(404));
 
             return _mapper.Map<AppUser, UserProfileDto>(user);
@@ -296,8 +290,6 @@ namespace MyAPI.Controllers
 
             var result = await _userManager.UpdateAsync(userToUpdate);
 
-            await SetRefreshToken(userToUpdate);
-
             if (result.Succeeded)
                 return Ok(new ApiResponse(200, "Successfully saved!"));
 
@@ -308,7 +300,8 @@ namespace MyAPI.Controllers
         [HttpPost("refreshToken")]
         public async Task<ActionResult<UserDto>> RefreshToken()
         {
-            var refreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = Request.Cookies["RefreshToken"];
+
             var user = await _userManager.FindUserByClaimsRefreshTokenAddress(User);
 
             if (user == null) return Unauthorized(new ApiResponse(401));
@@ -317,6 +310,12 @@ namespace MyAPI.Controllers
 
             if (oldToken != null && !oldToken.IsActive)
                 return Unauthorized(new ApiResponse(401));
+
+            if (oldToken != null)
+            {
+                oldToken.Revoked = DateTime.Now;
+                await _userManager.UpdateAsync(user);
+            }
 
             var basket = await _basketRepository.GetBasketAsync(user.UserName);
 
@@ -343,11 +342,13 @@ namespace MyAPI.Controllers
 
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7),
+                HttpOnly = true, // Ensures the cookie is only accessible on the server side
+                Secure = true,   // Requires HTTPS
+                SameSite = SameSiteMode.Strict, // Enforces the SameSite policy
+                Expires = DateTime.Now.AddDays(7)
             };
 
-            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+            Response.Cookies.Append("RefreshToken", refreshToken.Token, cookieOptions);
         }
 
         //private async Task GenerateOTP()

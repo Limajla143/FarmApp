@@ -11,6 +11,7 @@ using Microsoft.Extensions.FileProviders;
 using MyAPI.Extensions;
 using MyAPI.Middleware;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +35,13 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseSwaggerDocumentation();
 
-app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+//app.UseHttpsRedirection();
+app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -43,29 +50,22 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/Content"
 });
 
-app.UseCors("CorsPolicy");
-
-app.UseAuthentication();
-app.UseAuthorization();
-
 app.MapControllers();
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
-
+var entityContext = services.GetRequiredService<EntityDbContext>();
 var identityContext = services.GetRequiredService<AppIdentityDbContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
 var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
 var logger = services.GetRequiredService<ILogger<Program>>();
 
-var entityContext = services.GetRequiredService<EntityDbContext>();
-
 try
 {
-    await identityContext.Database.MigrateAsync();
-    await SeedUser.SeedUsersAsync(userManager, roleManager);
-
     await entityContext.Database.MigrateAsync();
+    await identityContext.Database.MigrateAsync();
+    await StoreContextSeed.SeedAsync(entityContext);
+    await SeedUser.SeedUsersAsync(userManager, roleManager);
 }
 catch (Exception ex)
 {

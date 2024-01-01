@@ -7,13 +7,13 @@ import { accountSlice } from "../../features/account/accountSlice";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
 
-axios.defaults.baseURL = 'http://localhost:7263/api/';
+axios.defaults.baseURL = 'https://localhost:44386/api/';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
 axios.interceptors.request.use(config => {
     const token = store.getState().account.user?.token;
-    if(token) config.headers.Authorization = `Bearer ${token}`;
+    if(token && config.headers) config.headers.Authorization = `Bearer ${token}`;
     return config;
 });
 
@@ -188,7 +188,7 @@ const TestErrors = {
 }
 
 const StripeConfig = {
-    PublishableKey: "pk_test_51OAvfGDm3gykg8BVPG8QJuhJgKa2V11Wk2h8RD1cQmNaIS2VMIVRPvUG71YLrxpcitpntuOQ2tXaL4ckYNjwGKEm00JypLEfFs"
+    PublishableKey: ""
 }
 
 const agent = {

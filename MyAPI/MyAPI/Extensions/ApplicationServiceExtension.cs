@@ -24,6 +24,19 @@ namespace MyAPI.Extensions
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy
+                        .AllowCredentials()
+                        .WithHeaders("Content-Type", "Authorization")  // Specify allowed headers
+                        .WithMethods("GET", "POST", "PUT", "DELETE")  // Specify allowed methods
+                        .WithExposedHeaders("WWW-Authenticate", "Pagination")
+                        .WithOrigins("http://localhost:3000", "https://localhost:3000");
+                });
+            });
+
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -33,7 +46,7 @@ namespace MyAPI.Extensions
             services.AddScoped<ICloudinaryImageService, CloudinaryImageService>();
             services.AddScoped<IFileStorageService, FileStorageService>();
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(typeof(MappingProfiles).Assembly); // AppDomain.CurrentDomain.GetAssemblies()
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -53,21 +66,8 @@ namespace MyAPI.Extensions
                 };
             });
 
+
             services.AddHttpContextAccessor();
-
-            services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials()
-                        .WithExposedHeaders("WWW-Authenticate", "Pagination")
-                        .WithOrigins(config["ClientUrl"]);
-                });
-            });
-
             return services;
 
         }

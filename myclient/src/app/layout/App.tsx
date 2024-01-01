@@ -8,8 +8,8 @@ import { fetchCurrentUser, setIdleDialog } from '../../features/account/accountS
 import Header from './Header';
 import HomePage from '../../features/home/HomePage';
 import LoadingComponent from './Loading';
-import TimerDialog from '../../features/account/TimerDialog';
 import { minToMilliSecond } from '../utility/utils';
+import TimerDialog from './TimerDialog';
 
 function App() {
   const location = useLocation();

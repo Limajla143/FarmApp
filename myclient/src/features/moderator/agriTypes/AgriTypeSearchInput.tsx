@@ -2,7 +2,6 @@ import { TextField, debounce } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../app/store/configStore";
 import { useState } from "react";
 import { setAgriTypeParams } from "./agriTypeSlice";
-import { refreshToken } from "../../account/accountSlice";
 
 export default function AgriTypeSearchInput() {
     const {agrTypeParams} = useAppSelector(state => state.agritype);

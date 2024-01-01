@@ -5,7 +5,6 @@ import { router } from "../../app/router/Routes";
 import { toast } from "react-toastify";
 import { User } from "../../app/models/User";
 import { setBasket } from "../basket/basketSlice";
-import { minToMilliSecond } from "../../app/utility/utils";
 
 interface AccountState {
     user: User | null;
@@ -85,7 +84,7 @@ export const refreshToken = createAsyncThunk<User>(
 const startRefreshTokenTimer = (user: User, thunkAPI: any) => {
     const jwtToken = JSON.parse(atob(user.token.split(".")[1]));
     const expires = new Date(jwtToken.exp * 1000);
-    const timeout = expires.getTime() - Date.now() - 30 * 1000;
+    const timeout = expires.getTime() - Date.now() - 60 * 1000;
     let countdown = Math.ceil(timeout / 1000);
     console.log(countdown);
     const countdownInterval = setInterval(() => {

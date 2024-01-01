@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
+
 namespace MyAPI.Extensions
 {
     public static class SwaggerServiceExtensions
@@ -37,8 +38,19 @@ namespace MyAPI.Extensions
 
         public static IApplicationBuilder UseSwaggerDocumentation(this IApplicationBuilder app)
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            if (app.ApplicationServices.GetRequiredService<Microsoft.AspNetCore.Hosting.IHostingEnvironment>().IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+            else
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000");
+                    await next.Invoke();
+                });
+            }
 
             return app;
         }

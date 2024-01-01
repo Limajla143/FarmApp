@@ -1,0 +1,74 @@
+[
+	{
+		"Name": "Dutch Meadows Duck Eggs 12 pcs.",
+		"Description": "fresh eggs from camarines sur, philippines",
+		"PictureUrl": "https://localhost:44386/Content/products/b561591f-cac6-40e5-9991-6a8baf7cad62.jpeg",
+		"Price": 168,
+		"SalesTax": 12,
+		"AgriTypeId": 6,
+		"Quantity": 97
+	},
+	{
+		"Name": "Pork Meat Belly per kg",
+		"Description": "Fresh Pork meat",
+		"PictureUrl": "https://localhost:44386/Content/products/ad3e44ea-e132-470e-838b-eccea9ecab6b.jpeg",
+		"Price": 224,
+		"SalesTax": 12,
+		"AgriTypeId": 2,
+		"Quantity": 50
+	},
+	{
+		"Name": "Glutionous Rice 1 sack",
+		"Description": "sticky",
+		"PictureUrl": "https://localhost:44386/Content/products/d5364be8-8854-462b-a047-eea8e0c08d49.jpg",
+		"Price": 39.2,
+		"SalesTax": 12,
+		"AgriTypeId": 4,
+		"Quantity": 100
+	},
+	{
+		"Name": "White Rice per 1 kg",
+		"Description": "fresh",
+		"PictureUrl": "https://localhost:44386/Content/products/aedf0ab2-d2b9-4d26-8a8b-9e7fb82220a5.jpg",
+		"Price": 22.4,
+		"SalesTax": 12,
+		"AgriTypeId": 4,
+		"Quantity": 100
+	},
+	{
+		"Name": "Banana Fresh per kg",
+		"Description": "Fresh and sweet banana",
+		"PictureUrl": "https://localhost:44386/Content/products/0ef00351-af6e-4823-baf3-d67f4b6c5d2f.jpg",
+		"Price": 67.2,
+		"SalesTax": 12,
+		"AgriTypeId": 3,
+		"Quantity": 100
+	},
+	{
+		"Name": "Cabbage per piece",
+		"Description": "Green",
+		"PictureUrl": "https://localhost:44386/Content/products/e45cdbf5-a75a-4ef1-a729-e82a3792a4de.jpg",
+		"Price": 56,
+		"SalesTax": 12,
+		"AgriTypeId": 1,
+		"Quantity": 100
+	},
+	{
+		"Name": "Piglet",
+		"Description": "Healthy piglet",
+		"PictureUrl": "https://localhost:44386/Content/products/80224f8b-94d7-462e-b101-e2874aa0b64f.jpg",
+		"Price": 616,
+		"SalesTax": 12,
+		"AgriTypeId": 5,
+		"Quantity": 50
+	},
+	{
+		"Name": "Sponge gourd",
+		"Description": "Sponge gourd fresh",
+		"PictureUrl": "https://localhost:44386/Content/products/272a7de5-a13e-4767-a9e5-a9dbba294995.jpg",
+		"Price": 24,
+		"SalesTax": 20,
+		"AgriTypeId": 1,
+		"Quantity": 100
+	}
+]

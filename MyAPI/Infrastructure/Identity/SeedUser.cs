@@ -35,6 +35,10 @@ namespace Infrastructure.Identity
                     UserName = "sample",
                     Gender = "Lgbtq",
                     DateOfBirth = new DateTime(1990, 01, 01),
+                    IsActive = true,
+                    EmailConfirmed = true,
+                    Photo = "vsxu1zzd7gwe9gamaivy",
+                    PublicId = "vsxu1zzd7gwe9gamaivy",
                     Address = new Address
                     {
                         FirstName = "Sample",
@@ -55,6 +59,10 @@ namespace Infrastructure.Identity
                     Email = "admin@test.com",
                     Gender = "System",
                     DateOfBirth = DateTime.Now,
+                    IsActive = true,
+                    EmailConfirmed = true,
+                    Photo = "xgzqg1ynfbvlmpo6l1tl",
+                    PublicId = "xgzqg1ynfbvlmpo6l1tl",
                     Address = new Address
                     {
                         FirstName = "Admin",

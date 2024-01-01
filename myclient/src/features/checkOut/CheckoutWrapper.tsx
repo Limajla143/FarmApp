@@ -6,7 +6,6 @@ import agent from "../../app/api/agent";
 import { setBasket } from "../basket/basketSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/configStore";
 import LoadingComponent from "../../app/layout/Loading";
-import { refreshToken } from "../account/accountSlice";
 
 const stripePromise = loadStripe(agent.StripeConfig.PublishableKey);
 

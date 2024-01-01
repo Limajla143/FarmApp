@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>28116b13-0c16-444a-90a8-cd6837e7d872</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,5 +31,14 @@
     <Folder Include="Content\" />
     <Folder Include="wwwroot\usersImg\" />
   </ItemGroup>
+
+	<ItemGroup>
+		<None Update="Content\products\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Content\statics\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>
