@@ -114,6 +114,8 @@ export const accountSlice = createSlice({
         signOut: (state) => {
             state.user = null;
             state.refreshTokenTimeout = null;
+            state.showIdleDialog = false;
+            state.showTimerDialog = false;
             localStorage.removeItem('user');
             router.navigate('/');
         },

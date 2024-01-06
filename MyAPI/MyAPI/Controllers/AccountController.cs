@@ -34,9 +34,11 @@ namespace MyAPI.Controllers
         private readonly ISmsSenderService _smsSenderService;
         private readonly IConfig _config;
 
+        private readonly ILogger<AccountController> _logger;
+
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
             ITokenService tokenService, IMapper mapper, ICloudinaryImageService imageService,
-            IBasketRepository basketRepository, IEmailService emailService, ISmsSenderService smsSenderService, IConfig config)
+            IBasketRepository basketRepository, IEmailService emailService, ISmsSenderService smsSenderService, IConfig config, ILogger<AccountController> logger)
         {
             _mapper = mapper;
             _tokenService = tokenService;
@@ -47,6 +49,7 @@ namespace MyAPI.Controllers
             _smsSenderService = smsSenderService;
             _config = config;
             _imageService = imageService;
+            _logger = logger;
         }
 
         [HttpPost("login")]

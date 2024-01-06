@@ -9,7 +9,6 @@ using Stripe;
 
 namespace MyAPI.Controllers
 {
-    [Authorize]
     public class PaymentsController : BaseApiController
     {
         private readonly string _whSecret;
@@ -23,7 +22,7 @@ namespace MyAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("createPaymentIntent")]
+        [HttpPost( Name = "CreatePaymentIntent")]
         public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
         {
             var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
@@ -33,6 +32,7 @@ namespace MyAPI.Controllers
             return basket;
         }
 
+        [AllowAnonymous]
         [HttpPost("webhook")]
         public async Task<ActionResult> StripeWebhook()
         {

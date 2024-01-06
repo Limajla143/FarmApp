@@ -1,20 +1,20 @@
 [
   {
-    "ShortName": "Vegetable",
-	"DeliveryTime": "4 weeks",
-	"Description": "Free Delivery",
-	"Price": 0.00
+    "ShortName": "FREE",
+	  "DeliveryTime": "4 Weeks",
+	  "Description": "Free Delivery",
+	  "Price": 0.00
   },
   {
-    "ShortName": "Vegetable",
-	"DeliveryTime": "4 weeks",
-	"Description": "Free Delivery",
-	"Price": 0.00
+    "ShortName": "UPS1",
+	  "DeliveryTime": "7 days",
+	  "Description": "Free Delivery",
+	  "Price": 1000
   },
   {
-    "ShortName": "Vegetable",
-	"DeliveryTime": "4 weeks",
-	"Description": "Free Delivery",
-	"Price": 0.00
+    "ShortName": "UPS2",
+	  "DeliveryTime": "2-3 Weeks",
+	  "Description": "Free Delivery",
+	  "Price": 500
   }
 ]

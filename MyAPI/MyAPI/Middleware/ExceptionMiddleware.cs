@@ -1,4 +1,5 @@
-﻿using MyAPI.Middleware.Errors;
+﻿using Core.Interfaces;
+using MyAPI.Middleware.Errors;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -8,10 +9,11 @@ namespace MyAPI.Middleware
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionMiddleware> _logger;
+        //private readonly ILogger<ExceptionMiddleware> _logger;
         private readonly IHostEnvironment _env;
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger,
-            IHostEnvironment env)
+        private static ISysLog _logger;
+
+        public ExceptionMiddleware(RequestDelegate next, IHostEnvironment env, ISysLog logger) //ILogger<ExceptionMiddleware> logger,
         {
             _env = env;
             _logger = logger;
@@ -26,7 +28,7 @@ namespace MyAPI.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.Exception(ex.Message, ex);
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 

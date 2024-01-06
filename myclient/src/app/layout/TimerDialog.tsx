@@ -35,9 +35,12 @@ export default function TimerDialog() {
     const handleYesClick = () => {
       if(showTimerDialog) {
         dispatch(refreshToken());
+        window.location.reload();
       }
+      else {
         isShowDialog();
         window.location.reload();
+      }
     };
     
     const handleNoClick = () => {

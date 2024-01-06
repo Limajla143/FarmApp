@@ -29,9 +29,9 @@ namespace MyAPI.Extensions
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
                     policy
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
                         .AllowCredentials()
-                        .WithHeaders("Content-Type", "Authorization")  // Specify allowed headers
-                        .WithMethods("GET", "POST", "PUT", "DELETE")  // Specify allowed methods
                         .WithExposedHeaders("WWW-Authenticate", "Pagination")
                         .WithOrigins("http://localhost:3000", "https://localhost:3000");
                 });

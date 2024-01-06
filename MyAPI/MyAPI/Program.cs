@@ -6,14 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using MyAPI.Extensions;
 using MyAPI.Middleware;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Hosting;
+using MyAPI.Filter;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 
@@ -25,6 +24,15 @@ builder.Services.AddControllers(opt =>
 
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<ActionFilter>();
+});
+
+
+builder.Logging.AddLog4Net();
+
 builder.Services.AddSwaggerDocumentation();
 
 var app = builder.Build();
@@ -52,6 +60,13 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.MapControllers();
 
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllerRoute(
+//        name: "default",
+//        pattern: "{controller=Home}/{action=Index}/{id?}");
+//});
+
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 var entityContext = services.GetRequiredService<EntityDbContext>();
@@ -59,6 +74,7 @@ var identityContext = services.GetRequiredService<AppIdentityDbContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
 var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
 var logger = services.GetRequiredService<ILogger<Program>>();
+
 
 try
 {

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MyAPI.Logger;
 using System.Text;
 
 namespace MyAPI.Extensions
@@ -62,6 +63,7 @@ namespace MyAPI.Extensions
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ISmsSenderService, SmsSenderService>();
             services.AddSingleton<IConfig, Config>();
+            services.AddSingleton<ISysLog, SysLog>();
 
             return services;
         }
