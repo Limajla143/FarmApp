@@ -10,6 +10,9 @@ using Microsoft.Extensions.FileProviders;
 using MyAPI.Extensions;
 using MyAPI.Middleware;
 using MyAPI.Filter;
+using Hangfire.Dashboard;
+using Hangfire;
+using Core.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +52,15 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 //app.UseHttpsRedirection();
+
+app.UseHangfireDashboard($"/{builder.Configuration["HangfireSettings:HangfireDashboardControllerName"]}"
+    , new DashboardOptions
+    {
+        Authorization = new[] { new HangfireAuthorizationFilter() },
+        IsReadOnlyFunc = (DashboardContext context) => false,
+        DashboardTitle = "MyFarm Hangfire",
+});
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
@@ -59,13 +71,6 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.MapControllers();
-
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapControllerRoute(
-//        name: "default",
-//        pattern: "{controller=Home}/{action=Index}/{id?}");
-//});
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -87,5 +92,7 @@ catch (Exception ex)
 {
     logger.LogError(ex, "An error occured during migration.");
 }
+
+RecurringJob.AddOrUpdate<IHangfireActions>("Clean Unused Token", x => x.CleanTokens(), builder.Configuration["HangfireSettings:JobRunCleanUnusedTokens"]);
 
 app.Run();

@@ -93,5 +93,6 @@ namespace Infrastructure.Data.Config
         // TIMER
         public string RefreshTokenTimer => _configuration["RefreshTokenTimerMinutes"];
         public string IdleTimer => _configuration["IdleTimerMinutes"];
+
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Core.Interfaces;
+using Hangfire;
+using Hangfire.Redis.StackExchange;
 using Infrastructure.Data;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +20,7 @@ namespace MyAPI.Extensions
 
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
-                var options = ConfigurationOptions.Parse(config.GetConnectionString("Redis"));
+                var options = ConfigurationOptions.Parse(config["RedisSettings:Configuration"]);
                 return ConnectionMultiplexer.Connect(options);
             });
 
@@ -45,6 +47,27 @@ namespace MyAPI.Extensions
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<ICloudinaryImageService, CloudinaryImageService>();
             services.AddScoped<IFileStorageService, FileStorageService>();
+            services.AddSingleton<AutomaticRetryAttribute>();
+
+            // HANGFIRE CONFIGURATION
+            services.AddHangfire((provider, configuration) =>
+            {
+                configuration.UseRedisStorage(config["RedisSettings:Configuration"],
+                    new RedisStorageOptions
+                    {
+                        Prefix = config["RedisSettings:InstanceName"],
+                        DeletedListSize = int.Parse(config["HangfireSettings:JobMaxDeletedListLength"]),
+                        SucceededListSize = int.Parse(config["HangfireSettings:JobMaxSucceededListLength"]),
+                        InvisibilityTimeout = TimeSpan.FromMinutes(int.Parse(config["HangfireSettings:JobInvisibilityTimeoutInMinutes"]))
+                    }
+                ).WithJobExpirationTimeout(TimeSpan.FromHours(int.Parse(config["HangfireSettings:JobExpirationTimeoutInHours"])));
+
+                configuration.UseFilter(provider.GetRequiredService<AutomaticRetryAttribute>());
+                GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 3 });
+            });
+
+            services.AddHangfireServer();
+
 
             services.AddAutoMapper(typeof(MappingProfiles).Assembly); // AppDomain.CurrentDomain.GetAssemblies()
 

@@ -3,6 +3,7 @@ using Core;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Hangfire;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -57,7 +58,12 @@ namespace MyAPI.Controllers
         {
             var user = await _userManager.FindByEmailFromClaimsPrincipal(loginDto.Email);
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, true);
+            Microsoft.AspNetCore.Identity.SignInResult result = new Microsoft.AspNetCore.Identity.SignInResult();
+
+            if(user != null)
+            {
+                result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, true);
+            }
 
             LogInStatus logInStatus = _config.GetLoginStatus(user, result);
 
@@ -251,10 +257,10 @@ namespace MyAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet("GetUserByUser/{email}")]
-        public async Task<ActionResult<UserProfileDto>> GetUserByUser(string email)
+        [HttpGet("GetUserByUser")]
+        public async Task<ActionResult<UserProfileDto>> GetUserByUser()
         {
-            var user = await _userManager.FindByEmailFromClaimsPrincipal(email);
+            var user = await _userManager.FindUserByClaimsPrincipleWithAddress(User);
 
             if (user == null) return NotFound(new ApiResponse(404));
 

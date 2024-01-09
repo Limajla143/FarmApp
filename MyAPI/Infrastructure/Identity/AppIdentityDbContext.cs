@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ namespace Infrastructure
     {
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
         {}
+
+        public DbSet<RefreshToken> RefreshToken { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

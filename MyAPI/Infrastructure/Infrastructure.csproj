@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Data\SeedData\" />
+    <Folder Include="Identity\Migrations\" />
   </ItemGroup>
 
 	<ItemGroup>

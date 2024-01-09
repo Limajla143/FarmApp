@@ -2,6 +2,7 @@
 using Core.Identity;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -65,5 +66,6 @@ namespace Infrastructure.Services
             rng.GetBytes(randomNUmber);
             return new RefreshToken { Token = Convert.ToBase64String(randomNUmber), Expires = DateTime.Now.AddMinutes(int.Parse(_config.RefreshTokenTimer)) };
         }
+
     }
 }

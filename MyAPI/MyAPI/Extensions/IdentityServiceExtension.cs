@@ -60,6 +60,7 @@ namespace MyAPI.Extensions
             services.AddAuthorization();
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IHangfireActions, HangfireActions>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ISmsSenderService, SmsSenderService>();
             services.AddSingleton<IConfig, Config>();

@@ -37,7 +37,7 @@ namespace Infrastructure.Identity
                     DateOfBirth = new DateTime(1990, 01, 01),
                     IsActive = true,
                     EmailConfirmed = true,
-                    Photo = "vsxu1zzd7gwe9gamaivy",
+                    Photo = "https://res.cloudinary.com/dvbaicnsy/image/upload/vsxu1zzd7gwe9gamaivy.jpeg",
                     PublicId = "vsxu1zzd7gwe9gamaivy",
                     Address = new Address
                     {
@@ -61,7 +61,7 @@ namespace Infrastructure.Identity
                     DateOfBirth = DateTime.Now,
                     IsActive = true,
                     EmailConfirmed = true,
-                    Photo = "xgzqg1ynfbvlmpo6l1tl",
+                    Photo = "https://res.cloudinary.com/dvbaicnsy/image/upload/xgzqg1ynfbvlmpo6l1tl.jpeg",
                     PublicId = "xgzqg1ynfbvlmpo6l1tl",
                     Address = new Address
                     {
