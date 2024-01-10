@@ -22,7 +22,7 @@ namespace MyAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost( Name = "CreatePaymentIntent")]
+        [HttpPost("CreatePaymentIntent")]
         public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
         {
             var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
