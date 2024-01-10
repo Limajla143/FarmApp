@@ -5,9 +5,9 @@ import { userValidation } from "./userValidation";
 import { useEffect, useState } from "react";
 import agent from "../../app/api/agent";
 import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
-import { Box, Paper, Typography, Grid, Button } from "@mui/material";
+import { Box, Paper, Typography, Grid } from "@mui/material";
 import AppDropzone from "../../app/components/AppDropzone";
 import AppSelectList from "../../app/components/AppSelectList";
 import AppTextInput from "../../app/components/AppTextInput";
@@ -18,8 +18,6 @@ import { clearBasket } from "../basket/basketSlice";
 const genderOptions = ['Male', 'Female'];
 
 export default function UserForm() {
-    const {email} = useParams<{email: string}>();
-
     const { control, reset, handleSubmit, watch, formState: { isDirty, isSubmitting, isValid } } = useForm({
         resolver: yupResolver<any>(userValidation)
     });
@@ -32,8 +30,9 @@ export default function UserForm() {
     useEffect(() => {
 
         const getUser = async () => {
-            await agent.Account.getUserByUser(email!).then(response => {
+            await agent.Account.getUserByUser().then(response => {
                 setUserDetails(response);
+                console.log(response);
               }).catch(error => {
                 toast.error(error);
               });
@@ -47,7 +46,7 @@ export default function UserForm() {
         return () => {
             if (watchFile) URL.revokeObjectURL(watchFile.preview);
         }
-    }, [email, userDetails, reset, isDirty, watchFile])
+    }, [userDetails, reset, isDirty, watchFile])
 
     async function handleSubmitData(data: FieldValues) {
         await agent.Account.updateUser(data).then((response) => {
@@ -71,7 +70,7 @@ export default function UserForm() {
             <form onSubmit={handleSubmit(handleSubmitData)}>
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={6}>
-                        <AppTextInput control={control} name='email' label='Email' disabled defaultValue={email}/>
+                        <AppTextInput control={control} name='email' label='Email' disabled  />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <AppTextInput control={control} name='userName' label='Username' />
@@ -80,7 +79,7 @@ export default function UserForm() {
                         <AppTextInput control={control} type="date" name="dateOfBirth" label="Date of Birth" />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <AppSelectList control={control} items={genderOptions} name='gender' label='Gender' />
+                        <AppSelectList control={control} items={genderOptions} name='gender' label='Gender' defaultValue={`Male`} />
                     </Grid>
                     <Grid item xs={12}>
                         <Box display='flex' justifyContent='space-between' alignItems='center'>

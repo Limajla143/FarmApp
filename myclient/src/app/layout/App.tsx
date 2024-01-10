@@ -88,13 +88,13 @@ function App() {
     <ThemeProvider theme={theme}>
     <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
     <CssBaseline />
-    {(user || showIdleDialog || showTimerDialog) && <TimerDialog />}
     <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
     {
         loading ? <LoadingComponent message="Initialising app..." /> 
                 : location.pathname === '/' ? <HomePage />
                 : <Container sx={{mt: 4}}> <Outlet /> </Container> 
       }
+      {(user || showIdleDialog || showTimerDialog) && <TimerDialog />}
     </ThemeProvider>
    )
 }

@@ -125,7 +125,7 @@ const Account = {
     confirmEmail: (userId: string, token: string) => requests.post(`account/confirmemail?userId=${userId}&token=${token}`, {}),
     forgotPassword: (useremail: string) => requests.post(`account/forgotpassword?useremail=${useremail}`, {}),
     resetPassword: (values: any) => requests.post('account/resetpassword', values),
-    getUserByUser: (email: string) => requests.get(`account/getUserByUser/${email}`),
+    getUserByUser: () => requests.get('account/getUserByUser'),
     updateUser: (userProfileDto: any) => requests.putForm('account/updateUser', createFormDataNested(userProfileDto)),
     refreshToken: () => requests.post('account/refreshToken', {})
 }

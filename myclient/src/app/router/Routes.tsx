@@ -34,13 +34,13 @@ export const router = createBrowserRouter([
             {path: 'successconfirmemail/:userId/:token', element: <ConfirmEmail />},
             {path: 'forgotpassword', element: <ForgotPassword /> },
             {path: 'resetpassword/:email/:token', element: <ResetPassword /> },
+            {path: 'getUser', element: <UserForm /> },
             {element: <RequireAuth />, children: [
                 {path: 'products', element: <ProductCatalog />},
                 {path: 'products/:id', element: <ProductUserDetail />},
                 {path: 'basket', element: <BasketPage />},
                 {path: 'orders', element: <Orders /> },
-                {path: 'checkout', element: <CheckoutWrapper />},
-                {path: 'getUser/:email', element: <UserForm /> }
+                {path: 'checkout', element: <CheckoutWrapper />}
             ]},
             // for moderator and admin only
             {element: <RequireAuth role={['Admin', 'Moderator']}/>, children: [

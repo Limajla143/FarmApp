@@ -28,9 +28,8 @@ export const signInUser = createAsyncThunk<User, FieldValues>(
             const {basket, ...user} = userDto;
             if(basket) thunkAPI.dispatch(setBasket(basket));
             localStorage.setItem('user', JSON.stringify(user));
-
-            startRefreshTokenTimer(user, thunkAPI);          
-            return user;
+            startRefreshTokenTimer(user, thunkAPI);
+            return user;                
         } catch (error: any) {
             console.log('Error login ', error);
             return thunkAPI.rejectWithValue({error: error.data})
@@ -86,7 +85,6 @@ const startRefreshTokenTimer = (user: User, thunkAPI: any) => {
     const expires = new Date(jwtToken.exp * 1000);
     const timeout = expires.getTime() - Date.now() - 60 * 1000;
     let countdown = Math.ceil(timeout / 1000);
-    console.log(countdown);
     const countdownInterval = setInterval(() => {
         countdown -= 1;
       }, 1000);
@@ -102,7 +100,6 @@ const startRefreshTokenTimer = (user: User, thunkAPI: any) => {
     if (timeout) {
         clearTimeout(timeout);
         thunkAPI.dispatch(setRefreshTokenTimeout(null));
-        console.log(timeout);
     }
   };
 
@@ -128,11 +125,9 @@ export const accountSlice = createSlice({
             state.refreshTokenTimeout = action.payload;
         },
         setShowTimerDialog: (state, action: PayloadAction<boolean>) => {
-            console.log('Set ShowTimer');
             state.showTimerDialog = action.payload;
         },
         setIdleDialog: (state, action: PayloadAction<boolean>) => {
-            console.log('Set IDle TIMER');
             state.showIdleDialog = action.payload;
         }
     },

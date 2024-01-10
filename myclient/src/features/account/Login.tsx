@@ -28,8 +28,8 @@ export default function Login(){
 
     async function submitForm(data: FieldValues) {
         try {
-            await dispatch(signInUser(data));
-            navigate('/');
+          await dispatch(signInUser(data));
+          navigate('/');
         } catch (error : any) {
             toast.error(error);
         }

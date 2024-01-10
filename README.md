@@ -5,13 +5,13 @@ Application for the person having farm
 Drop-Database -Context EntityDbContext -p Infrastructure -s MyAPI 
 Remove-Migration -Context EntityDbContext -p Infrastructure -s MyAPI 
 Update-Database -Context EntityDbContext
+Add-Migration InitialCreate -p Infrastructure -s MyAPI -c EntityDbContext -o Data/Migrations 
 
 Drop-Database -Context AppIdentityDbContext -p Infrastructure -s MyAPI 
 Remove-Migration -Context AppIdentityDbContext -p Infrastructure -s MyAPI 
 Update-Database -Context AppIdentityDbContext
-
-Add-Migration InitialCreate -p Infrastructure -s MyAPI -c EntityDbContext -o Data/Migrations 
 Add-Migration IdentityInitial -p Infrastructure -s MyAPI -c AppIdentityDbContext -o Identity/Migrations 
+
 
 --Update-Database -Context EntityDbContext
 --Update-Database -Context AppIdentityDbContext
