@@ -15,6 +15,13 @@ namespace MyAPI.Controllers
             _config = config;
         }
 
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return PhysicalFile(Path.Combine(Directory.GetCurrentDirectory(),
+                "wwwroot", "index.html"), "text/HTML");
+        }
+
         [HttpGet("GetHomeImages")]
         public async Task<IList<string>> GetImages()
         {

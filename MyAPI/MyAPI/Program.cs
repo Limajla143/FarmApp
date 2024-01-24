@@ -71,6 +71,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.MapControllers();
+app.MapFallbackToController("Index", "Home");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
